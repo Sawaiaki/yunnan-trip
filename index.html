@@ -2334,9 +2334,23 @@ function navSpy(){
 }
 
 /* ========== 云同步（GitHub 仓库 state.json · 多端自动同步） ========== */
-const SYNC = { repo: "Sawaiaki/yunnan-trip", branch: "main", path: "state.json", token: "" };
+const SYNC = { repo: "Sawaiaki/yunnan-trip", branch: "main", path: "state.json", token: "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" };
+const SYNC_AT_KEY = "yn_sync_at", SYNC_PEND_KEY = "yn_sync_pend";
 let syncAt = 0, syncSha = null, syncDirty = false, syncTimer = 0;
+try { syncAt = Number(localStorage.getItem(SYNC_AT_KEY)) || 0; } catch(e){}
 function syncStat(t){ const el = document.getElementById("syncStat"); if (el) el.textContent = t; }
+function syncPend(){
+  try { const p = JSON.parse(localStorage.getItem(SYNC_PEND_KEY)); return (p && p.data) ? p : null; }
+  catch(e){ return null; }
+}
+function syncSetAt(t){
+  syncAt = t;
+  try { localStorage.setItem(SYNC_AT_KEY, String(t)); } catch(e){}
+}
+function syncSetPend(p){
+  try { if (p) localStorage.setItem(SYNC_PEND_KEY, JSON.stringify(p)); else localStorage.removeItem(SYNC_PEND_KEY); }
+  catch(e){}
+}
 function syncClock(ts){
   const d = new Date(ts);
   return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
@@ -2377,6 +2391,7 @@ function markDirty(){
   try {
     if (!SYNC.token) return;
     syncDirty = true;
+    syncSetPend(collectState());
     syncStat("云同步 · 待推送");
     clearTimeout(syncTimer);
     syncTimer = setTimeout(pushState, 1500);
@@ -2417,7 +2432,8 @@ async function pushState(){
     if (!r.ok) throw new Error("HTTP " + r.status);
     const j = await r.json();
     syncSha = (j.content && j.content.sha) || null;
-    syncAt = snap.at;
+    syncSetAt(snap.at);
+    syncSetPend(null);
     syncDirty = false;
     syncStat("云同步 · 已同步 " + syncClock(snap.at));
   }catch(e){
@@ -2442,12 +2458,27 @@ async function pullState(){
     const j = await r.json();
     syncSha = j.sha;
     const srv = JSON.parse(b64dec(j.content));
-    if (syncDirty){
-      await pushState();
+    const pend = syncPend();
+    if (syncDirty || pend){
+      if (pend && srv && srv.at > pend.at){
+        applyState(srv.data);
+        syncSetAt(srv.at); syncSetPend(null); syncDirty = false;
+        syncStat("云同步 · 已同步 " + syncClock(srv.at));
+      }else{
+        syncDirty = true;
+        await pushState();
+      }
     }else if (srv && srv.at > syncAt){
       applyState(srv.data);
-      syncAt = srv.at;
+      syncSetAt(srv.at);
       syncStat("云同步 · 已同步 " + syncClock(srv.at));
+    }else if (srv && srv.at === 0 && syncAt === 0){
+      if (JSON.stringify(srv.data) !== JSON.stringify(collectState().data)){
+        syncDirty = true;
+        await pushState();
+      }else{
+        syncStat("云同步 · 就绪");
+      }
     }else{
       syncStat("云同步 · 已同步 " + syncClock(syncAt || (srv && srv.at) || Date.now()));
     }
@@ -2459,6 +2490,7 @@ async function pullState(){
 }
 function syncBoot(){
   if (!SYNC.token){ syncStat("云同步 · 未开启"); return; }
+  if (syncPend()) syncDirty = true;
   syncStat("云同步 · 连接中…");
   pullState();
   setInterval(pullState, 30000);
