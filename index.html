@@ -1966,21 +1966,24 @@ function paintOverviewMap(){
 const BKEY = "yn_trip_budget_v4";
 const BNAMES = ["早树", "关宜", "兰舒", "时野"];
 let budget = [];
-try { budget = JSON.parse(localStorage.getItem(BKEY)) || null; } catch(e){}
-if (!Array.isArray(budget) || !budget.length){
-  try {
-    const old = JSON.parse(localStorage.getItem("yn_trip_budget_v3")) || [];
-    budget = old.map(o => ({
+try {
+  const rawB = localStorage.getItem(BKEY);
+  if (rawB === null){
+    let old = null;
+    try { old = JSON.parse(localStorage.getItem("yn_trip_budget_v3")); } catch(e){}
+    budget = (Array.isArray(old) && old.length) ? old.map(o => ({
       name: o.name, amt: Number(o.amt),
       payer: (typeof o.by === "number") ? o.by : 0,
       shares: [0, 1, 2, 3], paid: []
-    }));
-  } catch(e){ budget = []; }
-}
-if (!Array.isArray(budget) || !budget.length) budget = [
-  {name:"丽江→泸沽湖包车往返(160×4)", amt:640, payer:0, shares:[0,1,2,3], paid:[]},
-  {name:"猪槽船包船", amt:150, payer:0, shares:[0,1,2,3], paid:[]}
-];
+    })) : [
+      {name:"丽江→泸沽湖包车往返(160×4)", amt:640, payer:0, shares:[0,1,2,3], paid:[]},
+      {name:"猪槽船包船", amt:150, payer:0, shares:[0,1,2,3], paid:[]}
+    ];
+  } else {
+    budget = JSON.parse(rawB);
+    if (!Array.isArray(budget)) budget = [];
+  }
+} catch(e){ budget = []; }
 budget.forEach(b => {
   b.amt = Number(b.amt) || 0;
   if (!Array.isArray(b.shares) || !b.shares.length) b.shares = [0,1,2,3];
