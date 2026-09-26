@@ -94,7 +94,7 @@ h1,h2,h3,.serif{font-family:"Songti SC","STSong","SimSun",serif}
 .nav{
   position:sticky;top:0;z-index:50;background:rgba(255,253,247,.96);
   backdrop-filter:blur(8px);border-bottom:1px solid rgba(24,150,138,.4);
-  display:flex;gap:4px;overflow-x:auto;padding:8px 10px;
+  display:flex;gap:4px;overflow-x:auto;height:43px;align-items:center;padding:0 10px;
   box-shadow:0 2px 10px rgba(15,107,98,.06);
   -webkit-overflow-scrolling:touch;scrollbar-width:none;
 }
@@ -300,37 +300,62 @@ section{padding:26px 0 6px}
 .spot-card p{font-size:13px;color:#45605b}
 .spot-card .facts{font-size:12px;color:var(--blue);background:#eef5f8;border-radius:8px;padding:5px 8px}
 
-/* ---------- bookings ---------- */
+/* ---------- bookings / 车票·机票 ---------- */
 .book-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.book-card{
-  background:var(--paper);border:1px solid rgba(24,150,138,.4);border-radius:16px;
-  padding:14px;box-shadow:var(--shadow);position:relative;
+.ticket{
+  display:flex;background:linear-gradient(135deg,#ffffff 0%,#f3fbf9 100%);
+  border:1.5px solid rgba(24,150,138,.5);border-radius:16px;overflow:hidden;
+  box-shadow:var(--shadow);position:relative;transition:transform .12s;
 }
-.book-card::before{
-  content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;
-  border-radius:0 4px 4px 0;background:linear-gradient(180deg,var(--red),var(--blue));
+.ticket:hover{transform:translateY(-2px)}
+.ticket.plane{border-color:rgba(47,127,184,.55);background:linear-gradient(135deg,#ffffff 0%,#f0f7fc 100%)}
+.tk-stub{
+  flex:0 0 86px;padding:14px 8px;text-align:center;
+  background:linear-gradient(160deg,var(--red),var(--red-dark));color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  border-right:2px dashed rgba(255,255,255,.65);position:relative;
 }
-.bk-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.bk-ic{
-  width:34px;height:34px;border-radius:9px;flex:0 0 auto;font-size:17px;
-  background:linear-gradient(135deg,#e9f7f4,#d9f0ec);border:1px solid rgba(24,150,138,.35);
-  display:flex;align-items:center;justify-content:center;
+.ticket.plane .tk-stub{background:linear-gradient(160deg,var(--blue),#1d5a80)}
+.tk-stub::before,.tk-stub::after{
+  content:"";position:absolute;right:-9px;width:16px;height:16px;border-radius:50%;
+  background:var(--cream);border:1.5px solid rgba(24,150,138,.5);
 }
-.bk-head b{font-size:15px;color:var(--red-dark)}
-.bk-head .bk-status{
-  margin-left:auto;font-size:10.5px;padding:2px 8px;border-radius:999px;
-  background:#fff4e2;color:#b06a00;border:1px solid #f2cf95;font-weight:700;
+.tk-stub::before{top:-9px}
+.tk-stub::after{bottom:-9px}
+.ticket.plane .tk-stub::before,.ticket.plane .tk-stub::after{border-color:rgba(47,127,184,.55)}
+.tk-stub .tk-icon{font-size:22px;line-height:1}
+.tk-stub .tk-code{font-size:12.5px;font-weight:800;letter-spacing:1px;word-break:break-all}
+.tk-stub .tk-type{font-size:10px;opacity:.85;background:rgba(255,255,255,.22);border-radius:999px;padding:1px 7px}
+.tk-main{flex:1;min-width:0;padding:12px 12px 11px 16px}
+.tk-route{display:flex;align-items:center;gap:8px;font-size:15.5px;font-weight:800;color:var(--ink)}
+.tk-route .tk-arrow{color:var(--gold);font-weight:800}
+.tk-route small{font-weight:600;font-size:11.5px;color:var(--muted)}
+.tk-time{margin-top:4px;font-size:13px;color:var(--red-dark);font-weight:700}
+.tk-meta{margin-top:3px;font-size:11.5px;color:var(--muted)}
+.tk-meta b{color:var(--blue);font-weight:700}
+.tk-del{
+  position:absolute;top:7px;right:7px;border:none;background:rgba(255,255,255,.8);
+  color:#c98a8a;width:24px;height:24px;border-radius:50%;font-size:13px;cursor:pointer;
+  opacity:0;transition:opacity .12s;
 }
-.bk-rows{display:flex;flex-direction:column;gap:5px}
-.bk-row{display:flex;gap:8px;font-size:13.5px;align-items:baseline}
-.bk-row .bk-k{flex:0 0 52px;color:var(--muted);font-size:12px}
-.bk-row .bk-v{
-  flex:1;min-width:0;color:var(--ink);border-bottom:1px dashed transparent;
-  padding:1px 4px;border-radius:4px;outline:none;word-break:break-all;
+.ticket:hover .tk-del{opacity:1}
+.tk-form{
+  display:flex;gap:8px;flex-wrap:wrap;background:var(--paper);
+  border:1px solid rgba(24,150,138,.45);border-radius:14px;padding:10px;
+  box-shadow:var(--shadow);margin-bottom:12px;
 }
-.bk-row .bk-v:empty::before{content:attr(data-ph);color:#b9c7c4}
-.bk-row .bk-v:hover{border-bottom-color:rgba(24,150,138,.4);background:rgba(24,150,138,.05)}
-.bk-row .bk-v:focus{border-bottom-color:var(--red);background:#fff;box-shadow:0 0 0 2px rgba(24,150,138,.2)}
+.tk-form select,.tk-form input{
+  border:1px solid rgba(24,150,138,.5);border-radius:9px;padding:8px 10px;
+  font-size:13.5px;background:#fff;outline:none;min-width:60px;
+}
+.tk-form input{flex:1;min-width:90px}
+.tk-form input.tk-date{flex:0 0 145px}
+.tk-form input.tk-time2{flex:0 0 100px}
+.tk-form button{
+  flex:0 0 auto;border:none;border-radius:9px;padding:8px 16px;font-size:13.5px;
+  font-weight:700;background:linear-gradient(135deg,var(--red),var(--red-dark));
+  color:#fff;cursor:pointer;
+}
 .book-note{
   margin-top:12px;font-size:12.5px;color:#5f8a83;background:#e9f7f4;
   border:1px dashed rgba(24,150,138,.5);border-radius:12px;padding:9px 13px;
@@ -348,6 +373,14 @@ section{padding:26px 0 6px}
   flex:0 0 auto;font-size:11px;font-weight:800;color:#fff;background:var(--red);
   border-radius:6px;padding:2px 7px;margin-top:2px;
 }
+.day-block.remind-top{
+  background:linear-gradient(135deg,rgba(255,251,238,.95),rgba(255,244,224,.9));
+  border:1.5px solid rgba(242,176,61,.55);border-radius:14px;
+  padding:10px 14px 12px;margin:8px 0 4px;box-shadow:0 3px 12px rgba(242,176,61,.18);
+}
+.remind-top .db-title{color:var(--red-dark);margin-bottom:8px}
+.remind-top .remind-item{background:rgba(255,255,255,.75);box-shadow:none;margin-bottom:6px}
+.remind-top .remind-item:last-child{margin-bottom:0}
 
 /* ---------- map & transport ---------- */
 .map-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -489,10 +522,12 @@ section{padding:26px 0 6px}
 }
 .ck-tab:hover .ck-mod-del{opacity:1}
 
-/* ---------- 每日行程标签页 ---------- */
+/* ---------- 每日行程标签页（吸顶） ---------- */
 .day-tabs{
-  display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:14px;
-  scrollbar-width:thin;
+  display:flex;gap:8px;overflow-x:auto;padding:8px 6px 8px;margin:0 -6px 14px;
+  scrollbar-width:thin;position:sticky;top:43px;z-index:40;
+  background:rgba(245,250,248,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(24,150,138,.25);border-radius:0 0 12px 12px;
 }
 .day-tab{
   flex:0 0 auto;border:1.5px solid rgba(24,150,138,.4);background:rgba(255,255,255,.7);
@@ -533,6 +568,124 @@ section{padding:26px 0 6px}
   padding:11px 13px;font-size:13px;color:#2a5a6e;
 }
 .packing-note b{color:var(--blue)}
+
+/* ---------- 每日小地图 ---------- */
+.day-map{
+  position:relative;height:160px;overflow:hidden;
+  border-bottom:1px dashed rgba(24,150,138,.45);background:#e9f0ee;
+}
+.day-map img{width:100%;height:100%;object-fit:cover;display:block}
+.day-map .dm-pin{
+  position:absolute;left:10px;top:10px;font-size:11.5px;font-weight:800;color:#fff;
+  background:rgba(15,122,110,.9);border-radius:999px;padding:3px 11px;
+  box-shadow:0 2px 8px rgba(0,0,0,.25);pointer-events:none;
+}
+.day-map .dm-cta{
+  position:absolute;right:10px;bottom:9px;font-size:11.5px;font-weight:700;color:var(--red-dark);
+  background:rgba(255,255,255,.92);border:1px solid rgba(24,150,138,.5);border-radius:999px;
+  padding:3px 11px;text-decoration:none;box-shadow:0 2px 6px rgba(0,0,0,.12);
+}
+
+/* ---------- 住宿卡片 ---------- */
+.stay-block{padding:12px 16px 4px;border-top:1px dashed rgba(24,150,138,.45);margin-top:6px}
+.hotel-card{
+  display:flex;gap:11px;align-items:center;position:relative;
+  background:linear-gradient(135deg,#fffaf0,#fff3dd);
+  border:1.5px solid #f2cf95;border-radius:14px;padding:11px 13px;margin-bottom:8px;
+  box-shadow:0 2px 8px rgba(180,130,40,.12);transition:transform .12s;
+}
+.hotel-card:hover{transform:translateY(-1px)}
+.hotel-card .h-ic{
+  width:40px;height:40px;border-radius:11px;flex:0 0 auto;font-size:20px;
+  background:linear-gradient(135deg,#ffe9c2,#ffd88a);border:1px solid #eec482;
+  display:flex;align-items:center;justify-content:center;
+}
+.hotel-card .h-info{flex:1;min-width:0}
+.hotel-card .h-info b{display:block;font-size:14.5px;color:#6b4a10}
+.hotel-card .h-info span{display:block;font-size:12px;color:#9a7b46;margin-top:1px}
+.hotel-card .h-info input,.hotel-card .h-info textarea{
+  width:100%;border:none;background:transparent;outline:none;font-size:13.5px;color:#6b4a10;
+  border-bottom:1px dashed transparent;padding:1px 0;resize:none;font-family:inherit;
+}
+.hotel-card .h-info input.h-name{font-size:14.5px;font-weight:700}
+.hotel-card .h-info input:hover,.hotel-card .h-info textarea:hover{border-bottom-color:#d9b877}
+.hotel-card .h-info input:focus,.hotel-card .h-info textarea:focus{border-bottom-color:#b06a00;background:rgba(255,255,255,.6)}
+.hotel-card .h-del{
+  border:none;background:rgba(255,255,255,.7);color:#c98a8a;width:26px;height:26px;
+  border-radius:50%;font-size:13px;cursor:pointer;flex:0 0 auto;opacity:.5;transition:opacity .12s;
+}
+.hotel-card:hover .h-del{opacity:1}
+.stay-add{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.stay-add input{
+  border:1.5px solid rgba(242,176,61,.55);border-radius:10px;padding:8px 11px;
+  font-size:13.5px;background:#fffdf7;outline:none;
+}
+.stay-add input.h-in-name{flex:1;min-width:150px}
+.stay-add input.h-in-note{flex:1;min-width:130px}
+.stay-add input:focus{border-color:var(--gold)}
+.stay-add button{
+  border:none;background:linear-gradient(135deg,var(--gold),#e09a20);color:#fff;
+  border-radius:10px;padding:0 15px;font-size:13.5px;font-weight:700;cursor:pointer;
+}
+.db-title.stay-t{color:#8a5b00}
+
+/* ---------- 费用：垫付/结算 ---------- */
+.pay-pick{display:flex;gap:4px;flex-wrap:wrap}
+.pay-pick .who.on{background:var(--blue);border-color:var(--blue);box-shadow:0 2px 6px rgba(47,127,184,.35)}
+.share-pick .who.on{background:var(--red);border-color:var(--red)}
+.settle-chip{
+  display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;
+  background:#e8f2f8;color:var(--blue);border:1px solid rgba(47,127,184,.4);
+  border-radius:999px;padding:4px 11px;
+}
+.settle-chip b{color:var(--red-dark);font-size:14px}
+.pay-row{
+  display:flex;align-items:center;gap:9px;background:var(--paper);
+  border:1px solid rgba(24,150,138,.4);border-radius:12px;padding:9px 12px;
+  font-size:13.5px;box-shadow:var(--shadow);
+}
+.pay-row .pr-ic{
+  width:30px;height:30px;border-radius:50%;flex:0 0 auto;color:#fff;font-size:12px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--red),var(--red-dark));
+}
+.pay-row .pr-main{flex:1;min-width:0}
+.pay-row .pr-main b{color:var(--ink)}
+.pay-row .pr-main small{display:block;color:var(--muted);font-size:11.5px;margin-top:1px}
+.pay-row .pr-amt{font-weight:800;color:var(--red-dark);white-space:nowrap}
+.pay-row .pr-amt small{display:block;font-weight:600;color:var(--muted);font-size:10.5px}
+.pay-btn{
+  border:none;border-radius:9px;padding:6px 12px;font-size:12.5px;font-weight:800;
+  cursor:pointer;background:linear-gradient(135deg,var(--blue),#1d5a80);color:#fff;white-space:nowrap;
+  box-shadow:0 2px 6px rgba(47,127,184,.3);
+}
+.pay-btn.paid{background:#e4ecea;color:#7ba39b;box-shadow:none}
+.pay-btn:active{transform:scale(.96)}
+.pay-list{display:flex;flex-direction:column;gap:7px;margin-bottom:6px}
+.pay-sum{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.pay-del{
+  border:none;background:#e9f2f0;color:var(--muted);border-radius:7px;
+  width:26px;height:26px;font-size:14px;cursor:pointer;flex:0 0 auto;
+}
+.budget-note b{color:var(--red-dark)}
+
+/* ---------- 待办：按人 ---------- */
+.ck-item .ck-edit{
+  border:none;background:none;color:#8fb3ad;font-size:13px;cursor:pointer;
+  opacity:0;transition:opacity .12s;padding:0 2px;
+}
+.ck-item:hover .ck-edit{opacity:1}
+.ck-item.done span{text-decoration:line-through;color:#9ab8b3}
+.ck-item input:checked+span{text-decoration:line-through;color:#9ab8b3}
+.ck-grp-head{display:flex;align-items:center;gap:6px;margin:10px 0 5px}
+.ck-grp-head h4{
+  font-size:14px;color:var(--red-dark);flex:1;
+  border-bottom:1px dashed rgba(24,150,138,.4);padding-bottom:4px;
+}
+.ck-grp-head .g-edit,.ck-grp-head .g-del{
+  border:none;background:none;font-size:12px;cursor:pointer;color:#c98a8a;opacity:.5;transition:opacity .12s;
+}
+.ck-grp-head .g-edit{color:#8fb3ad}
+.ck-grp-head:hover .g-edit,.ck-grp-head:hover .g-del{opacity:1}
 
 /* ---------- footer ---------- */
 footer{
@@ -599,7 +752,8 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
 <nav class="nav" id="nav">
   <a href="#overview">行程总览</a>
   <a href="#days">每日行程</a>
-  <a href="#budget">费用记账</a>
+  <a href="#tickets">已预订</a>
+  <a href="#budget">费用结算</a>
   <a href="#packing">待办清单</a>
 </nav>
 
@@ -622,32 +776,71 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
 
         <!-- 涂鸦装饰 -->
         <g class="doodle" filter="url(#rough)">
-          <circle cx="70" cy="62" r="24" fill="none" stroke="#f2b03d" stroke-width="3"/>
+          <!-- 纸张底纹与内框 -->
+          <rect x="14" y="14" width="772" height="492" rx="22" fill="#fffdf6" opacity=".7"/>
+          <rect x="26" y="26" width="748" height="468" rx="16" fill="none" stroke="#c9a86a" stroke-width="2" stroke-dasharray="14 9" opacity=".75"/>
+          <g stroke="#c9a86a" stroke-width="2.4" fill="none" opacity=".85">
+            <path d="M26 66 v-24 h40"/><path d="M774 66 v-24 h-40"/>
+            <path d="M26 454 v24 h40"/><path d="M774 454 v24 h-40"/>
+          </g>
+          <!-- 地形色块 -->
+          <path d="M40 120 q120 -60 250 -30 q90 22 150 -8 q110 -54 240 -10 q60 20 80 70 q-40 90 -190 110 q-160 22 -300 -6 q-140 -28 -200 -70 q-40 -30 -30 -56 z" fill="#e8f3e6" opacity=".8"/>
+          <path d="M60 330 q140 -40 300 -14 q170 28 360 -14 q20 60 -30 120 q-120 60 -330 44 q-180 -14 -270 -70 q-40 -36 -30 -66 z" fill="#f3eddd" opacity=".75"/>
+          <path d="M470 60 q80 -20 170 6 q40 40 10 96 q-90 30 -160 -6 q-40 -50 -20 -96 z" fill="#fdeedd" opacity=".8"/>
+          <!-- 雪山群 -->
+          <g filter="url(#rough)">
+            <path d="M360 118 l44 -66 l38 66 z" fill="#ffffff" stroke="#8fb6c9" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M394 66 l10 20 l10 -16 l10 20" fill="none" stroke="#8fb6c9" stroke-width="2.5"/>
+            <path d="M404 118 l30 -48 l28 48 z" fill="#ffffff" stroke="#a8c6d6" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M436 70 l8 14 l8 -12 l8 14" fill="none" stroke="#a8c6d6" stroke-width="2.5"/>
+          </g>
+          <!-- 松林 -->
+          <g stroke="#5d8f6f" stroke-width="2.6" fill="#cfe6d2" stroke-linejoin="round">
+            <path d="M96 300 l10 -22 l10 22 z"/><path d="M120 312 l11 -24 l11 24 z"/><path d="M84 316 l9 -20 l9 20 z"/>
+            <path d="M660 300 l10 -22 l10 22 z"/><path d="M684 312 l11 -24 l11 24 z"/>
+          </g>
+          <!-- 牦牛 -->
+          <g transform="translate(150 262)" stroke="#6b5a44" stroke-width="2.4" fill="#8d7a5f" stroke-linecap="round">
+            <ellipse cx="0" cy="0" rx="13" ry="8"/>
+            <path d="M-10 6 v8 M-4 7 v7 M6 7 v7 M11 6 v8"/>
+            <path d="M11 -4 q8 -4 12 2" fill="none"/>
+            <path d="M20 -2 l4 -3 M20 -2 l4 2"/>
+          </g>
+          <!-- 太阳 -->
+          <circle cx="70" cy="62" r="24" fill="#ffe9b8" stroke="#f2b03d" stroke-width="3"/>
           <g stroke="#f2b03d" stroke-width="3" stroke-linecap="round">
             <path d="M70 24 v-10 M70 100 v10 M32 62 h-10 M108 62 h10 M43 35 l-7 -7 M97 35 l7 -7 M43 89 l-7 7 M97 89 l7 7"/>
           </g>
-          <path d="M130 78 q18 -22 42 -10 q16 -20 40 -6 q22 -4 24 16 q4 16 -16 18 h-76 q-18 -2 -14 -18" fill="#ffffff" stroke="#9ec9d8" stroke-width="2.5"/>
-          <path d="M595 55 q16 -20 38 -9 q14 -17 36 -5 q19 -3 21 14 q4 14 -14 16 h-68 q-16 -2 -13 -16" fill="#ffffff" stroke="#9ec9d8" stroke-width="2.5"/>
+          <!-- 云 -->
+          <path d="M130 78 q18 -22 42 -10 q16 -20 40 -6 q22 -4 24 16 q4 16 -16 18 h-76 q-18 -2 -14 -18" fill="#ffffff" stroke="#9ec9d8" stroke-width="2.5" opacity=".95"/>
+          <path d="M595 55 q16 -20 38 -9 q14 -17 36 -5 q19 -3 21 14 q4 14 -14 16 h-68 q-16 -2 -13 -16" fill="#ffffff" stroke="#9ec9d8" stroke-width="2.5" opacity=".95"/>
+          <path d="M300 60 q14 -16 32 -7 q12 -14 30 -4 q16 -2 17 12 q3 12 -12 13 h-56 q-13 -2 -11 -13" fill="#ffffff" stroke="#9ec9d8" stroke-width="2.2" opacity=".8"/>
           <!-- 左下山脉 -->
           <g fill="none" stroke="#7ba88f" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
             <path d="M40 470 l46 -62 l30 40 l34 -52 l44 74"/>
             <path d="M96 470 l30 -34"/>
           </g>
-          <!-- 稻城雪山 -->
-          <g filter="url(#rough)">
-            <path d="M392 96 l30 -44 l26 44 z" fill="#ffffff" stroke="#8fb6c9" stroke-width="3" stroke-linejoin="round"/>
-            <path d="M414 62 l8 14 l8 -12 l8 14" fill="none" stroke="#8fb6c9" stroke-width="2.5"/>
-            <path d="M436 96 l24 -34 l22 34 z" fill="#ffffff" stroke="#8fb6c9" stroke-width="3" stroke-linejoin="round"/>
-          </g>
           <!-- 泸沽湖水面 -->
           <ellipse cx="533" cy="237" rx="44" ry="26" fill="#d8eef6" stroke="#6fb3cd" stroke-width="3" transform="rotate(-12 533 237)"/>
           <path d="M505 236 q14 7 28 0 q14 -7 28 0" fill="none" stroke="#6fb3cd" stroke-width="2" stroke-linecap="round"/>
+          <path d="M507 246 q13 6 26 0 q13 -6 26 0" fill="none" stroke="#6fb3cd" stroke-width="1.6" stroke-linecap="round" opacity=".7"/>
           <!-- 纳帕海 -->
           <ellipse cx="178" cy="232" rx="30" ry="17" fill="#d8eef6" stroke="#6fb3cd" stroke-width="2.5" transform="rotate(8 178 232)"/>
+          <path d="M158 232 q10 5 20 0 q10 -5 20 0" fill="none" stroke="#6fb3cd" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>
+          <!-- 长江第一湾水纹 -->
+          <path d="M620 400 q30 -22 70 -16 q40 6 76 -20" fill="none" stroke="#8ec3d8" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+          <path d="M636 414 q28 -18 62 -13 q36 5 68 -16" fill="none" stroke="#8ec3d8" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+          <!-- 寺庙小塔 -->
+          <g transform="translate(258 176)" stroke="#a06a3a" stroke-width="2.2" fill="#f7e3c2" stroke-linejoin="round">
+            <path d="M0 -26 l9 10 h-18 z"/><rect x="-7" y="-16" width="14" height="14"/>
+            <path d="M-11 0 l11 -8 l11 8 v12 h-22 z"/>
+          </g>
           <!-- 罗盘 -->
           <g transform="translate(744 460)">
-            <circle r="26" fill="none" stroke="#77908b" stroke-width="2.5"/>
+            <circle r="26" fill="#fffdf6" stroke="#77908b" stroke-width="2.5"/>
+            <circle r="20" fill="none" stroke="#c9a86a" stroke-width="1.4" stroke-dasharray="3 4"/>
             <path d="M0 -19 L6 4 L0 -1 L-6 4 Z" fill="#e2574c"/>
+            <path d="M0 19 L6 -4 L0 1 L-6 -4 Z" fill="#77908b" opacity=".6"/>
             <text y="-30" text-anchor="middle" font-size="14" fill="#77908b" font-weight="700">N</text>
           </g>
         </g>
@@ -675,7 +868,7 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
         </g>
 
         <!-- 地名 -->
-        <g class="labels" font-family="Kaiti SC,STKaiti,KaiTi,cursive">
+        <g class="labels" font-family="Kaiti SC,STKaiti,KaiTi,cursive" style="paint-order:stroke;stroke:#fffdf6;stroke-width:4px;stroke-linejoin:round">
           <text x="400" y="376" text-anchor="middle" font-size="21" font-weight="700" fill="#243c37" transform="rotate(-2 400 376)">丽江</text>
           <text x="540" y="200" font-size="19" font-weight="700" fill="#243c37" transform="rotate(3 540 200)">泸沽湖</text>
           <text x="204" y="284" text-anchor="middle" font-size="19" font-weight="700" fill="#243c37" transform="rotate(-3 204 284)">香格里拉</text>
@@ -689,17 +882,26 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
           <!-- 车站小标 -->
           <text x="330" y="330" font-size="13" fill="#3aa655">🚄 丽香铁路</text>
         </g>
+        <!-- 标题与印 -->
+        <g class="labels" font-family="Kaiti SC,STKaiti,KaiTi,cursive" style="paint-order:stroke;stroke:#f7f2e4;stroke-width:5px;stroke-linejoin:round">
+          <text x="46" y="368" font-size="30" font-weight="800" fill="#243c37" opacity=".92">云岭八日</text>
+          <text x="48" y="390" font-size="13" fill="#77908b" letter-spacing="3">YUNNAN · 8 DAYS</text>
+          <g transform="translate(176 374) rotate(-8)">
+            <rect x="-24" y="-24" width="48" height="48" rx="7" fill="none" stroke="#e2574c" stroke-width="3.5"/>
+            <text y="8" text-anchor="middle" font-size="18" font-weight="800" fill="#e2574c">出发</text>
+          </g>
+        </g>
 
         <!-- 天数徽章 -->
-        <g class="badges-d" font-size="12" font-weight="800" text-anchor="middle">
-          <g transform="translate(596 226)"><circle r="14" fill="#e2574c"/><text y="4" fill="#fff">D1</text></g>
-          <g transform="translate(478 290)"><circle r="14" fill="#ef8a2e"/><text y="4" fill="#fff">D2</text></g>
-          <g transform="translate(472 330)"><circle r="14" fill="#d9a514"/><text y="4" fill="#fff">D3</text></g>
-          <g transform="translate(306 286)"><circle r="14" fill="#3aa655"/><text y="4" fill="#fff">D4</text></g>
-          <g transform="translate(196 194)"><circle r="14" fill="#17a398"/><text y="4" fill="#fff">D5</text></g>
-          <g transform="translate(344 130)"><circle r="14" fill="#7b5cd6"/><text y="4" fill="#fff">D6</text></g>
-          <g transform="translate(420 176)"><circle r="14" fill="#d64b92"/><text y="4" fill="#fff">D7</text></g>
-          <g transform="translate(560 268)"><circle r="14" fill="#2f7fb8"/><text y="4" fill="#fff">D8</text></g>
+        <g class="badges-d" font-size="12" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#fffdf6;stroke-width:4px;stroke-linejoin:round">
+          <g transform="translate(596 226)"><circle r="14" fill="#e2574c" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D1</text></g>
+          <g transform="translate(478 290)"><circle r="14" fill="#ef8a2e" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D2</text></g>
+          <g transform="translate(472 330)"><circle r="14" fill="#d9a514" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D3</text></g>
+          <g transform="translate(306 286)"><circle r="14" fill="#3aa655" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D4</text></g>
+          <g transform="translate(196 194)"><circle r="14" fill="#17a398" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D5</text></g>
+          <g transform="translate(344 130)"><circle r="14" fill="#7b5cd6" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D6</text></g>
+          <g transform="translate(420 176)"><circle r="14" fill="#d64b92" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D7</text></g>
+          <g transform="translate(560 268)"><circle r="14" fill="#2f7fb8" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D8</text></g>
         </g>
       </svg>
       <div class="map-legend" id="mapLegend"></div>
@@ -714,35 +916,65 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
     <div id="dayList"></div>
   </section>
 
-  <!-- ===== 费用记账 ===== -->
+  <!-- ===== 已预订（车票/机票） ===== -->
+  <section id="tickets">
+    <h2 class="sec-title">已预订 <small>车票 · 机票 · 出发时间自动进顶部倒计时</small></h2>
+    <form class="tk-form" id="tkForm">
+      <select id="tkType" title="类型">
+        <option value="train">🚄 高铁/火车</option>
+        <option value="plane">✈️ 飞机</option>
+        <option value="bus">🚌 大巴</option>
+        <option value="car">🚗 包车/打车</option>
+      </select>
+      <input id="tkNo" placeholder="车次/航班号，如 G1234" style="max-width:150px">
+      <input id="tkFrom" placeholder="出发地" style="max-width:110px">
+      <input id="tkTo" placeholder="目的地" style="max-width:110px">
+      <input id="tkDate" type="date" class="tk-date">
+      <input id="tkTime" type="time" class="tk-time2">
+      <input id="tkSeat" placeholder="座位/备注（可选）" style="max-width:130px">
+      <button type="submit">＋ 添加</button>
+    </form>
+    <div class="book-grid" id="tkGrid"></div>
+    <p class="book-note" id="tkNote">还没有预订记录。填好日期时间添加后，车票会以票券样式展示，
+      且<b>出发时间会自动同步到页面顶部</b>的「下一站」倒计时。</p>
+  </section>
+
+  <!-- ===== 费用结算 ===== -->
   <section id="budget">
-    <h2 class="sec-title">费用记账 <small>点谁 = 谁花的钱 · 点 all = 全队均摊</small></h2>
+    <h2 class="sec-title">费用结算 <small>记一笔谁付的 · 分摊人自动算应付 · 付完点标记</small></h2>
     <div class="budget-bar">
       <div class="budget-stat"><div class="bs-num" id="bTotal">0</div><div class="bs-label">总支出(元)</div></div>
       <div class="budget-stat"><div class="bs-num" id="bCount">0</div><div class="bs-label">笔数</div></div>
-      <div class="budget-stat"><div class="bs-num" id="bShare">0</div><div class="bs-label">公共支出(均摊)</div></div>
+      <div class="budget-stat"><div class="bs-num" id="bUnpaid">0</div><div class="bs-label">未结清笔数</div></div>
     </div>
     <form class="budget-form" id="budgetForm">
       <input class="b-name" id="bName" placeholder="项目，如：猪槽船包船" required>
       <input class="b-amt" id="bAmt" type="number" min="0" step="0.01" placeholder="金额" required>
-      <div class="who-pick" id="whoPick" title="这笔钱谁花的（all = 全队一起花，自动均摊）">
-        <button type="button" class="who on" data-w="all">all</button>
-        <button type="button" class="who" data-w="0">早树</button>
+      <div class="who-pick pay-pick" id="payerPick" title="这笔钱谁付的">
+        <span style="font-size:12px;color:var(--muted);align-self:center">谁付的</span>
+        <button type="button" class="who on" data-w="0">早树</button>
         <button type="button" class="who" data-w="1">关宜</button>
         <button type="button" class="who" data-w="2">兰舒</button>
         <button type="button" class="who" data-w="3">时野</button>
+      </div>
+      <div class="who-pick share-pick" id="sharePick" title="参与分摊的人（默认全队）">
+        <span style="font-size:12px;color:var(--muted);align-self:center">分摊人</span>
+        <button type="button" class="who on" data-w="0">早树</button>
+        <button type="button" class="who on" data-w="1">关宜</button>
+        <button type="button" class="who on" data-w="2">兰舒</button>
+        <button type="button" class="who on" data-w="3">时野</button>
       </div>
       <button type="submit">记一笔</button>
     </form>
     <div class="ck-tabs" id="bgTabs"></div>
     <div class="ck-panel" id="bgPanel"></div>
-    <p class="budget-note">记一笔时点 <b>all</b> = 全队共同支出，自动4人均摊；点某个人 =Ta 自己花的钱，只算在 Ta 头上。
-      下方分人标签可查看每个人 <b>应付合计</b> 与各自的费用项。数据仅存本机。</p>
+    <p class="budget-note">先点<b>谁付的</b>，再勾<b>分摊人</b>（默认全队4人均摊）。记下后在分摊人自己的标签页里会显示
+      「应付给 XX 多少钱」，转账后点<b>标记已付</b>即可销账。数据仅存本机。</p>
   </section>
 
   <!-- ===== 待办清单 ===== -->
   <section id="packing">
-    <h2 class="sec-title">待办清单 <small>按模块分类 · 可选择/新建模块 · 自动保存</small></h2>
+    <h2 class="sec-title">待办清单 <small>按人分 · 每人可加模块/事项 · 可改可删 · 自动保存</small></h2>
     <div class="ck-tabs" id="ckTabs"></div>
     <div class="ck-panel" id="ckPanel"></div>
     <form class="ck-add" id="ckAdd">
@@ -910,7 +1142,7 @@ function dayIndex(d){
 const idx = dayIndex(now);
 
 /* ========== 行程事件 + 秒级倒计时 ========== */
-const EVENTS = [
+const BASE_EVENTS = [
   {t:"2026-09-30 07:00", name:"出发日 · 长沙 → 丽江", sub:"提前2小时到机场 · 记得带身份证"},
   {t:"2026-10-01 08:00", name:"包车集合 · 丽江 → 泸沽湖", sub:"车程约4h · 160元/人"},
   {t:"2026-10-01 18:10", name:"女神湾看日落", sub:"日落约18:40 · 提前占机位"},
@@ -932,7 +1164,80 @@ function parseEvent(s){
   const m = s.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})/);
   return new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5]);
 }
-EVENTS.forEach(e => e.at = parseEvent(e.t));
+
+/* ========== 已预订（车票/机票） ========== */
+const TKKEY = "yn_trip_tickets_v1";
+const TK_IC = {train:"🚄", plane:"✈️", bus:"🚌", car:"🚗"};
+const TK_TYPE = {train:"高铁/火车", plane:"飞机", bus:"大巴", car:"包车"};
+let tickets = [];
+try { tickets = JSON.parse(localStorage.getItem(TKKEY)) || []; } catch(e){ tickets = []; }
+if (!Array.isArray(tickets)) tickets = [];
+function saveTickets(){ localStorage.setItem(TKKEY, JSON.stringify(tickets)); }
+
+let EVENTS = [];
+function rebuildEvents(){
+  EVENTS = BASE_EVENTS.map(e => ({t: e.t, name: e.name, sub: e.sub}));
+  tickets.forEach(tk => {
+    if (!tk.date || !tk.time) return;
+    const t = `${tk.date} ${tk.time}`;
+    if (!/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(t)) return;
+    const route = [tk.from, tk.to].filter(Boolean).join(" → ");
+    EVENTS.push({
+      t,
+      name: `${TK_IC[tk.type] || "🎫"} 出发 · ${tk.no || route || "行程"}`,
+      sub: [route, tk.seat].filter(Boolean).join(" · ") || "已预订"
+    });
+  });
+  EVENTS.sort((a, b) => a.t < b.t ? -1 : (a.t > b.t ? 1 : 0));
+  EVENTS.forEach(e => { e.at = parseEvent(e.t); });
+}
+function renderTickets(){
+  const grid = document.getElementById("tkGrid");
+  if (!grid) return;
+  grid.innerHTML = tickets.map((tk, i) => {
+    const ic = TK_IC[tk.type] || "🎫";
+    const dt = tk.date ? tk.date.slice(5).replace("-", ".") : "";
+    return `<div class="ticket ${tk.type === "plane" ? "plane" : ""}">
+      <div class="tk-stub">
+        <span class="tk-icon">${ic}</span>
+        <span class="tk-code">${esc(tk.no || TK_TYPE[tk.type] || "")}</span>
+        <span class="tk-type">${TK_TYPE[tk.type] || "票券"}</span>
+      </div>
+      <div class="tk-main">
+        <div class="tk-route">${esc(tk.from || "?")} <span class="tk-arrow">➜</span> ${esc(tk.to || "?")}</div>
+        <div class="tk-time">${dt ? dt + " " : ""}${tk.time || ""} ${tk.seat ? "" : ""}</div>
+        <div class="tk-meta">${tk.seat ? "<b>" + esc(tk.seat) + "</b> · " : ""}已预订${tk.time ? " · 出发时间已同步顶部倒计时" : " · 填时间可同步倒计时"}</div>
+      </div>
+      <button class="tk-del" data-tk="${i}" title="删除">✕</button>
+    </div>`;
+  }).join("");
+  const note = document.getElementById("tkNote");
+  if (note) note.style.display = tickets.length ? "none" : "";
+}
+document.addEventListener("submit", e => {
+  if (e.target.id !== "tkForm") return;
+  e.preventDefault();
+  const tk = {
+    type: document.getElementById("tkType").value,
+    no: document.getElementById("tkNo").value.trim(),
+    from: document.getElementById("tkFrom").value.trim(),
+    to: document.getElementById("tkTo").value.trim(),
+    date: document.getElementById("tkDate").value,
+    time: document.getElementById("tkTime").value,
+    seat: document.getElementById("tkSeat").value.trim()
+  };
+  if (!tk.no && !(tk.from && tk.to)) return;
+  tickets.push(tk);
+  saveTickets(); renderTickets(); rebuildEvents(); tick();
+  e.target.reset();
+  document.getElementById("tkNo").focus();
+});
+document.addEventListener("click", e => {
+  const del = e.target.closest(".tk-del");
+  if (!del) return;
+  tickets.splice(Number(del.dataset.tk), 1);
+  saveTickets(); renderTickets(); rebuildEvents(); tick();
+});
 
 let lastSec = -1;
 function tick(){
@@ -1116,7 +1421,7 @@ function renderSelectedDay(){
     else extraTraffic.push(t);
   });
 
-  /* 自行添加的条目 */
+  /* 自行添加的条目（格式与原有一致，自动关联地图） */
   const customs = customDays[d.n] || [];
 
   const items = d.items.map((it, i) => `
@@ -1134,12 +1439,12 @@ function renderSelectedDay(){
 
   const customHTML = customs.map((c, i) => `
     <div class="tl-item custom">
-      <span class="tl-time">${c.time}</span>
+      <span class="tl-time">${esc(c.time)}</span>
       <div class="tl-body">
-        <h4>${esc(c.title)} <span class="tl-self">自定</span>
+        <h4>${esc(c.title)}
           <button class="tl-del" data-ci="${i}" title="删除">✕</button></h4>
         ${c.desc ? `<p>${esc(c.desc)}</p>` : ""}
-        ${mapBtns(c.map)}
+        ${mapBtns(c.map || c.title)}
       </div>
     </div>`).join("");
 
@@ -1152,14 +1457,51 @@ function renderSelectedDay(){
       </div>
     </div>`).join("");
 
-  /* 当日提醒 */
+  /* 当日提醒：放在行程最上面 */
   const rs = REMINDS.filter(r => DATE2DAY[r.d] === d.n);
   const remindHTML = rs.length ? `
-    <div class="day-block">
+    <div class="day-block remind-top">
       <h4 class="db-title">⏰ 当日提醒 <small>建议设闹钟</small></h4>
       ${rs.map(r => `<div class="remind-item"><span class="r-day">${r.t}</span>
         <div>${r.x}</div></div>`).join("")}
     </div>` : "";
+
+  /* 当日小地图 */
+  const dm = DAY_MAP[d.n];
+  const mapHTML = dm ? (() => {
+    const pts = dm.pts.map((p, i) => `${p[0]},${p[1]},${dm.c[i] || "pm2rdm"}`).join("~");
+    const lons = dm.pts.map(p => p[0]), lats = dm.pts.map(p => p[1]);
+    const ll = `${((Math.min(...lons) + Math.max(...lons)) / 2).toFixed(4)},${((Math.min(...lats) + Math.max(...lats)) / 2).toFixed(4)}`;
+    const url = `https://static-maps.yandex.ru/1.x/?ll=${ll}&z=${dm.z || 8}&l=map&size=650,170&lang=zh_CN&pt=${pts}`;
+    return `
+    <div class="day-map">
+      <img src="${url}" alt="D${d.n} 地图" loading="lazy"
+        onerror="this.closest('.day-map').style.display='none'">
+      <span class="dm-pin">📍 ${dm.label}</span>
+      <a class="dm-cta" href="${amap(dm.pts.length > 1 ? dm.label : dm.label)}" target="_blank" rel="noopener">高德打开 →</a>
+    </div>`;
+  })() : "";
+
+  /* 住宿 */
+  const stays = getStays(d.n);
+  const stayHTML = `
+    <div class="stay-block">
+      <h4 class="db-title stay-t">🏨 住宿酒店 <small>可自行添加 / 删除</small></h4>
+      <div id="stayList">${stays.map((s, i) => `
+        <div class="hotel-card">
+          <div class="h-ic">🛏</div>
+          <div class="h-info">
+            <input class="h-name" data-stay="${i}" data-f="name" value="${esc(s.name)}" placeholder="酒店名称">
+            <textarea class="h-note" data-stay="${i}" data-f="note" rows="1" placeholder="地址 / 备注（如：入住14:00）">${esc(s.note || "")}</textarea>
+          </div>
+          <button class="h-del" data-stay="${i}" title="删除">✕</button>
+        </div>`).join("") || ""}</div>
+      <form class="stay-add" id="stayAdd">
+        <input class="h-in-name" id="stName" placeholder="添加酒店，如：丽江悦榕庄" required>
+        <input class="h-in-note" id="stNote" placeholder="备注（可选）" style="max-width:180px">
+        <button type="submit">＋ 添加住宿</button>
+      </form>
+    </div>`;
 
   document.getElementById("dayList").innerHTML = `
     <article class="day-card-full ${cls}" id="day${d.n}">
@@ -1172,6 +1514,8 @@ function renderSelectedDay(){
         ${wxChip(d.n)}
         <span class="day-tag">${tag}</span>
       </div>
+      ${mapHTML}
+      ${remindHTML}
       <div class="timeline">${items}${customHTML}${extraTrafficHTML}</div>
       <form class="ci-add" id="ciAdd">
         <select id="ciTime">
@@ -1179,10 +1523,11 @@ function renderSelectedDay(){
           <option selected>下午</option><option>傍晚</option><option>晚上</option>
         </select>
         <input id="ciTitle" placeholder="想加点什么？如：黑龙潭公园" required>
-        <input id="ciDesc" placeholder="备注（可选）" style="max-width:200px">
+        <input id="ciDesc" placeholder="备注（可选）" style="max-width:170px">
+        <input id="ciMap" placeholder="地点（地图搜索用，默认用标题）" style="max-width:190px">
         <button type="submit">＋ 添加到 D${d.n}</button>
       </form>
-      ${remindHTML}
+      ${stayHTML}
     </article>`;
 }
 
@@ -1272,127 +1617,211 @@ document.addEventListener("submit", e => {
   const time = document.getElementById("ciTime").value;
   const title = document.getElementById("ciTitle").value.trim();
   const desc = document.getElementById("ciDesc").value.trim();
+  const map = document.getElementById("ciMap").value.trim() || title;
   if (!title) return;
-  (customDays[selDay] = customDays[selDay] || []).push({time, title, desc});
+  (customDays[selDay] = customDays[selDay] || []).push({time, title, desc, map});
   saveCustom(); renderSelectedDay();
   const t = document.getElementById("ciTitle");
   if (t) t.focus();
 });
 
-/* ========== 费用记账 ========== */
-const BKEY = "yn_trip_budget_v3";
+/* ========== 住宿（自添加/删除/编辑） ========== */
+const STKEY = "yn_trip_stays_v1";
+let stays = {};
+try { stays = JSON.parse(localStorage.getItem(STKEY)) || {}; } catch(e){ stays = {}; }
+if (!Object.keys(stays).length){
+  DAYS.forEach(d => { if (d.stay.startsWith("住")) stays[d.n] = [{name: d.stay.replace("住 · ", "") + " 住宿", note: ""}]; });
+}
+function saveStays(){ localStorage.setItem(STKEY, JSON.stringify(stays)); }
+function getStays(n){ return Array.isArray(stays[n]) ? stays[n] : []; }
+
+/* ========== 每日小地图坐标（Yandex 静态图：pt=经度,纬度,颜色） ========== */
+const DAY_MAP = {
+  1: {label:"丽江古城", z:9,  pts:[[100.2336,26.8721],[100.2514,26.7510]], c:["pm2rdm","pm2gnm"]},
+  2: {label:"丽江 → 泸沽湖", z:8, pts:[[100.2336,26.8721],[100.7685,27.6877]], c:["pm2gnm","pm2rdm"]},
+  3: {label:"泸沽湖", z:10, pts:[[100.7685,27.6877],[100.2336,26.8721]], c:["pm2rdm","pm2gnm"]},
+  4: {label:"丽江 → 香格里拉", z:8, pts:[[100.2336,26.8721],[99.7047,27.8269]], c:["pm2gnm","pm2rdm"]},
+  5: {label:"香格里拉", z:10, pts:[[99.7047,27.8269],[99.6757,27.9066]], c:["pm2rdm","pm2blm"]},
+  6: {label:"香格里拉 → 亚丁", z:8, pts:[[99.7047,27.8269],[100.3105,28.4410]], c:["pm2gnm","pm2rdm"]},
+  7: {label:"亚丁 → 香格里拉", z:8, pts:[[100.3105,28.4410],[99.7047,27.8269]], c:["pm2rdm","pm2blm"]},
+  8: {label:"香格里拉 → 长沙", z:8, pts:[[99.7047,27.8269],[112.9838,28.1940]], c:["pm2gnm","pm2blm"]}
+};
+
+document.addEventListener("submit", e => {
+  if (e.target.id !== "stayAdd") return;
+  e.preventDefault();
+  const name = document.getElementById("stName").value.trim();
+  const note = document.getElementById("stNote").value.trim();
+  if (!name) return;
+  (stays[selDay] = stays[selDay] || []).push({name, note});
+  saveStays(); renderSelectedDay();
+  const n = document.getElementById("stName");
+  if (n) n.focus();
+});
+document.addEventListener("click", e => {
+  const del = e.target.closest(".h-del");
+  if (!del) return;
+  getStays(selDay).splice(Number(del.dataset.stay), 1);
+  if (!stays[selDay].length) delete stays[selDay];
+  saveStays(); renderSelectedDay();
+});
+document.addEventListener("change", e => {
+  const f = e.target.closest(".h-name, .h-note");
+  if (!f) return;
+  const s = getStays(selDay)[Number(f.dataset.stay)];
+  if (!s) return;
+  s[f.dataset.f] = f.value.trim();
+  saveStays();
+});
+
+/* ========== 费用结算（垫付 → 分摊 → 标记已付） ========== */
+const BKEY = "yn_trip_budget_v4";
 const BNAMES = ["早树", "关宜", "兰舒", "时野"];
 let budget = [];
 try { budget = JSON.parse(localStorage.getItem(BKEY)) || null; } catch(e){}
 if (!Array.isArray(budget) || !budget.length){
-  /* 从 v2 迁移：who 数组 → by（4人=all，否则第一人） */
   try {
-    const old = JSON.parse(localStorage.getItem("yn_trip_budget_v2")) || [];
+    const old = JSON.parse(localStorage.getItem("yn_trip_budget_v3")) || [];
     budget = old.map(o => ({
       name: o.name, amt: Number(o.amt),
-      by: (!o.who || o.who.length >= 4) ? "all" : o.who[0]
+      payer: (typeof o.by === "number") ? o.by : 0,
+      shares: [0, 1, 2, 3], paid: []
     }));
   } catch(e){ budget = []; }
 }
 if (!Array.isArray(budget) || !budget.length) budget = [
-  {name:"丽江→泸沽湖包车往返(160×4)", amt:640, by:"all"},
-  {name:"猪槽船包船", amt:150, by:"all"}
+  {name:"丽江→泸沽湖包车往返(160×4)", amt:640, payer:0, shares:[0,1,2,3], paid:[]},
+  {name:"猪槽船包船", amt:150, payer:0, shares:[0,1,2,3], paid:[]}
 ];
-budget.forEach(b => { if (!(b.by === "all" || typeof b.by === "number")) b.by = "all"; b.amt = Number(b.amt); });
-
+budget.forEach(b => {
+  b.amt = Number(b.amt) || 0;
+  if (!Array.isArray(b.shares) || !b.shares.length) b.shares = [0,1,2,3];
+  b.shares = b.shares.filter(x => x >= 0 && x < 4);
+  if (!b.shares.length) b.shares = [0,1,2,3];
+  if (typeof b.payer !== "number") b.payer = 0;
+  if (!Array.isArray(b.paid)) b.paid = [];
+  b.paid = b.paid.filter(x => x >= 0 && x < 4);
+});
 function saveBudget(){ localStorage.setItem(BKEY, JSON.stringify(budget)); }
-/* 每人应付 = 自己花的 + 公共支出(all)的均摊 */
-function calcShares(){
-  const group = budget.filter(b => b.by === "all").reduce((s, b) => s + b.amt, 0);
-  const share = group / 4;
-  const per = BNAMES.map((n, i) => ({
-    name: n, i,
-    own: budget.filter(b => b.by === i).reduce((s, b) => s + b.amt, 0),
-    groupShare: share
-  }));
-  per.forEach(p => p.total = p.own + p.groupShare);
-  return {group, per};
-}
-let bgWho = "all";
+const shareAmt = b => b.amt / b.shares.length;
+
+let bgWho = 0;
 function renderBudget(){
   const total = budget.reduce((s, b) => s + b.amt, 0);
-  const {group, per} = calcShares();
+  const unpaidCount = budget.reduce((n, b) =>
+    n + b.shares.filter(p => p !== b.payer && !b.paid.includes(p)).length, 0);
   document.getElementById("bTotal").textContent = total.toFixed(0);
   document.getElementById("bCount").textContent = budget.length;
-  document.getElementById("bShare").textContent = group.toFixed(0);
+  document.getElementById("bUnpaid").textContent = unpaidCount;
 
-  document.getElementById("bgTabs").innerHTML = ["all", ...BNAMES].map(n => {
-    const label = n === "all" ? "all · 全队" : n;
-    const t = n === "all" ? total : per.find(p => p.name === n).total;
-    return `<button class="ck-tab ${n === bgWho ? "on" : ""}" data-p="${n}">
-      ${label}<span class="ck-done">¥${t.toFixed(0)}</span></button>`;
+  document.getElementById("bgTabs").innerHTML = BNAMES.map((n, i) => {
+    const pend = budget.reduce((s, b) =>
+      s + (b.payer !== i && b.shares.includes(i) && !b.paid.includes(i) ? shareAmt(b) : 0), 0);
+    return `<button class="ck-tab ${i === bgWho ? "on" : ""}" data-p="${i}">
+      ${n}<span class="ck-done">${pend > 0 ? "应付 ¥" + pend.toFixed(0) : "已结清"}</span></button>`;
   }).join("");
 
-  let html = "";
-  if (bgWho === "all"){
-    html = `<div class="bg-sum">
-        <div class="share-chip">公共支出(all) <b>¥${group.toFixed(1)}</b> · 每人均摊 <b>¥${(group/4).toFixed(1)}</b></div>
-        <div class="share-chip">个人支出合计 <b>¥${(total - group).toFixed(1)}</b></div>
-      </div>` +
-      budgetListHTML(budget.map((b, i) => ({b, i, showBy: true})));
-  } else {
-    const p = per.find(x => x.name === bgWho);
-    const ownItems = budget.map((b, i) => ({b, i})).filter(x => x.b.by === p.i);
-    const grpItems = budget.map((b, i) => ({b, i})).filter(x => x.b.by === "all");
-    html = `<div class="bg-sum">
-        <div class="share-chip">${p.name} 应付合计 <b>¥${p.total.toFixed(1)}</b></div>
-        <div class="share-chip">自己花的 <b>¥${p.own.toFixed(1)}</b></div>
-        <div class="share-chip">公共均摊 <b>¥${p.groupShare.toFixed(1)}</b></div>
-      </div>
-      <h4 class="db-title" style="margin-top:4px">Ta 花的钱</h4>` +
-      budgetListHTML(ownItems.length ? ownItems : [{b:{name:"暂无个人消费", amt:0, by:p.i, none:true}, i:-1}]) +
-      `<h4 class="db-title">公共支出分摊 <small>每人 ¥${p.groupShare.toFixed(1)}</small></h4>` +
-      budgetListHTML(grpItems);
-  }
+  const p = bgWho;
+  const owe = budget.map((b, i) => ({b, i}))
+    .filter(x => x.b.payer !== p && x.b.shares.includes(p));
+  const lend = budget.map((b, i) => ({b, i})).filter(x => x.b.payer === p);
+  const owedNow = owe.reduce((s, x) => s + (x.b.paid.includes(p) ? 0 : shareAmt(x.b)), 0);
+  const lendNow = lend.reduce((s, x) =>
+    s + x.b.shares.filter(q => q !== p && !x.b.paid.includes(q)).length * shareAmt(x.b), 0);
+
+  let html = `<div class="pay-sum">
+      <span class="settle-chip">我垫付 <b>¥${lend.reduce((s, x) => s + x.b.amt, 0).toFixed(0)}</b>（${lend.length}笔）</span>
+      <span class="settle-chip">别人待还我 <b>¥${lendNow.toFixed(1)}</b></span>
+      <span class="settle-chip">我待付他人 <b>¥${owedNow.toFixed(1)}</b></span>
+    </div>`;
+
+  html += `<h4 class="db-title">我要付给别人的 <small>付完点「标记已付」</small></h4><div class="pay-list">` +
+    (owe.length ? owe.map(({b, i}) => {
+      const paid = b.paid.includes(p);
+      return `<div class="pay-row">
+        <span class="pr-ic" style="background:linear-gradient(135deg,var(--blue),#1d5a80)">${BNAMES[b.payer][0]}</span>
+        <div class="pr-main"><b>${esc(b.name)}</b>
+          <small>垫付人 ${BNAMES[b.payer]} · ${b.shares.length}人分</small></div>
+        <span class="pr-amt">¥${shareAmt(b).toFixed(1)}<small>${paid ? "已付 ✓" : "应付"}</small></span>
+        <button class="pay-btn ${paid ? "paid" : ""}" data-i="${i}" data-p="${p}">${paid ? "撤销" : "标记已付"}</button>
+        <button class="pay-del" data-del="${i}" title="删除这笔">✕</button>
+      </div>`;
+    }).join("") : `<div class="ck-empty">没有需要你付的钱 ✓</div>`) + `</div>`;
+
+  html += `<h4 class="db-title">我垫付的 <small>分摊人应付我</small></h4><div class="pay-list">` +
+    (lend.length ? lend.map(({b, i}) => {
+      const rest = b.shares.filter(q => q !== p && !b.paid.includes(q));
+      const done = b.shares.filter(q => q !== p && b.paid.includes(q));
+      const sub = [
+        done.length ? `已收：${done.map(q => BNAMES[q]).join("、")}` : "",
+        rest.length ? `未收：${rest.map(q => BNAMES[q] + "¥" + shareAmt(b).toFixed(0)).join("、")}` : "全部已收 ✓"
+      ].filter(Boolean).join(" · ");
+      return `<div class="pay-row">
+        <span class="pr-ic">${BNAMES[p][0]}</span>
+        <div class="pr-main"><b>${esc(b.name)}</b><small>${sub}</small></div>
+        <span class="pr-amt">¥${b.amt.toFixed(0)}<small>${b.shares.length}人分</small></span>
+        <button class="pay-del" data-del="${i}" title="删除这笔">✕</button>
+      </div>`;
+    }).join("") : `<div class="ck-empty">暂无垫付记录</div>`) + `</div>`;
+
   document.getElementById("bgPanel").innerHTML = html;
 }
-function budgetListHTML(rows){
-  if (!rows.length) return `<div class="ck-empty">暂无记录，先记一笔吧</div>`;
-  return `<ul class="budget-list">` + rows.map(({b, i, showBy}) => `
-    <li><div class="b-item">${b.name}
-        <small>${b.by === "all" ? "all · 全队均摊 每人¥" + (b.amt/4).toFixed(1) : BNAMES[b.by] + " 个人支出"}${showBy === undefined && b.by !== "all" ? "" : ""}</small></div>
-      <div class="b-amt">¥${b.amt.toFixed(2)}</div>
-      ${i >= 0 ? `<button class="b-del" data-i="${i}" title="删除">✕</button>` : `<span style="width:22px"></span>`}</li>`).join("") + `</ul>`;
-}
-document.getElementById("whoPick").addEventListener("click", e => {
+document.getElementById("payerPick").addEventListener("click", e => {
   const btn = e.target.closest(".who");
   if (!btn) return;
-  document.querySelectorAll("#whoPick .who").forEach(b => b.classList.remove("on"));
+  document.querySelectorAll("#payerPick .who").forEach(b => b.classList.remove("on"));
   btn.classList.add("on");
+});
+document.getElementById("sharePick").addEventListener("click", e => {
+  const btn = e.target.closest(".who");
+  if (!btn) return;
+  if (btn.classList.contains("on")){
+    const on = document.querySelectorAll("#sharePick .who.on");
+    if (on.length > 1) btn.classList.remove("on");
+  } else btn.classList.add("on");
 });
 document.getElementById("budgetForm").addEventListener("submit", e => {
   e.preventDefault();
   const name = document.getElementById("bName").value.trim();
   const amt = parseFloat(document.getElementById("bAmt").value);
-  const byBtn = document.querySelector("#whoPick .who.on");
-  if (!name || isNaN(amt) || !byBtn) return;
-  const w = byBtn.dataset.w;
-  budget.push({ name, amt, by: w === "all" ? "all" : Number(w) });
+  const payer = Number(document.querySelector("#payerPick .who.on")?.dataset.w ?? 0);
+  const shares = [...document.querySelectorAll("#sharePick .who.on")]
+    .map(b => Number(b.dataset.w)).sort((a, b) => a - b);
+  if (!name || isNaN(amt) || !shares.length) return;
+  budget.push({ name, amt, payer, shares, paid: [] });
   saveBudget(); renderBudget();
   e.target.reset();
+  document.getElementById("payerPick").querySelectorAll(".who").forEach((b, i) =>
+    b.classList.toggle("on", i === payer));
+  document.getElementById("sharePick").querySelectorAll(".who").forEach(b => b.classList.add("on"));
 });
 document.getElementById("bgPanel").addEventListener("click", e => {
-  const btn = e.target.closest(".b-del");
-  if (!btn) return;
-  budget.splice(Number(btn.dataset.i), 1);
-  saveBudget(); renderBudget();
+  const btn = e.target.closest(".pay-btn");
+  if (btn){
+    const b = budget[Number(btn.dataset.i)];
+    const p = Number(btn.dataset.p);
+    if (!b) return;
+    const at = b.paid.indexOf(p);
+    if (at >= 0) b.paid.splice(at, 1); else b.paid.push(p);
+    saveBudget(); renderBudget();
+    return;
+  }
+  const del = e.target.closest(".pay-del");
+  if (del){
+    budget.splice(Number(del.dataset.del), 1);
+    saveBudget(); renderBudget();
+  }
 });
 document.getElementById("bgTabs").addEventListener("click", e => {
   const btn = e.target.closest(".ck-tab");
   if (!btn) return;
-  bgWho = btn.dataset.p;
+  bgWho = Number(btn.dataset.p);
   renderBudget();
 });
 
-/* ========== 已确认预订模块已删除 ========== */
-
-/* ========== 待办清单（模块化） ========== */
-const CKEY = "yn_trip_todo_v1";
+/* ========== 待办清单（按人 → 模块 → 事项） ========== */
+const CKEY = "yn_trip_todo_v2";
+const CK_PEOPLE = ["全队", "早树", "关宜", "兰舒", "时野"];
 const DEFAULT_CK = {
   "证件&票务": [
     "身份证 ×4（必带）",
@@ -1439,39 +1868,77 @@ const DEFAULT_CK = {
 };
 let ckData = null;
 try { ckData = JSON.parse(localStorage.getItem(CKEY)); } catch(e){ ckData = null; }
-if (!ckData || typeof ckData !== "object" || Array.isArray(ckData) || !Object.keys(ckData).length)
-  ckData = JSON.parse(JSON.stringify(DEFAULT_CK));
+function ckValid(v){
+  if (!v || typeof v !== "object" || Array.isArray(v)) return false;
+  const keys = Object.keys(v);
+  if (!keys.length) return false;
+  return keys.every(p => {
+    const m = v[p];
+    if (!m || typeof m !== "object" || Array.isArray(m)) return false;
+    return Object.keys(m).every(k => Array.isArray(m[k]));
+  });
+}
+if (!ckValid(ckData)){
+  let flat = null;
+  try { flat = JSON.parse(localStorage.getItem("yn_trip_todo_v1")); } catch(e){ flat = null; }
+  if (!flat || typeof flat !== "object" || Array.isArray(flat)) flat = JSON.parse(JSON.stringify(DEFAULT_CK));
+  ckData = {};
+  CK_PEOPLE.forEach(p => ckData[p] = p === "全队" ? flat : {});
+}
+CK_PEOPLE.forEach(p => { if (!ckValid({[p]: ckData[p]})) ckData[p] = {}; });
 
-let ckWho = Object.keys(ckData)[0];
+let ckWho = "全队";
 function saveCk(){ localStorage.setItem(CKEY, JSON.stringify(ckData)); }
-function ckCount(mod){
+function ckMods(){ return Object.keys(ckData[ckWho] || {}); }
+function ckNorm(){
+  Object.keys(ckData).forEach(p => {
+    Object.keys(ckData[p] || {}).forEach(m => {
+      ckData[p][m] = ckData[p][m].map(it => typeof it === "string" ? {t: it, c: false} : it);
+    });
+  });
+}
+ckNorm();
+function ckCount(p){
   let t = 0, c = 0;
-  (ckData[mod] || []).forEach(it => { t++; if (it.c) c++; });
+  Object.values(ckData[p] || {}).forEach(list => list.forEach(it => { t++; if (it.c) c++; }));
   return [c, t];
 }
 function renderCkTabs(){
-  document.getElementById("ckTabs").innerHTML = Object.keys(ckData).map(m => {
-    const [c, t] = ckCount(m);
-    return `<button class="ck-tab ${m === ckWho ? "on" : ""}" data-p="${m.replace(/"/g, "&quot;")}">
-      ${m}<span class="ck-done">${c}/${t}</span>
-      <span class="ck-mod-del" data-del-mod="${m}" title="删除模块">✕</span></button>`;
+  document.getElementById("ckTabs").innerHTML = CK_PEOPLE.filter(p => ckData[p]).map(p => {
+    const [c, t] = ckCount(p);
+    return `<button class="ck-tab ${p === ckWho ? "on" : ""}" data-p="${p}">
+      ${p}<span class="ck-done">${c}/${t}</span></button>`;
   }).join("");
 }
 function renderCkPanel(){
-  const items = ckData[ckWho] || [];
-  const html = items.map((it, ii) => `
-    <label class="ck-item"><input type="checkbox" data-i="${ii}" ${it.c ? "checked" : ""}>
-      <span>${it.t || it}</span>
-      <button type="button" class="ck-del" data-i="${ii}" title="删除">✕</button></label>`).join("");
+  const mods = ckMods();
+  let html = "";
+  mods.forEach(m => {
+    const list = ckData[ckWho][m];
+    html += `<div class="ck-grp-head">
+        <h4>${esc(m)} <small>${list.filter(i => i.c).length}/${list.length}</small></h4>
+        <button type="button" class="g-edit" data-mod="${esc(m)}" title="重命名">✎</button>
+        <button type="button" class="g-del" data-mod="${esc(m)}" title="删除模块">✕</button>
+      </div>` +
+      list.map((it, ii) => `
+      <label class="ck-item ${it.c ? "done" : ""}" data-mod="${esc(m)}" data-i="${ii}">
+        <input type="checkbox" data-mod="${esc(m)}" data-i="${ii}" ${it.c ? "checked" : ""}>
+        <span>${esc(it.t)}</span>
+        <button type="button" class="ck-edit" data-mod="${esc(m)}" data-i="${ii}" title="修改">✎</button>
+        <button type="button" class="ck-del" data-mod="${esc(m)}" data-i="${ii}" title="删除">✕</button>
+      </label>`).join("");
+  });
   document.getElementById("ckPanel").innerHTML = html ||
-    `<div class="ck-empty">这个模块还没有待办，用下方输入框添加吧</div>`;
+    `<div class="ck-empty">还没有模块，用下方输入框新建吧</div>`;
 }
 function renderCkSel(){
   const sel = document.getElementById("ckMod");
   const cur = sel.value;
-  sel.innerHTML = Object.keys(ckData).map(m => `<option value="${m}">${m}</option>`).join("") +
+  const mods = ckMods();
+  sel.innerHTML = mods.map(m => `<option value="${esc(m)}">${esc(m)}</option>`).join("") +
     `<option value="__new__">＋ 新建模块…</option>`;
-  sel.value = Object.keys(ckData).includes(cur) ? cur : ckWho;
+  if (mods.includes(cur)) sel.value = cur;
+  else if (mods.length) sel.value = mods[0];
   syncNewMod();
 }
 function syncNewMod(){
@@ -1483,38 +1950,70 @@ function syncNewMod(){
 function renderCk(){ renderCkTabs(); renderCkPanel(); renderCkSel(); }
 
 document.getElementById("ckTabs").addEventListener("click", e => {
-  const delMod = e.target.closest(".ck-mod-del");
-  if (delMod){
-    e.preventDefault(); e.stopPropagation();
-    const m = delMod.dataset.delMod;
-    if (Object.keys(ckData).length <= 1) return;
-    if (!confirm(`删除整个「${m}」模块及其 ${ckData[m].length} 条待办？`)) return;
-    delete ckData[m];
-    if (ckWho === m) ckWho = Object.keys(ckData)[0];
-    saveCk(); renderCk();
-    return;
-  }
   const btn = e.target.closest(".ck-tab");
   if (!btn) return;
   ckWho = btn.dataset.p;
   renderCk();
 });
 document.getElementById("ckPanel").addEventListener("click", e => {
+  const gDel = e.target.closest(".g-del");
+  if (gDel){
+    const m = gDel.dataset.mod;
+    if (!Object.keys(ckData[ckWho]).length) return;
+    if (!confirm(`删除「${m}」模块及其中 ${ckData[ckWho][m].length} 条待办？`)) return;
+    delete ckData[ckWho][m];
+    saveCk(); renderCk();
+    return;
+  }
+  const gEdit = e.target.closest(".g-edit");
+  if (gEdit){
+    const m = gEdit.dataset.mod;
+    const nv = prompt("重命名模块：", m);
+    if (!nv || !nv.trim() || nv.trim() === m) return;
+    const nv2 = nv.trim();
+    if (ckData[ckWho][nv2]) { alert("已存在同名模块"); return; }
+    ckData[ckWho][nv2] = ckData[ckWho][m];
+    delete ckData[ckWho][m];
+    saveCk(); renderCk();
+    return;
+  }
+  const edit = e.target.closest(".ck-edit");
+  if (edit){
+    const {mod, i} = edit.dataset;
+    const item = ckData[ckWho][mod][Number(i)];
+    const span = edit.parentElement.querySelector("span");
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = item.t;
+    input.style.cssText = "flex:1;border:1.5px solid var(--teal);border-radius:6px;padding:3px 7px;font-size:14.5px;outline:none";
+    input.addEventListener("keydown", ev => {
+      if (ev.key === "Enter"){ ev.preventDefault(); commit(); }
+      if (ev.key === "Escape") renderCk();
+    });
+    input.addEventListener("blur", commit);
+    function commit(){
+      const v = input.value.trim();
+      if (v){ item.t = v; saveCk(); }
+      renderCk();
+    }
+    span.replaceWith(input);
+    input.focus();
+    input.select();
+    return;
+  }
   const del = e.target.closest(".ck-del");
   if (del){
-    e.preventDefault();
-    ckData[ckWho].splice(Number(del.dataset.i), 1);
+    const {mod, i} = del.dataset;
+    ckData[ckWho][mod].splice(Number(i), 1);
     saveCk(); renderCk();
   }
 });
 document.getElementById("ckPanel").addEventListener("change", e => {
   const cb = e.target;
   if (cb.type !== "checkbox") return;
-  const i = Number(cb.dataset.i);
-  const item = ckData[ckWho][i];
-  if (typeof item === "string") ckData[ckWho][i] = {t: item, c: cb.checked};
-  else item.c = cb.checked;
-  saveCk(); renderCkTabs();
+  const item = ckData[ckWho][cb.dataset.mod][Number(cb.dataset.i)];
+  item.c = cb.checked;
+  saveCk(); renderCk();
 });
 document.getElementById("ckMod").addEventListener("change", syncNewMod);
 document.getElementById("ckAdd").addEventListener("submit", e => {
@@ -1527,11 +2026,13 @@ document.getElementById("ckAdd").addEventListener("submit", e => {
   if (mod === "__new__"){
     if (!newText) return;
     mod = newText;
-    if (!ckData[mod]) ckData[mod] = [];
-    ckWho = mod;
+    ckWho = ckWho || "全队";
+  } else if (!mod){
+    if (!newText) return;
+    mod = newText;
   }
-  if (!Array.isArray(ckData[mod])) ckData[mod] = [];
-  ckData[mod].push(val);
+  ckData[ckWho][mod] = ckData[ckWho][mod] || [];
+  ckData[ckWho][mod].push({t: val, c: false});
   document.getElementById("ckInput").value = "";
   saveCk(); renderCk();
 });
@@ -1551,6 +2052,8 @@ function navSpy(){
 }
 
 /* ========== init ========== */
+rebuildEvents();
+renderTickets();
 tick();
 renderLegend();
 renderGrid();
