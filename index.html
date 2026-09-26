@@ -470,7 +470,7 @@ section{padding:26px 0 6px}
   border-radius:999px;padding:4px 12px;color:var(--red-dark);font-weight:600;
 }
 .share-chip b{font-size:14px;color:var(--red)}
-.budget-form button{
+.budget-form button:not(.who){
   flex:0 0 auto;border:none;border-radius:9px;padding:8px 16px;font-size:13.5px;
   font-weight:700;background:linear-gradient(135deg,var(--red),var(--red-dark));
   color:#fff;cursor:pointer;
@@ -795,6 +795,26 @@ footer .sync-stat{display:block;margin-top:7px;font-size:11px;letter-spacing:.5p
   .day-head-info{order:1;flex:1 1 calc(100% - 60px);min-width:0}
   .day-head .wx-chip{order:2;margin-left:60px}
   .day-tag{order:3;margin-left:8px;align-self:center}
+}
+/* ≤900：录入表单统一竖排、控件统一尺寸（手机竖/横屏、平板、各浏览器引擎一致） */
+@media (max-width:900px){
+  .tk-form,.ci-add,.ck-add,.tl-edit{flex-direction:column;align-items:stretch;gap:9px}
+  .tk-form input,.tk-form select,.ci-add input,.ci-add select,
+  .ck-add input,.ck-add select,.tl-edit input,.tl-edit select{
+    width:100%!important;max-width:100%!important;
+    min-width:0!important;flex:0 0 auto!important;
+    height:44px;padding:10px 12px;font-size:16px;
+  }
+  .tk-form input[type="date"],.tk-form input[type="time"],
+  .ci-add input[type="time"],.tl-edit input[type="time"]{
+    -webkit-appearance:none;appearance:none;background:#fff;
+  }
+  .tk-form .f-cap,.ci-add .f-cap,.tl-edit .f-cap{
+    flex:0 0 100%!important;align-self:flex-start!important;
+  }
+  .tk-form button,.ci-add button,.ck-add button,.tl-edit button{
+    width:100%;padding:12px;font-size:15px;
+  }
 }
 </style>
 </head>
