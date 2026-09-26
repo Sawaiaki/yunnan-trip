@@ -114,6 +114,7 @@ section{padding:26px 0 6px}
 }
 .sec-title::before{content:"";width:6px;height:6px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 0 3px rgba(24,150,138,.3)}
 .sec-title small{font-size:12px;color:var(--muted);font-family:sans-serif;letter-spacing:0;font-weight:400}
+.f-cap{flex:0 0 auto;align-self:center;white-space:nowrap;font-size:11.5px;font-weight:700;color:var(--muted)}
 
 /* ---------- overview ---------- */
 .map-wrap{
@@ -607,32 +608,11 @@ section{padding:26px 0 6px}
 }
 .packing-note b{color:var(--blue)}
 
-/* ---------- 高清线条地图（CARTO 瓦片 + SVG 覆盖层） ---------- */
-.tile-map{position:relative;overflow:hidden;background:#eaf1ef}
-.tile-map .tm-tile{
-  position:absolute;width:256px;height:256px;
-  user-select:none;pointer-events:none;-webkit-user-drag:none;
-}
-.tile-map svg{position:absolute;left:0;top:0;pointer-events:none}
-.tile-map svg a{pointer-events:auto;cursor:pointer}
-.tile-map .tm-label{
-  font-family:"Songti SC",Kaiti SC,STKaiti,cursive;
-  font-weight:800;paint-order:stroke;stroke:#fff;stroke-width:3.5px;stroke-linejoin:round;
-}
-.tile-map .tm-credit{
-  position:absolute;left:6px;bottom:5px;z-index:6;font-size:9.5px;color:#5b736e;
-  background:rgba(255,255,255,.8);border-radius:6px;padding:1px 7px;text-decoration:none;
-}
-.tile-map.ov{height:330px;border-radius:12px}
-.day-map{
-  position:relative;height:170px;overflow:hidden;
-  border-bottom:1px dashed rgba(24,150,138,.45);background:#eaf1ef;
-}
-.day-map .dm-pin{
-  position:absolute;left:10px;top:10px;z-index:5;font-size:11.5px;font-weight:800;color:#fff;
-  background:rgba(15,122,110,.9);border-radius:999px;padding:3px 11px;
-  box-shadow:0 2px 8px rgba(0,0,0,.25);pointer-events:none;
-}
+/* ---------- 手绘线路地图（总览 · 内联 SVG） ---------- */
+.map-wrap svg{border-radius:14px}
+.map-wrap svg a{cursor:pointer}
+.map-wrap svg .badges-d circle{filter:drop-shadow(0 2px 3px rgba(36,60,55,.32))}
+.map-wrap svg .nodes circle{filter:drop-shadow(0 1px 2px rgba(36,60,55,.3))}
 
 /* ---------- 住宿卡片 ---------- */
 .stay-block{padding:12px 16px 4px;border-top:1px dashed rgba(24,150,138,.45);margin-top:6px}
@@ -739,6 +719,13 @@ section{padding:26px 0 6px}
 }
 .ck-grp-head .g-edit{color:#8fb3ad}
 .ck-grp-head:hover .g-edit,.ck-grp-head:hover .g-del{opacity:1}
+.ck-grp-head.team{
+  margin-top:16px;padding:7px 10px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(47,127,184,.10),rgba(23,163,152,.07));
+  border:1px dashed rgba(47,127,184,.42);
+}
+.ck-grp-head.team h4{color:var(--blue)}
+.ck-grp-head.team h4 small{color:#7aa7c9}
 
 /* ---------- footer ---------- */
 footer{
@@ -747,6 +734,7 @@ footer{
   font-size:12.5px;
 }
 footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-bottom:6px}
+footer .sync-stat{display:block;margin-top:7px;font-size:11px;letter-spacing:.5px;opacity:.72}
 
 /* ---------- glassmorphism 毛玻璃 ---------- */
 .glass,
@@ -769,6 +757,10 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
 
 @media (max-width:640px){
   .hero h1{font-size:27px}
+  .sec-title{font-size:17px;letter-spacing:1px;flex-wrap:wrap;gap:3px 8px}
+  .sec-title small{flex:1 1 100%;margin-left:14px;font-size:11.5px;line-height:1.5}
+  .f-cap{flex:1 1 100%;align-self:flex-start;padding-left:2px}
+  .bf-top .b-name,.bf-top .b-amt{flex:1 1 calc(50% - 4px);min-width:0}
   .spotlight-grid,.map-grid,.check-grid,.book-grid{grid-template-columns:1fr}
   .budget-bar{grid-template-columns:repeat(2,1fr);gap:8px}
   .budget-stat{padding:10px 6px}
@@ -803,8 +795,6 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
   .day-head-info{order:1;flex:1 1 calc(100% - 60px);min-width:0}
   .day-head .wx-chip{order:2;margin-left:60px}
   .day-tag{order:3;margin-left:8px;align-self:center}
-  .tile-map.ov{height:250px}
-  .day-map{height:150px}
 }
 </style>
 </head>
@@ -846,9 +836,9 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
 
   <!-- ===== 总览 ===== -->
   <section id="overview">
-    <h2 class="sec-title">行程总览 <small>高清线路地图 · 点击色块跳转对应天</small></h2>
+    <h2 class="sec-title">行程总览 <small>手绘线路图 · 点击路线或色块跳转对应天</small></h2>
     <div class="map-wrap glass">
-      <div class="tile-map ov" id="ovMap" role="img" aria-label="云南行程线路地图"></div>
+      <div id="ovMap" role="img" aria-label="云南行程手绘地图"></div>
       <div class="map-legend" id="mapLegend"></div>
     </div>
   </section>
@@ -872,12 +862,14 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
         <option value="hotel">🏨 酒店/住宿</option>
         <option value="ticket">🎫 景点门票</option>
       </select>
-      <input id="tkNo" placeholder="车次/航班号，如 G1234" style="max-width:150px">
-      <input id="tkFrom" placeholder="出发地" style="max-width:120px">
-      <input id="tkTo" placeholder="目的地" style="max-width:110px">
+      <input id="tkNo" placeholder="车次/航班号，如 G1234">
+      <input id="tkFrom" placeholder="出发地，如 丽江">
+      <input id="tkTo" placeholder="目的地，如 香格里拉">
+      <span class="f-cap">日期 · 如 2026-10-04</span>
       <input id="tkDate" type="date" class="tk-date">
+      <span class="f-cap">时间 · 如 14:30</span>
       <input id="tkTime" type="time" class="tk-time2">
-      <input id="tkSeat" placeholder="座位/备注（可选）" style="max-width:130px">
+      <input id="tkSeat" placeholder="座位/备注，如 01车05F（可选）">
       <button type="submit">＋ 添加</button>
     </form>
     <div class="book-grid" id="tkGrid"></div>
@@ -892,7 +884,7 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
     <form class="budget-form" id="budgetForm">
       <div class="bf-row bf-top">
         <input class="b-name" id="bName" placeholder="项目，如：猪槽船包船" required>
-        <input class="b-amt" id="bAmt" type="number" min="0" step="0.01" placeholder="金额" required>
+        <input class="b-amt" id="bAmt" type="number" min="0" step="0.01" placeholder="金额，如 150" required>
         <button type="submit">记一笔</button>
       </div>
       <div class="bf-row">
@@ -942,6 +934,7 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
   <span class="f-heart">◆ ◇ ◆ ◇ ◆</span>
   云南 · 9.30–10.7 · 4人同行<br>
   祝一路顺风，旅途愉快
+  <span id="syncStat" class="sync-stat">云同步 · 检查中…</span>
 </footer>
 
 <script>
@@ -1122,26 +1115,26 @@ function parseEvent(s){
 /* ========== 已预订（交通 / 酒店 / 门票） ========== */
 const TKKEY = "yn_trip_tickets_v1";
 const TK_META = {
-  train:{ic:"🚄", label:"高铁/火车", no:"车次/航班号，如 G1234", from:"出发地", to:"目的地"},
-  plane:{ic:"✈️", label:"飞机", no:"航班号，如 MU5301", from:"出发地", to:"目的地"},
-  bus:{ic:"🚌", label:"大巴", no:"班次/备注（可选）", from:"出发地", to:"目的地"},
-  car:{ic:"🚗", label:"包车/打车", no:"备注，如 包车师傅", from:"出发地", to:"目的地"},
-  hotel:{ic:"🏨", label:"酒店住宿", no:"酒店/民宿名称", from:"地址/位置（地图用）", to:""},
-  ticket:{ic:"🎫", label:"景点门票", no:"门票/项目名称", from:"景区/地址（地图用）", to:""}
+  train:{ic:"🚄", label:"高铁/火车", no:"车次/航班号，如 G1234", from:"出发地，如 长沙南", to:"目的地，如 丽江"},
+  plane:{ic:"✈️", label:"飞机", no:"航班号，如 MU5301", from:"出发地，如 黄花机场", to:"目的地，如 三义机场"},
+  bus:{ic:"🚌", label:"大巴", no:"班次/备注，如 8:30 发车", from:"出发地，如 客运站", to:"目的地，如 泸沽湖"},
+  car:{ic:"🚗", label:"包车/打车", no:"备注，如 包车师傅电话", from:"出发地，如 古城口", to:"目的地，如 里格村"},
+  hotel:{ic:"🏨", label:"酒店住宿", no:"酒店名称，如 金茂雪山店", from:"地址，如 古城入口旁", to:""},
+  ticket:{ic:"🎫", label:"景点门票", no:"门票名称，如 松赞林寺门票", from:"景区，如 松赞林寺", to:""}
 };
 function tkKind(t){ return t === "hotel" ? "hotel" : t === "ticket" ? "ticket" : "transport"; }
 function tkMeta(t){ return TK_META[t] || TK_META.train; }
 let tickets = [];
 try { tickets = JSON.parse(localStorage.getItem(TKKEY)) || []; } catch(e){ tickets = []; }
 if (!Array.isArray(tickets)) tickets = [];
-function saveTickets(){ localStorage.setItem(TKKEY, JSON.stringify(tickets)); }
+function saveTickets(){ localStorage.setItem(TKKEY, JSON.stringify(tickets)); markDirty(); }
 
 function syncTkForm(){
   const m = tkMeta(document.getElementById("tkType").value);
   document.getElementById("tkNo").placeholder = m.no;
   document.getElementById("tkFrom").placeholder = m.from;
   const to = document.getElementById("tkTo");
-  to.placeholder = m.to || "目的地";
+  to.placeholder = m.to || "目的地，如 香格里拉";
   to.style.display = m.to ? "" : "none";
 }
 document.getElementById("tkType").addEventListener("change", syncTkForm);
@@ -1416,7 +1409,7 @@ const CUSKEY = "yn_trip_custom_days_v1";
 let customDays = null;
 try { customDays = JSON.parse(localStorage.getItem(CUSKEY)); } catch(e){ customDays = null; }
 if (!customDays || typeof customDays !== "object") customDays = {};
-function saveCustom(){ localStorage.setItem(CUSKEY, JSON.stringify(customDays)); }
+function saveCustom(){ localStorage.setItem(CUSKEY, JSON.stringify(customDays)); markDirty(); }
 function renderDayTabs(){
   document.getElementById("dayTabs").innerHTML = DAYS.map(d => {
     const on = d.n === selDay;
@@ -1430,7 +1423,7 @@ function renderDayTabs(){
 const EDKEY = "yn_trip_day_edits_v1";
 let dayEdits = {};
 try { dayEdits = JSON.parse(localStorage.getItem(EDKEY)) || {}; } catch(e){ dayEdits = {}; }
-function saveEdits(){ localStorage.setItem(EDKEY, JSON.stringify(dayEdits)); }
+function saveEdits(){ localStorage.setItem(EDKEY, JSON.stringify(dayEdits)); markDirty(); }
 let tlEdit = null; /* {src:"base"|"custom", i:序号} */
 
 const SLOT_K = {"全天":-60,"早上":360,"清晨":360,"上午":600,"中午":720,"下午":840,"傍晚":1050,"晚上":1170,"夜间":1320};
@@ -1465,10 +1458,11 @@ function tlEditForm(o){
   return `
     <form class="tl-edit" id="tlEdit">
       <select name="et">${opts.map(v => `<option${v === o.time ? " selected" : ""}>${esc(v)}</option>`).join("")}</select>
+      <span class="f-cap">时间 · 如 14:30（可选）</span>
       <input type="time" name="ehm" value="${esc(hm)}" title="具体时间（可选，填了按时段归类并按时间排序）">
-      <input name="etitle" value="${esc(o.title)}" required placeholder="行程标题">
-      <input name="edesc" value="${esc(o.desc || "")}" placeholder="备注（可选）">
-      <input name="emap" value="${esc(o.map || "")}" placeholder="具体地点（地图用，城市留空）">
+      <input name="etitle" value="${esc(o.title)}" required placeholder="行程标题，如 逛白沙古镇">
+      <input name="edesc" value="${esc(o.desc || "")}" placeholder="备注（可选），如 带件外套">
+      <input name="emap" value="${esc(o.map || "")}" placeholder="具体地点，如 龙泉寺（城市留空）">
       <button type="submit" class="save">保存</button>
       <button type="button" class="cancel">取消</button>
     </form>`;
@@ -1605,12 +1599,6 @@ function renderSelectedDay(){
         <div>${r.x}</div></div>`).join("")}
     </div>` : "";
 
-  /* 当日小地图（高清瓦片，仅作地图展示；具体地点在条目内关联地图） */
-  const mapHTML = `
-    <div class="day-map" id="dayMap">
-      <span class="dm-pin">📍 D${d.n} · ${esc(d.title)}</span>
-    </div>`;
-
   /* 住宿：来自「已预订-酒店」 */
   const hotels = dayHotels(d.n);
   const stayHTML = `
@@ -1630,7 +1618,6 @@ function renderSelectedDay(){
         ${wxChip(d.n)}
         <span class="day-tag">${tag}</span>
       </div>
-      ${mapHTML}
       ${remindHTML}
       <div class="timeline">${tlHTML}</div>
       <form class="ci-add" id="ciAdd">
@@ -1638,15 +1625,15 @@ function renderSelectedDay(){
           <option>早上</option><option>上午</option><option>中午</option>
           <option selected>下午</option><option>傍晚</option><option>晚上</option>
         </select>
+        <span class="f-cap">时间 · 如 14:30（可选）</span>
         <input type="time" id="ciHM" title="具体时间（可选，填了按时间排序）">
         <input id="ciTitle" placeholder="想加点什么？如：黑龙潭公园" required>
-        <input id="ciDesc" placeholder="备注（可选）" style="max-width:170px">
-        <input id="ciMap" placeholder="具体地点（可选，城市不用填）" style="max-width:190px">
+        <input id="ciDesc" placeholder="备注（可选），如 带件外套">
+        <input id="ciMap" placeholder="具体地点，如 黑龙潭（城市不用填）">
         <button type="submit">＋ 添加到 D${d.n}</button>
       </form>
       ${stayHTML}
     </article>`;
-  paintDayMap(d.n);
 }
 
 function esc(s){ return String(s).replace(/[&<>"]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m])); }
@@ -1808,146 +1795,151 @@ if (!localStorage.getItem("yn_trip_stays_migrated_v1")){
   localStorage.setItem("yn_trip_stays_migrated_v1", "1");
 }
 
-/* ========== 高清线条地图：CARTO 瓦片 + WebMercator 覆盖层 ========== */
-const TILE = (z, x, y) => `https://basemaps.cartocdn.com/light_all/${z}/${x}/${y}@2x.png`;
-function mpx(lon, z){ return (lon + 180) / 360 * 256 * Math.pow(2, z); }
-function mpy(lat, z){
-  const s = Math.sin(Math.PI * lat / 180);
-  return (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * 256 * Math.pow(2, z);
-}
-function renderTileMap(el, o){
-  if (!el) return;
-  const W = Math.round(el.clientWidth || el.offsetWidth || 740);
-  const H = Math.round(el.clientHeight || el.offsetHeight || 300);
-  const pts = (o.pts || []).filter(p => p && p.lon != null);
-  const segs = o.segs || [];
-  const badges = o.badges || [];
-  const subs = o.subs || [];
-  const all = pts.concat(
-    segs.reduce((a, s) => a.concat(s.pts.map(p => ({lon: p[0], lat: p[1]}))), []),
-    badges, subs);
-  if (!all.length) return;
-  let minLon = Math.min.apply(null, all.map(p => p.lon));
-  let maxLon = Math.max.apply(null, all.map(p => p.lon));
-  let minLat = Math.min.apply(null, all.map(p => p.lat));
-  let maxLat = Math.max.apply(null, all.map(p => p.lat));
-  if (maxLon - minLon < 0.03){ minLon -= 0.05; maxLon += 0.05; }
-  if (maxLat - minLat < 0.03){ minLat -= 0.04; maxLat += 0.04; }
-  /* 选 z：原始范围需为四周标签/圆点留白 */
-  let z = 3;
-  for (let t = 13; t >= 3; t--){
-    if (mpx(maxLon, t) - mpx(minLon, t) <= W - 110 && mpy(minLat, t) - mpy(maxLat, t) <= H - 56){ z = t; break; }
-  }
-  /* 按像素留边，保证边缘的标记与文字不被裁掉 */
-  const worldZ = 256 * Math.pow(2, z);
-  const padLon = 55 * 360 / worldZ;
-  const pxPerLat = worldZ / (2 * Math.PI * Math.cos((minLat + maxLat) / 2 * Math.PI / 180));
-  const padLat = 26 / pxPerLat;
-  minLon -= padLon; maxLon += padLon; minLat -= padLat; maxLat += padLat;
-  const ox = W / 2 - (mpx(minLon, z) + mpx(maxLon, z)) / 2;
-  const oy = H / 2 - (mpy(minLat, z) + mpy(maxLat, z)) / 2;
-  const px = (lon, lat) => [mpx(lon, z) + ox, mpy(lat, z) + oy];
-  let tiles = "";
-  const maxT = Math.pow(2, z);
-  const tx0 = Math.floor(-ox / 256), tx1 = Math.floor((W - ox) / 256);
-  const ty0 = Math.floor(-oy / 256), ty1 = Math.floor((H - oy) / 256);
-  for (let tx = tx0; tx <= tx1; tx++){
-    for (let ty = ty0; ty <= ty1; ty++){
-      if (tx < 0 || ty < 0 || tx >= maxT || ty >= maxT) continue;
-      tiles += `<img class="tm-tile" alt="" loading="lazy" src="${TILE(z, tx, ty)}" style="left:${(tx * 256 + ox).toFixed(1)}px;top:${(ty * 256 + oy).toFixed(1)}px" onerror="this.remove()">`;
-    }
-  }
-  let svg = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
-  segs.forEach(sg => {
-    const dd = sg.pts.map((pt, i) => {
-      const q = px(pt[0], pt[1]);
-      return (i ? "L" : "M") + q[0].toFixed(1) + " " + q[1].toFixed(1);
-    }).join(" ");
-    svg += `<path d="${dd}" fill="none" stroke="${sg.color}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" opacity=".9"${sg.dash ? ' stroke-dasharray="9 7"' : ""}/>`;
-  });
-  const midLon = (minLon + maxLon) / 2;
-  pts.forEach(pt => {
-    const q = px(pt.lon, pt.lat);
-    svg += `<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="${pt.r || 6}" fill="${pt.color || "#0f7a6f"}" stroke="#fff" stroke-width="2.5"/>`;
-    if (pt.label){
-      let right = pt.lon >= midLon;
-      if (q[0] < 70) right = true;
-      else if (q[0] > W - 70) right = false;
-      svg += `<text class="tm-label" x="${(q[0] + (right ? 10 : -10)).toFixed(1)}" y="${(q[1] + 4).toFixed(1)}" text-anchor="${right ? "start" : "end"}" font-size="${pt.fs || 13}" fill="${pt.tc || "#243c37"}">${esc(pt.label)}</text>`;
-    }
-  });
-  subs.forEach(pt => {
-    const q = px(pt.lon, pt.lat);
-    svg += `<text class="tm-label" x="${q[0].toFixed(1)}" y="${(q[1] - 9).toFixed(1)}" text-anchor="middle" font-size="11.5" fill="#77908b">${esc(pt.text)}</text>`;
-  });
-  badges.forEach(b => {
-    const q = px(b.lon, b.lat);
-    svg += `<a href="#day${b.day}"><circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="13" fill="${b.color}" stroke="#fff" stroke-width="3"/><text x="${q[0].toFixed(1)}" y="${(q[1] + 4).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">D${b.day}</text></a>`;
-  });
-  svg += "</svg>";
-  el.innerHTML = tiles + svg +
-    `<a class="tm-credit" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap · CARTO</a>`;
-}
+/* ========== 手绘线路地图（总览 · 内联 SVG） ========== */
+const HANDMAP_SVG = `<svg viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="云南行程手绘地图">
+        <defs>
+          <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.014" numOctaves="2" seed="7" result="n"/>
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+          </filter>
+          <marker id="arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="#5b736e"/>
+          </marker>
+        </defs>
 
-const DAY_C = ["#e2574c","#ef8a2e","#d9a514","#3aa655","#17a398","#7b5cd6","#d64b92","#2f7fb8"];
-const DAY_PLACES = {
-  1: [["长沙", 112.9838, 28.1940], ["丽江三义机场", 100.2514, 26.7510], ["丽江古城", 100.2336, 26.8721]],
-  2: [["丽江古城", 100.2336, 26.8721], ["泸沽湖·里格", 100.7950, 27.7750], ["女神湾", 100.7450, 27.6350]],
-  3: [["泸沽湖", 100.7685, 27.6877], ["草海·走婚桥", 100.7900, 27.7800], ["丽江古城", 100.2336, 26.8721]],
-  4: [["丽江古城", 100.2336, 26.8721], ["白沙古镇", 100.1670, 26.9480], ["香格里拉站", 99.7070, 27.8680], ["独克宗古城", 99.7047, 27.8269]],
-  5: [["独克宗古城", 99.7047, 27.8269], ["松赞林寺", 99.7130, 27.8670], ["纳帕海", 99.6757, 27.9066]],
-  6: [["独克宗古城", 99.7047, 27.8269], ["无底湖", 100.0500, 28.0400], ["香格里拉镇·日瓦", 100.2560, 28.4160]],
-  7: [["香格里拉镇·日瓦", 100.2560, 28.4160], ["稻城亚丁景区", 100.3105, 28.4410], ["独克宗古城", 99.7047, 27.8269]],
-  8: [["独克宗古城", 99.7047, 27.8269], ["香格里拉站", 99.7070, 27.8680], ["丽江三义机场", 100.2514, 26.7510], ["长沙", 112.9838, 28.1940]]
-};
-function paintDayMap(n){
-  const el = document.getElementById("dayMap");
-  const list = DAY_PLACES[n];
-  if (!el || !list || !list.length) return;
-  const c = DAY_C[(n - 1) % 8];
-  renderTileMap(el, {
-    pts: list.map(p => ({lon: p[1], lat: p[2], label: p[0], color: c})),
-    segs: list.length > 1 ? [{pts: list.map(p => [p[1], p[2]]), color: c, dash: (n === 1 || n === 8)}] : []
-  });
-}
-const OV_PTS = [
-  {lon: 112.9838, lat: 28.1940, label: "长沙", color: "#e2574c", r: 7, fs: 14},
-  {lon: 100.2336, lat: 26.8721, label: "丽江", color: "#0f7a6f", r: 7, fs: 14},
-  {lon: 100.7685, lat: 27.6877, label: "泸沽湖", color: "#2f7fb8", r: 7, fs: 14},
-  {lon: 99.7047, lat: 27.8269, label: "香格里拉", color: "#0f7a6f", r: 7, fs: 14},
-  {lon: 100.3105, lat: 28.4410, label: "稻城亚丁", color: "#0f7a6f", r: 7, fs: 14}
-];
-const OV_SUBS = [
-  {lon: 100.1670, lat: 26.9480, text: "束河·白沙"},
-  {lon: 99.7130, lat: 27.8670, text: "松赞林寺"},
-  {lon: 99.6757, lat: 27.9066, text: "纳帕海"},
-  {lon: 100.0500, lat: 28.0400, text: "无底湖"},
-  {lon: 100.7450, lat: 27.6350, text: "女神湾"}
-];
-const OV_SEGS = [
-  {color: DAY_C[0], dash: true, pts: [[112.9838,28.1940],[107.0,27.4],[103.4,26.5],[100.2514,26.751]]},
-  {color: DAY_C[1], pts: [[100.2336,26.8721],[100.42,27.32],[100.7950,27.7750]]},
-  {color: DAY_C[2], pts: [[100.7685,27.6877],[100.50,27.25],[100.2336,26.8721]]},
-  {color: DAY_C[3], pts: [[100.2336,26.8721],[99.92,27.40],[99.7047,27.8269]]},
-  {color: DAY_C[4], pts: [[99.7047,27.8269],[99.7130,27.8670],[99.6757,27.9066],[99.7047,27.8269]]},
-  {color: DAY_C[5], pts: [[99.7047,27.8269],[100.0500,28.0400],[100.3105,28.4410]]},
-  {color: DAY_C[6], pts: [[100.3105,28.4410],[99.98,28.10],[99.7047,27.8269]]},
-  {color: DAY_C[7], dash: true, pts: [[99.7047,27.8269],[100.2514,26.751],[106.5,27.6],[112.9838,28.1940]]}
-];
-const OV_BADGES = [
-  {lon: 106.6, lat: 27.35, day: 1, color: DAY_C[0]},
-  {lon: 100.42, lat: 27.30, day: 2, color: DAY_C[1]},
-  {lon: 100.58, lat: 27.45, day: 3, color: DAY_C[2]},
-  {lon: 99.95, lat: 27.35, day: 4, color: DAY_C[3]},
-  {lon: 99.66, lat: 27.95, day: 5, color: DAY_C[4]},
-  {lon: 100.15, lat: 28.22, day: 6, color: DAY_C[5]},
-  {lon: 99.95, lat: 28.12, day: 7, color: DAY_C[6]},
-  {lon: 106.6, lat: 27.85, day: 8, color: DAY_C[7]}
-];
+        <!-- 涂鸦装饰 -->
+        <g class="doodle" filter="url(#rough)">
+          <!-- 纸张底纹与内框 -->
+          <rect x="14" y="14" width="772" height="492" rx="22" fill="#fffdf6" opacity=".7"/>
+          <rect x="26" y="26" width="748" height="468" rx="16" fill="none" stroke="#c9a86a" stroke-width="2" stroke-dasharray="14 9" opacity=".75"/>
+          <g stroke="#c9a86a" stroke-width="2.4" fill="none" opacity=".85">
+            <path d="M26 66 v-24 h40"/><path d="M774 66 v-24 h-40"/>
+            <path d="M26 454 v24 h40"/><path d="M774 454 v24 h-40"/>
+          </g>
+          <!-- 地形色块 -->
+          <path d="M40 120 q120 -60 250 -30 q90 22 150 -8 q110 -54 240 -10 q60 20 80 70 q-40 90 -190 110 q-160 22 -300 -6 q-140 -28 -200 -70 q-40 -30 -30 -56 z" fill="#e8f3e6" opacity=".8"/>
+          <path d="M60 330 q140 -40 300 -14 q170 28 360 -14 q20 60 -30 120 q-120 60 -330 44 q-180 -14 -270 -70 q-40 -36 -30 -66 z" fill="#f3eddd" opacity=".75"/>
+          <path d="M470 60 q80 -20 170 6 q40 40 10 96 q-90 30 -160 -6 q-40 -50 -20 -96 z" fill="#fdeedd" opacity=".8"/>
+          <!-- 雪山群 -->
+          <g filter="url(#rough)">
+            <path d="M360 118 l44 -66 l38 66 z" fill="#ffffff" stroke="#8fb6c9" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M394 66 l10 20 l10 -16 l10 20" fill="none" stroke="#8fb6c9" stroke-width="2.5"/>
+            <path d="M404 118 l30 -48 l28 48 z" fill="#ffffff" stroke="#a8c6d6" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M436 70 l8 14 l8 -12 l8 14" fill="none" stroke="#a8c6d6" stroke-width="2.5"/>
+          </g>
+          <!-- 松林 -->
+          <g stroke="#5d8f6f" stroke-width="2.6" fill="#cfe6d2" stroke-linejoin="round">
+            <path d="M96 300 l10 -22 l10 22 z"/><path d="M120 312 l11 -24 l11 24 z"/><path d="M84 316 l9 -20 l9 20 z"/>
+            <path d="M660 300 l10 -22 l10 22 z"/><path d="M684 312 l11 -24 l11 24 z"/>
+          </g>
+          <!-- 牦牛 -->
+          <g transform="translate(150 262)" stroke="#6b5a44" stroke-width="2.4" fill="#8d7a5f" stroke-linecap="round">
+            <ellipse cx="0" cy="0" rx="13" ry="8"/>
+            <path d="M-10 6 v8 M-4 7 v7 M6 7 v7 M11 6 v8"/>
+            <path d="M11 -4 q8 -4 12 2" fill="none"/>
+            <path d="M20 -2 l4 -3 M20 -2 l4 2"/>
+          </g>
+          <!-- 太阳 -->
+          <circle cx="70" cy="62" r="24" fill="#ffe9b8" stroke="#f2b03d" stroke-width="3"/>
+          <g stroke="#f2b03d" stroke-width="3" stroke-linecap="round">
+            <path d="M70 24 v-10 M70 100 v10 M32 62 h-10 M108 62 h10 M43 35 l-7 -7 M97 35 l7 -7 M43 89 l-7 7 M97 89 l7 7"/>
+          </g>
+          <!-- 云 -->
+          <path d="M130 78 q18 -22 42 -10 q16 -20 40 -6 q22 -4 24 16 q4 16 -16 18 h-76 q-18 -2 -14 -18" fill="#ffffff" stroke="#9ec9d8" stroke-width="2.5" opacity=".95"/>
+          <path d="M595 55 q16 -20 38 -9 q14 -17 36 -5 q19 -3 21 14 q4 14 -14 16 h-68 q-16 -2 -13 -16" fill="#ffffff" stroke="#9ec9d8" stroke-width="2.5" opacity=".95"/>
+          <path d="M300 60 q14 -16 32 -7 q12 -14 30 -4 q16 -2 17 12 q3 12 -12 13 h-56 q-13 -2 -11 -13" fill="#ffffff" stroke="#9ec9d8" stroke-width="2.2" opacity=".8"/>
+          <!-- 左下山脉 -->
+          <g fill="none" stroke="#7ba88f" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+            <path d="M40 470 l46 -62 l30 40 l34 -52 l44 74"/>
+            <path d="M96 470 l30 -34"/>
+          </g>
+          <!-- 泸沽湖水面 -->
+          <ellipse cx="533" cy="237" rx="44" ry="26" fill="#d8eef6" stroke="#6fb3cd" stroke-width="3" transform="rotate(-12 533 237)"/>
+          <path d="M505 236 q14 7 28 0 q14 -7 28 0" fill="none" stroke="#6fb3cd" stroke-width="2" stroke-linecap="round"/>
+          <path d="M507 246 q13 6 26 0 q13 -6 26 0" fill="none" stroke="#6fb3cd" stroke-width="1.6" stroke-linecap="round" opacity=".7"/>
+          <!-- 纳帕海 -->
+          <ellipse cx="178" cy="232" rx="30" ry="17" fill="#d8eef6" stroke="#6fb3cd" stroke-width="2.5" transform="rotate(8 178 232)"/>
+          <path d="M158 232 q10 5 20 0 q10 -5 20 0" fill="none" stroke="#6fb3cd" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>
+          <!-- 长江第一湾水纹 -->
+          <path d="M620 400 q30 -22 70 -16 q40 6 76 -20" fill="none" stroke="#8ec3d8" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+          <path d="M636 414 q28 -18 62 -13 q36 5 68 -16" fill="none" stroke="#8ec3d8" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+          <!-- 寺庙小塔 -->
+          <g transform="translate(258 176)" stroke="#a06a3a" stroke-width="2.2" fill="#f7e3c2" stroke-linejoin="round">
+            <path d="M0 -26 l9 10 h-18 z"/><rect x="-7" y="-16" width="14" height="14"/>
+            <path d="M-11 0 l11 -8 l11 8 v12 h-22 z"/>
+          </g>
+          <!-- 罗盘 -->
+          <g transform="translate(744 460)">
+            <circle r="26" fill="#fffdf6" stroke="#77908b" stroke-width="2.5"/>
+            <circle r="20" fill="none" stroke="#c9a86a" stroke-width="1.4" stroke-dasharray="3 4"/>
+            <path d="M0 -19 L6 4 L0 -1 L-6 4 Z" fill="#e2574c"/>
+            <path d="M0 19 L6 -4 L0 1 L-6 -4 Z" fill="#77908b" opacity=".6"/>
+            <text y="-30" text-anchor="middle" font-size="14" fill="#77908b" font-weight="700">N</text>
+          </g>
+        </g>
+
+        <!-- 路线（每天一色） -->
+        <g class="routes" fill="none" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough)" marker-end="url(#arw)">
+          <a href="#day1"><path class="rt r1" d="M745 140 Q612 168 400 340" stroke-dasharray="10 8"/></a>
+          <a href="#day2"><path class="rt r2" d="M400 340 Q472 302 524 222"/></a>
+          <a href="#day3"><path class="rt r3" d="M520 232 Q512 318 408 352"/></a>
+          <a href="#day4"><path class="rt r4" d="M400 340 Q384 318 364 300 Q296 272 230 250"/></a>
+          <a href="#day5"><path class="rt r5" d="M228 248 Q222 216 254 194 Q214 204 180 228 Q204 254 230 251"/></a>
+          <a href="#day6"><path class="rt r6" d="M232 248 Q272 214 322 160 Q378 134 420 92"/></a>
+          <a href="#day7"><path class="rt r7" d="M430 96 Q456 168 388 208 Q316 248 238 258"/></a>
+          <a href="#day8"><path class="rt r8" d="M236 256 Q330 348 406 346"/></a>
+          <a href="#day8"><path class="rt r8" d="M404 340 Q592 248 745 144" stroke-dasharray="10 8"/></a>
+        </g>
+
+        <!-- 城市节点 -->
+        <g class="nodes">
+          <g transform="translate(400 340)"><circle r="9" fill="#fff" stroke="#0f7a6f" stroke-width="3.5"/><circle r="3.5" fill="#0f7a6f"/></g>
+          <g transform="translate(524 222)"><circle r="9" fill="#fff" stroke="#2f7fb8" stroke-width="3.5"/><circle r="3.5" fill="#2f7fb8"/></g>
+          <g transform="translate(230 250)"><circle r="9" fill="#fff" stroke="#7b5cd6" stroke-width="3.5"/><circle r="3.5" fill="#7b5cd6"/></g>
+          <g transform="translate(420 92)"><circle r="9" fill="#fff" stroke="#d64b92" stroke-width="3.5"/><circle r="3.5" fill="#d64b92"/></g>
+          <g transform="translate(745 142)"><circle r="9" fill="#fff" stroke="#e2574c" stroke-width="3.5"/><circle r="3.5" fill="#e2574c"/></g>
+        </g>
+
+        <!-- 地名 -->
+        <g class="labels" font-family="Kaiti SC,STKaiti,KaiTi,cursive" style="paint-order:stroke;stroke:#fffdf6;stroke-width:4px;stroke-linejoin:round">
+          <text x="400" y="376" text-anchor="middle" font-size="21" font-weight="700" fill="#243c37" transform="rotate(-2 400 376)">丽江</text>
+          <text x="540" y="200" font-size="19" font-weight="700" fill="#243c37" transform="rotate(3 540 200)">泸沽湖</text>
+          <text x="204" y="284" text-anchor="middle" font-size="19" font-weight="700" fill="#243c37" transform="rotate(-3 204 284)">香格里拉</text>
+          <text x="432" y="70" font-size="19" font-weight="700" fill="#243c37" transform="rotate(2 432 70)">稻城亚丁</text>
+          <text x="740" y="176" text-anchor="end" font-size="19" font-weight="700" fill="#243c37">长沙 ✈</text>
+          <text x="364" y="296" text-anchor="end" font-size="14" fill="#77908b">束河·白沙</text>
+          <text x="258" y="190" font-size="14" fill="#77908b">松赞林寺</text>
+          <text x="146" y="236" text-anchor="end" font-size="14" fill="#77908b">纳帕海</text>
+          <text x="330" y="152" font-size="14" fill="#77908b">无底湖</text>
+          <text x="533" y="272" text-anchor="middle" font-size="13" fill="#4b8ba6">女神湾看日落</text>
+          <!-- 车站小标 -->
+          <text x="330" y="330" font-size="13" fill="#3aa655">🚄 丽香铁路</text>
+        </g>
+        <!-- 标题与印 -->
+        <g class="labels" font-family="Kaiti SC,STKaiti,KaiTi,cursive" style="paint-order:stroke;stroke:#f7f2e4;stroke-width:5px;stroke-linejoin:round">
+          <text x="46" y="368" font-size="30" font-weight="800" fill="#243c37" opacity=".92">云岭八日</text>
+          <text x="48" y="390" font-size="13" fill="#77908b" letter-spacing="3">YUNNAN · 8 DAYS</text>
+          <g transform="translate(176 374) rotate(-8)">
+            <rect x="-24" y="-24" width="48" height="48" rx="7" fill="none" stroke="#e2574c" stroke-width="3.5"/>
+            <text y="8" text-anchor="middle" font-size="18" font-weight="800" fill="#e2574c">出发</text>
+          </g>
+        </g>
+
+        <!-- 天数徽章 -->
+        <g class="badges-d" font-size="12" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#fffdf6;stroke-width:4px;stroke-linejoin:round">
+          <g transform="translate(596 226)"><circle r="14" fill="#e2574c" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D1</text></g>
+          <g transform="translate(478 290)"><circle r="14" fill="#ef8a2e" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D2</text></g>
+          <g transform="translate(472 330)"><circle r="14" fill="#d9a514" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D3</text></g>
+          <g transform="translate(306 286)"><circle r="14" fill="#3aa655" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D4</text></g>
+          <g transform="translate(196 194)"><circle r="14" fill="#17a398" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D5</text></g>
+          <g transform="translate(344 130)"><circle r="14" fill="#7b5cd6" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D6</text></g>
+          <g transform="translate(420 176)"><circle r="14" fill="#d64b92" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D7</text></g>
+          <g transform="translate(560 268)"><circle r="14" fill="#2f7fb8" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D8</text></g>
+        </g>
+      </svg>`;
 function paintOverviewMap(){
-  renderTileMap(document.getElementById("ovMap"), {
-    pts: OV_PTS, subs: OV_SUBS, segs: OV_SEGS, badges: OV_BADGES
-  });
+  const el = document.getElementById("ovMap");
+  if (el) el.innerHTML = HANDMAP_SVG;
 }
 
 /* ========== 费用结算（垫付 → 分摊 → 标记已付） ========== */
@@ -1978,7 +1970,7 @@ budget.forEach(b => {
   if (!Array.isArray(b.paid)) b.paid = [];
   b.paid = b.paid.filter(x => x >= 0 && x < 4);
 });
-function saveBudget(){ localStorage.setItem(BKEY, JSON.stringify(budget)); }
+function saveBudget(){ localStorage.setItem(BKEY, JSON.stringify(budget)); markDirty(); }
 const shareAmt = b => b.amt / b.shares.length;
 
 let bgWho = 0;
@@ -2166,7 +2158,7 @@ if (!ckValid(ckData)){
 CK_PEOPLE.forEach(p => { if (!ckValid({[p]: ckData[p]})) ckData[p] = {}; });
 
 let ckWho = "全队";
-function saveCk(){ localStorage.setItem(CKEY, JSON.stringify(ckData)); }
+function saveCk(){ localStorage.setItem(CKEY, JSON.stringify(ckData)); markDirty(); }
 function ckMods(){ return Object.keys(ckData[ckWho] || {}); }
 function ckNorm(){
   Object.keys(ckData).forEach(p => {
@@ -2178,8 +2170,13 @@ function ckNorm(){
 ckNorm();
 function ckCount(p){
   let t = 0, c = 0;
-  Object.values(ckData[p] || {}).forEach(list => list.forEach(it => { t++; if (it.c) c++; }));
+  const add = v => Object.values(v || {}).forEach(list => list.forEach(it => { t++; if (it.c) c++; }));
+  add(ckData[p]);
+  if (p !== "全队") add(ckData["全队"]);
   return [c, t];
+}
+function ckStore(node){
+  return (node && node.dataset && node.dataset.team) ? ckData["全队"] : ckData[ckWho];
 }
 function renderCkTabs(){
   document.getElementById("ckTabs").innerHTML = CK_PEOPLE.filter(p => ckData[p]).map(p => {
@@ -2189,23 +2186,23 @@ function renderCkTabs(){
   }).join("");
 }
 function renderCkPanel(){
-  const mods = ckMods();
   let html = "";
-  mods.forEach(m => {
-    const list = ckData[ckWho][m];
-    html += `<div class="ck-grp-head">
-        <h4>${esc(m)} <small>${list.filter(i => i.c).length}/${list.length}</small></h4>
-        <button type="button" class="g-edit" data-mod="${esc(m)}" title="重命名">✎</button>
-        <button type="button" class="g-del" data-mod="${esc(m)}" title="删除模块">✕</button>
+  const grp = (m, list, team) => `<div class="ck-grp-head${team ? " team" : ""}">
+        <h4>${team ? "👥 " : ""}${esc(m)} <small>${list.filter(i => i.c).length}/${list.length}${team ? " · 全队共享" : ""}</small></h4>
+        <button type="button" class="g-edit" data-mod="${esc(m)}"${team ? ' data-team="1"' : ""} title="重命名">✎</button>
+        <button type="button" class="g-del" data-mod="${esc(m)}"${team ? ' data-team="1"' : ""} title="删除模块">✕</button>
       </div>` +
       list.map((it, ii) => `
-      <label class="ck-item ${it.c ? "done" : ""}" data-mod="${esc(m)}" data-i="${ii}">
-        <input type="checkbox" data-mod="${esc(m)}" data-i="${ii}" ${it.c ? "checked" : ""}>
+      <label class="ck-item ${it.c ? "done" : ""}" data-mod="${esc(m)}" data-i="${ii}"${team ? ' data-team="1"' : ""}>
+        <input type="checkbox" data-mod="${esc(m)}" data-i="${ii}"${team ? ' data-team="1"' : ""} ${it.c ? "checked" : ""}>
         <span>${esc(it.t)}</span>
-        <button type="button" class="ck-edit" data-mod="${esc(m)}" data-i="${ii}" title="修改">✎</button>
-        <button type="button" class="ck-del" data-mod="${esc(m)}" data-i="${ii}" title="删除">✕</button>
+        <button type="button" class="ck-edit" data-mod="${esc(m)}" data-i="${ii}"${team ? ' data-team="1"' : ""} title="修改">✎</button>
+        <button type="button" class="ck-del" data-mod="${esc(m)}" data-i="${ii}"${team ? ' data-team="1"' : ""} title="删除">✕</button>
       </label>`).join("");
-  });
+  Object.keys(ckData[ckWho] || {}).forEach(m => { html += grp(m, ckData[ckWho][m], false); });
+  if (ckWho !== "全队"){
+    Object.keys(ckData["全队"] || {}).forEach(m => { html += grp(m, ckData["全队"][m], true); });
+  }
   document.getElementById("ckPanel").innerHTML = html ||
     `<div class="ck-empty">还没有模块，用下方输入框新建吧</div>`;
 }
@@ -2237,9 +2234,10 @@ document.getElementById("ckPanel").addEventListener("click", e => {
   const gDel = e.target.closest(".g-del");
   if (gDel){
     const m = gDel.dataset.mod;
-    if (!Object.keys(ckData[ckWho]).length) return;
-    if (!confirm(`删除「${m}」模块及其中 ${ckData[ckWho][m].length} 条待办？`)) return;
-    delete ckData[ckWho][m];
+    const store = ckStore(gDel);
+    if (!store[m]) return;
+    if (!confirm(`删除「${m}」模块及其中 ${store[m].length} 条待办${gDel.dataset.team ? "（全队共享，将同步删除）" : ""}？`)) return;
+    delete store[m];
     saveCk(); renderCk();
     return;
   }
@@ -2249,16 +2247,18 @@ document.getElementById("ckPanel").addEventListener("click", e => {
     const nv = prompt("重命名模块：", m);
     if (!nv || !nv.trim() || nv.trim() === m) return;
     const nv2 = nv.trim();
-    if (ckData[ckWho][nv2]) { alert("已存在同名模块"); return; }
-    ckData[ckWho][nv2] = ckData[ckWho][m];
-    delete ckData[ckWho][m];
+    const store = ckStore(gEdit);
+    if (store[nv2]) { alert("已存在同名模块"); return; }
+    store[nv2] = store[m];
+    delete store[m];
     saveCk(); renderCk();
     return;
   }
   const edit = e.target.closest(".ck-edit");
   if (edit){
     const {mod, i} = edit.dataset;
-    const item = ckData[ckWho][mod][Number(i)];
+    const item = ckStore(edit)[mod] && ckStore(edit)[mod][Number(i)];
+    if (!item) return;
     const span = edit.parentElement.querySelector("span");
     const input = document.createElement("input");
     input.type = "text";
@@ -2282,14 +2282,18 @@ document.getElementById("ckPanel").addEventListener("click", e => {
   const del = e.target.closest(".ck-del");
   if (del){
     const {mod, i} = del.dataset;
-    ckData[ckWho][mod].splice(Number(i), 1);
+    const store = ckStore(del);
+    if (!store[mod]) return;
+    store[mod].splice(Number(i), 1);
     saveCk(); renderCk();
   }
 });
 document.getElementById("ckPanel").addEventListener("change", e => {
   const cb = e.target;
   if (cb.type !== "checkbox") return;
-  const item = ckData[ckWho][cb.dataset.mod][Number(cb.dataset.i)];
+  const store = ckStore(cb);
+  const item = store[cb.dataset.mod] && store[cb.dataset.mod][Number(cb.dataset.i)];
+  if (!item) return;
   item.c = cb.checked;
   saveCk(); renderCk();
 });
@@ -2329,6 +2333,139 @@ function navSpy(){
   secs.forEach(s => obs.observe(s));
 }
 
+/* ========== 云同步（GitHub 仓库 state.json · 多端自动同步） ========== */
+const SYNC = { repo: "Sawaiaki/yunnan-trip", branch: "main", path: "state.json", token: "" };
+let syncAt = 0, syncSha = null, syncDirty = false, syncTimer = 0;
+function syncStat(t){ const el = document.getElementById("syncStat"); if (el) el.textContent = t; }
+function syncClock(ts){
+  const d = new Date(ts);
+  return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+}
+function b64enc(s){
+  const b = new TextEncoder().encode(s);
+  let bin = "";
+  for (let i = 0; i < b.length; i++) bin += String.fromCharCode(b[i]);
+  return btoa(bin);
+}
+function b64dec(s){
+  const bin = atob(String(s).replace(/\s/g, ""));
+  const u = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(u);
+}
+function mergeState(loc, srv){
+  if (!srv || !srv.data) return loc || srv;
+  if (!loc || !loc.data) return srv;
+  return srv.at > loc.at ? srv : loc;
+}
+function collectState(){
+  return { v: 1, at: Date.now(),
+    data: { budget: budget, ckData: ckData, tickets: tickets, dayEdits: dayEdits, customDays: customDays } };
+}
+function applyState(d){
+  if (!d || typeof d !== "object") return;
+  if (Array.isArray(d.budget)) budget = d.budget;
+  if (d.ckData && typeof d.ckData === "object" && !Array.isArray(d.ckData)) ckData = d.ckData;
+  if (Array.isArray(d.tickets)) tickets = d.tickets;
+  if (d.dayEdits && typeof d.dayEdits === "object" && !Array.isArray(d.dayEdits)) dayEdits = d.dayEdits;
+  if (d.customDays && typeof d.customDays === "object" && !Array.isArray(d.customDays)) customDays = d.customDays;
+  CK_PEOPLE.forEach(p => { if (!ckData[p]) ckData[p] = {}; });
+  ckNorm();
+  rebuildEvents(); tick(); renderTickets(); renderBudget(); renderCk(); renderDays();
+}
+function markDirty(){
+  try {
+    if (!SYNC.token) return;
+    syncDirty = true;
+    syncStat("云同步 · 待推送");
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(pushState, 1500);
+  } catch(e){}
+}
+function gh(url, opt){
+  opt = opt || {};
+  opt.headers = Object.assign({}, opt.headers, {
+    "Authorization": "token " + SYNC.token,
+    "Accept": "application/vnd.github+json",
+    "Content-Type": "application/json"
+  });
+  return fetch(url, opt);
+}
+async function pushState(){
+  if (!SYNC.token || !syncDirty) return;
+  syncStat("云同步 · 推送中…");
+  try{
+    const url = "https://api.github.com/repos/" + SYNC.repo + "/contents/" + SYNC.path;
+    if (!syncSha){
+      try{
+        const r0 = await gh(url + "?ref=" + SYNC.branch);
+        if (r0.ok){ const j0 = await r0.json(); syncSha = j0.sha; }
+      }catch(e){}
+    }
+    const snap = collectState();
+    const body = { message: "sync " + syncClock(snap.at),
+      branch: SYNC.branch, content: b64enc(JSON.stringify(snap)) };
+    if (syncSha) body.sha = syncSha;
+    const r = await gh(url, { method: "PUT", body: JSON.stringify(body) });
+    if (r.status === 409 || r.status === 422){
+      syncSha = null;
+      syncStat("云同步 · 冲突重试…");
+      clearTimeout(syncTimer);
+      syncTimer = setTimeout(pushState, 2000);
+      return;
+    }
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json();
+    syncSha = (j.content && j.content.sha) || null;
+    syncAt = snap.at;
+    syncDirty = false;
+    syncStat("云同步 · 已同步 " + syncClock(snap.at));
+  }catch(e){
+    syncStat("云同步 · 推送失败，稍后自动重试");
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(pushState, 10000);
+  }
+}
+async function pullState(){
+  if (!SYNC.token) return false;
+  try{
+    const url = "https://api.github.com/repos/" + SYNC.repo + "/contents/" + SYNC.path +
+      "?ref=" + SYNC.branch + "&_=" + Date.now();
+    const r = await gh(url, { cache: "no-store" });
+    if (r.status === 404){
+      syncStat("云同步 · 首次同步…");
+      syncDirty = true;
+      await pushState();
+      return true;
+    }
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json();
+    syncSha = j.sha;
+    const srv = JSON.parse(b64dec(j.content));
+    if (syncDirty){
+      await pushState();
+    }else if (srv && srv.at > syncAt){
+      applyState(srv.data);
+      syncAt = srv.at;
+      syncStat("云同步 · 已同步 " + syncClock(srv.at));
+    }else{
+      syncStat("云同步 · 已同步 " + syncClock(syncAt || (srv && srv.at) || Date.now()));
+    }
+    return true;
+  }catch(e){
+    syncStat("云同步 · 离线，联网后自动同步");
+    return false;
+  }
+}
+function syncBoot(){
+  if (!SYNC.token){ syncStat("云同步 · 未开启"); return; }
+  syncStat("云同步 · 连接中…");
+  pullState();
+  setInterval(pullState, 30000);
+  document.addEventListener("visibilitychange", function(){ if (!document.hidden) pullState(); });
+  window.addEventListener("focus", function(){ pullState(); });
+}
+
 /* ========== init ========== */
 rebuildEvents();
 renderTickets();
@@ -2340,12 +2477,8 @@ renderBudget();
 renderCk();
 loadWeather();
 navSpy();
+syncBoot();
 setInterval(tick, 1000);
-let _rsT = 0;
-window.addEventListener("resize", function(){
-  clearTimeout(_rsT);
-  _rsT = setTimeout(function(){ paintOverviewMap(); paintDayMap(selDay); }, 200);
-});
 </script>
 </body>
 </html>
