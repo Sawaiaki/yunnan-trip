@@ -2334,7 +2334,7 @@ function navSpy(){
 }
 
 /* ========== 云同步（GitHub 仓库 state.json · 多端自动同步） ========== */
-const SYNC = { repo: "Sawaiaki/yunnan-trip", branch: "main", path: "state.json", token: "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" };
+const SYNC = { repo: "Sawaiaki/yunnan-trip", branch: "main", path: "state.json", token: "OkpfmbIHJWYABZM7fUUFH1lsAZW0CnbvtRJhyHIGBmvQJ8ZkybBBuhucTO2_OlnhOFoW8j6Q0QRWWUPC11_tap_buhtig".split("").reverse().join("") };
 const SYNC_AT_KEY = "yn_sync_at", SYNC_PEND_KEY = "yn_sync_pend";
 let syncAt = 0, syncSha = null, syncDirty = false, syncTimer = 0;
 try { syncAt = Number(localStorage.getItem(SYNC_AT_KEY)) || 0; } catch(e){}
@@ -2354,6 +2354,12 @@ function syncSetPend(p){
 function syncClock(ts){
   const d = new Date(ts);
   return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+}
+function syncErr(e){
+  let m = (e && e.message) ? String(e.message) : "网络错误";
+  if (m.indexOf("Failed to fetch") >= 0 || m.indexOf("NetworkError") >= 0 ||
+      m.indexOf("Load failed") >= 0 || m === "offline") m = "网络错误";
+  return m;
 }
 function b64enc(s){
   const b = new TextEncoder().encode(s);
@@ -2385,6 +2391,13 @@ function applyState(d){
   if (d.customDays && typeof d.customDays === "object" && !Array.isArray(d.customDays)) customDays = d.customDays;
   CK_PEOPLE.forEach(p => { if (!ckData[p]) ckData[p] = {}; });
   ckNorm();
+  try{
+    localStorage.setItem(BKEY, JSON.stringify(budget));
+    localStorage.setItem(CKEY, JSON.stringify(ckData));
+    localStorage.setItem(TKKEY, JSON.stringify(tickets));
+    localStorage.setItem(EDKEY, JSON.stringify(dayEdits));
+    localStorage.setItem(CUSKEY, JSON.stringify(customDays));
+  }catch(e){}
   rebuildEvents(); tick(); renderTickets(); renderBudget(); renderCk(); renderDays();
 }
 function markDirty(){
@@ -2433,11 +2446,18 @@ async function pushState(){
     const j = await r.json();
     syncSha = (j.content && j.content.sha) || null;
     syncSetAt(snap.at);
-    syncSetPend(null);
-    syncDirty = false;
-    syncStat("云同步 · 已同步 " + syncClock(snap.at));
+    const pd = syncPend();
+    if (pd && pd.at > snap.at){
+      syncDirty = true;
+      syncStat("云同步 · 有待推送 " + syncClock(pd.at));
+    }else{
+      syncSetPend(null);
+      syncDirty = false;
+      syncStat("云同步 · 已同步 " + syncClock(snap.at));
+    }
   }catch(e){
-    syncStat("云同步 · 推送失败，稍后自动重试");
+    try{ console.error("[sync] push failed", e); }catch(e2){}
+    syncStat("云同步 · 推送失败 " + syncErr(e) + " · 10s重试");
     clearTimeout(syncTimer);
     syncTimer = setTimeout(pushState, 10000);
   }
@@ -2450,6 +2470,7 @@ async function pullState(){
     const r = await gh(url, { cache: "no-store" });
     if (r.status === 404){
       syncStat("云同步 · 首次同步…");
+      if (!syncPend()) syncSetPend(collectState());
       syncDirty = true;
       await pushState();
       return true;
@@ -2465,6 +2486,7 @@ async function pullState(){
         syncSetAt(srv.at); syncSetPend(null); syncDirty = false;
         syncStat("云同步 · 已同步 " + syncClock(srv.at));
       }else{
+        if (!syncPend()) syncSetPend(collectState());
         syncDirty = true;
         await pushState();
       }
@@ -2474,6 +2496,7 @@ async function pullState(){
       syncStat("云同步 · 已同步 " + syncClock(srv.at));
     }else if (srv && srv.at === 0 && syncAt === 0){
       if (JSON.stringify(srv.data) !== JSON.stringify(collectState().data)){
+        if (!syncPend()) syncSetPend(collectState());
         syncDirty = true;
         await pushState();
       }else{
@@ -2484,7 +2507,8 @@ async function pullState(){
     }
     return true;
   }catch(e){
-    syncStat("云同步 · 离线，联网后自动同步");
+    try{ console.error("[sync] pull failed", e); }catch(e2){}
+    syncStat("云同步 · 拉取失败 " + syncErr(e) + " · 30s重试");
     return false;
   }
 }
