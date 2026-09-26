@@ -359,6 +359,12 @@ section{padding:26px 0 6px}
   opacity:0;transition:opacity .12s;
 }
 .ticket:hover .tk-del{opacity:1}
+.tk-edit{
+  position:absolute;top:7px;right:36px;border:none;background:rgba(255,255,255,.9);
+  color:var(--red);width:24px;height:24px;border-radius:50%;font-size:13px;cursor:pointer;
+  opacity:0;transition:opacity .12s;
+}
+.ticket:hover .tk-edit{opacity:1}
 .tk-form{
   display:flex;gap:8px;flex-wrap:wrap;background:var(--paper);
   border:1px solid rgba(24,150,138,.45);border-radius:14px;padding:10px;
@@ -376,6 +382,7 @@ section{padding:26px 0 6px}
   font-weight:700;background:linear-gradient(135deg,var(--red),var(--red-dark));
   color:#fff;cursor:pointer;
 }
+.tk-form button#tkCancel{background:#fff;color:#8a6a3a;border:1.5px solid #d9b98a}
 .book-note{
   margin-top:12px;font-size:12.5px;color:#5f8a83;background:#e9f7f4;
   border:1px dashed rgba(24,150,138,.5);border-radius:12px;padding:9px 13px;
@@ -645,6 +652,8 @@ section{padding:26px 0 6px}
 .hotel-card:hover .h-del{opacity:1}
 .hotel-card .tk-del{opacity:.6;background:rgba(255,255,255,.85)}
 .hotel-card:hover .tk-del{opacity:1}
+.hotel-card .tk-edit{opacity:.6;background:rgba(255,255,255,.85);color:var(--red)}
+.hotel-card:hover .tk-edit{opacity:1}
 .hotel-card .actions{margin-top:6px}
 .hotel-card .btn-map{font-size:11.5px;padding:3px 9px}
 .stay-empty{
@@ -890,7 +899,8 @@ footer .sync-stat{display:block;margin-top:7px;font-size:11px;letter-spacing:.5p
       <span class="f-cap">时间 · 如 14:30</span>
       <input id="tkTime" type="time" class="tk-time2">
       <input id="tkSeat" placeholder="座位/备注，如 01车05F（可选）">
-      <button type="submit">＋ 添加</button>
+      <button type="submit" id="tkSubmit">＋ 添加</button>
+      <button type="button" id="tkCancel" style="display:none">取消</button>
     </form>
     <div class="book-grid" id="tkGrid"></div>
     <p class="book-note" id="tkNote">还没有预订记录。<b>交通</b>填好日期时间后会同步顶部「下一站」倒计时，
@@ -1220,6 +1230,7 @@ function renderTickets(){
           <div class="tk-time">${when ? "入住 " + when : "日期待定"}</div>
           <div class="tk-meta">${[tk.from, tk.seat].filter(Boolean).map(esc).join(" · ") || "已同步到对应天行程底部"}</div>
         </div>
+        <button class="tk-edit" data-tk="${i}" title="修改">✎</button>
         <button class="tk-del" data-tk="${i}" title="删除">✕</button>
       </div>`;
     }
@@ -1235,6 +1246,7 @@ function renderTickets(){
           <div class="tk-time">${when || "时间待定"}</div>
           <div class="tk-meta">${tk.from ? "<b>" + esc(tk.from) + "</b> · " : ""}已预订${tk.time ? " · 按时间插入当日行程" : " · 填时间可按早晚插入当日行程"}</div>
         </div>
+        <button class="tk-edit" data-tk="${i}" title="修改">✎</button>
         <button class="tk-del" data-tk="${i}" title="删除">✕</button>
       </div>`;
     }
@@ -1249,11 +1261,40 @@ function renderTickets(){
         <div class="tk-time">${dt ? dt + " " : ""}${tk.time || ""}</div>
         <div class="tk-meta">${tk.seat ? "<b>" + esc(tk.seat) + "</b> · " : ""}已预订${tk.time ? " · 已同步顶部倒计时与当日行程" : " · 填时间可同步倒计时"}</div>
       </div>
+      <button class="tk-edit" data-tk="${i}" title="修改">✎</button>
       <button class="tk-del" data-tk="${i}" title="删除">✕</button>
     </div>`;
   }).join("");
   const note = document.getElementById("tkNote");
   if (note) note.style.display = tickets.length ? "none" : "";
+}
+let tkEditIdx = -1;
+function tkEditUI(editing){
+  document.getElementById("tkSubmit").textContent = editing ? "✓ 保存修改" : "＋ 添加";
+  document.getElementById("tkCancel").style.display = editing ? "" : "none";
+}
+function tkEditStart(i){
+  const tk = tickets[i];
+  if (!tk) return;
+  tkEditIdx = i;
+  document.getElementById("tkType").value = tk.type || "train";
+  document.getElementById("tkNo").value = tk.no || "";
+  document.getElementById("tkFrom").value = tk.from || "";
+  document.getElementById("tkTo").value = tk.to || "";
+  document.getElementById("tkDate").value = tk.date || "";
+  document.getElementById("tkTime").value = tk.time || "";
+  document.getElementById("tkSeat").value = tk.seat || "";
+  syncTkForm();
+  tkEditUI(true);
+  const f = document.getElementById("tkForm");
+  if (f && f.scrollIntoView) f.scrollIntoView({behavior:"smooth", block:"center"});
+}
+function tkEditCancel(){
+  tkEditIdx = -1;
+  const f = document.getElementById("tkForm");
+  f.reset();
+  syncTkForm();
+  tkEditUI(false);
 }
 document.addEventListener("submit", e => {
   if (e.target.id !== "tkForm") return;
@@ -1269,15 +1310,25 @@ document.addEventListener("submit", e => {
   };
   const kind = tkKind(tk.type);
   if (!tk.no && !(tk.from && (kind === "transport" ? tk.to : true))) return;
-  tickets.push(tk);
+  if (tkEditIdx >= 0 && tkEditIdx < tickets.length) tickets[tkEditIdx] = tk;
+  else tickets.push(tk);
+  tkEditIdx = -1;
+  tkEditUI(false);
   saveTickets(); renderTickets(); rebuildEvents(); tick(); renderSelectedDay();
   e.target.reset();
+  syncTkForm();
   document.getElementById("tkNo").focus();
 });
 document.addEventListener("click", e => {
+  const ed = e.target.closest(".tk-edit");
+  if (ed){ tkEditStart(Number(ed.dataset.tk)); return; }
+  if (e.target.id === "tkCancel"){ tkEditCancel(); return; }
   const del = e.target.closest(".tk-del");
   if (!del) return;
-  tickets.splice(Number(del.dataset.tk), 1);
+  const di = Number(del.dataset.tk);
+  tickets.splice(di, 1);
+  if (tkEditIdx === di) tkEditCancel();
+  else if (tkEditIdx > di) tkEditIdx--;
   saveTickets(); renderTickets(); rebuildEvents(); tick();
   renderSelectedDay();
 });
@@ -1546,6 +1597,7 @@ function hotelCardHTML(h){
         <span>${sub}</span>
         ${mapBtns(tk.from || tk.no)}
       </div>
+      <button class="tk-edit" data-tk="${h.i}" title="修改">✎</button>
       <button class="tk-del" data-tk="${h.i}" title="删除">✕</button>
     </div>`;
 }
