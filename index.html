@@ -8,8 +8,9 @@
 <style>
 :root{
   --red:#18968a; --red-dark:#0f7a6f; --red-deep:#0b5f56;
-  --gold:#f2b03d; --gold-light:#ffd88a;
+  --gold:#e2775c; --gold-light:#f4b8a4;
   --blue:#2f7fb8; --blue-light:#4d9fd4;
+  --sel:#0b5f56; --sel-blue:#1d5a80;
   --cream:#f5faf8; --paper:#ffffff; --ink:#243b37; --muted:#77908b;
   --shadow:0 2px 12px rgba(15,122,110,.10);
 }
@@ -17,7 +18,7 @@
 html{scroll-behavior:smooth;scroll-padding-top:110px}
 body{
   font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  background:var(--cream); color:var(--ink); line-height:1.65;
+  background:var(--cream); color:var(--ink); font-size:15px; line-height:1.7;
   background-image:radial-gradient(rgba(24,150,138,.10) 1px, transparent 1px);
   background-size:22px 22px;
 }
@@ -34,7 +35,7 @@ h1,h2,h3,.serif{font-family:"Songti SC","STSong","SimSun",serif}
 }
 .hero{
   background:
-    radial-gradient(circle at 85% 15%, rgba(242,176,61,.25), transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(226,119,92,.15), transparent 45%),
     radial-gradient(circle at 8% 90%, rgba(47,127,184,.18), transparent 45%),
     linear-gradient(165deg, #ffffff 0%, #eef8f5 55%, #e2f2ee 100%);
   color:var(--ink); text-align:center; padding:30px 16px 26px;
@@ -153,7 +154,7 @@ section{padding:26px 0 6px}
   background:var(--paper);border:1px solid rgba(24,150,138,.45);border-radius:16px;
   box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden;
 }
-.day-card-full.today{border-color:var(--gold);box-shadow:0 0 0 2px rgba(24,150,138,.4),var(--shadow)}
+.day-card-full.today{border-color:var(--gold);box-shadow:0 0 0 3px rgba(226,119,92,.55),var(--shadow)}
 .day-head{
   display:flex;align-items:center;gap:12px;padding:14px 16px;
   background:linear-gradient(120deg,#f4fbf9 0%,#e6f5f1 100%);color:var(--ink);
@@ -176,11 +177,20 @@ section{padding:26px 0 6px}
 }
 .day-card-full.today .day-tag{background:var(--red);color:#fff;font-weight:800;border-color:var(--red)}
 .timeline{padding:6px 16px 16px}
+.tl-group{display:flex;align-items:center;gap:9px;margin:16px 0 2px}
+.timeline .tl-group:first-child{margin-top:4px}
+.tl-group b{
+  font-size:12px;font-weight:800;color:#fff;letter-spacing:3px;
+  background:linear-gradient(135deg,var(--red-dark),var(--red-deep));
+  border-radius:999px;padding:4px 15px 4px 18px;
+  box-shadow:0 3px 8px rgba(11,95,86,.3);
+}
+.tl-group i{flex:1;height:1px;background:repeating-linear-gradient(90deg,rgba(24,150,138,.5) 0 7px,transparent 7px 14px)}
 .tl-item{position:relative;padding:14px 0 4px 22px;border-bottom:1px dashed rgba(24,150,138,.45)}
 .tl-item:last-child{border-bottom:none}
 .tl-item::before{
   content:"";position:absolute;left:2px;top:20px;width:11px;height:11px;border-radius:50%;
-  background:var(--gold);box-shadow:0 0 0 3px rgba(24,150,138,.28);
+  background:var(--gold);box-shadow:0 0 0 3px rgba(226,119,92,.22);
 }
 .tl-item::after{
   content:"";position:absolute;left:7px;top:31px;bottom:-6px;width:1px;
@@ -188,8 +198,10 @@ section{padding:26px 0 6px}
 }
 .tl-item:last-child::after{display:none}
 .tl-time{
-  display:inline-block;font-size:11px;font-weight:800;color:#fff;background:var(--blue);
-  padding:1px 9px;border-radius:999px;letter-spacing:1px;margin-bottom:4px;
+  display:inline-block;font-size:11.5px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,#e2775c,#c85f47);
+  padding:2px 10px;border-radius:999px;letter-spacing:1px;margin-bottom:4px;
+  box-shadow:0 2px 6px rgba(200,95,71,.3);
 }
 .tl-body h4{font-size:15.5px;color:var(--ink);line-height:1.5}
 .tl-body h4 .tl-btns{display:inline-flex;gap:4px;margin-left:7px;vertical-align:-3px}
@@ -204,26 +216,27 @@ section{padding:26px 0 6px}
   font-size:13.5px;background:#fff;outline:none;font-family:inherit;
 }
 .tl-edit input{flex:1;min-width:120px}
+.tl-edit input[type=time]{flex:0 0 120px;min-width:112px}
 .tl-edit select{flex:0 0 auto}
 .tl-edit button{
   border:none;border-radius:9px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;
 }
 .tl-edit .save{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff}
 .tl-edit .cancel{background:#e9f2f0;color:var(--muted)}
-.tl-body>p{font-size:13.5px;color:#45605b;margin-top:4px}
+.tl-body>p{font-size:14px;color:#45605b;margin-top:5px;line-height:1.65}
 .tags{margin-top:6px;display:flex;flex-wrap:wrap;gap:6px}
 .tag{
   font-size:11.5px;padding:2px 9px;border-radius:999px;font-weight:600;
   background:#e9f7f4;color:var(--red-dark);border:1px solid rgba(24,150,138,.35);
 }
 .tag.money{background:#e8f2f8;color:var(--blue);border-color:rgba(47,127,184,.35)}
-.tag.time{background:#fff4e2;color:#b06a00;border-color:#f2cf95}
+.tag.time{background:#fdeee9;color:#b4553c;border-color:#f2c4b6}
 .tag.warn{background:#fff4d9;color:#8a5b00;border-color:#e8cf8a}
 .tag.stay{background:#eef2f8;color:#3f5f8c;border-color:#c9d6e8}
 .actions{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
 .tl-traffic{
   margin-top:6px;font-size:12.5px;color:var(--red-dark);font-weight:600;
-  background:#fff4e2;border:1px dashed #e8cf8a;border-radius:8px;padding:4px 9px;display:inline-block;
+  background:#eef7f5;border:1px dashed rgba(24,150,138,.55);border-radius:8px;padding:4px 9px;display:inline-block;
 }
 .spot-toggle{
   margin-top:9px;border:1.5px solid rgba(24,150,138,.45);background:#e9f7f4;color:var(--red-dark);
@@ -237,8 +250,8 @@ section{padding:26px 0 6px}
 .spot-list{margin-top:8px;display:grid;gap:8px}
 .spot-list[hidden]{display:none}
 .tl-self{
-  font-size:10.5px;font-weight:700;color:#b06a00;background:#fff4e2;
-  border:1px solid #f2cf95;border-radius:999px;padding:1px 7px;vertical-align:middle;
+  font-size:10.5px;font-weight:700;color:#b4553c;background:#fdeee9;
+  border:1px solid #f2c4b6;border-radius:999px;padding:1px 7px;vertical-align:middle;
 }
 .tl-item.custom h4{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .tl-del{
@@ -255,6 +268,7 @@ section{padding:26px 0 6px}
   font-size:13.5px;background:rgba(255,255,255,.9);outline:none;
 }
 .ci-add input{flex:1;min-width:150px}
+.ci-add input[type=time]{flex:0 0 120px;min-width:112px}
 .ci-add select{max-width:96px;font-weight:700;color:var(--red-dark)}
 .ci-add input:focus,.ci-add select:focus{border-color:var(--red)}
 .ci-add button{
@@ -279,7 +293,7 @@ section{padding:26px 0 6px}
   border:1px solid rgba(24,150,138,.3);border-radius:12px;padding:10px 12px;
 }
 .spot b{color:var(--red-dark);font-size:14px}
-.spot p{font-size:13px;color:#45605b;margin-top:3px}
+.spot p{font-size:13.5px;color:#45605b;margin-top:3px;line-height:1.6}
 .spot .facts{margin-top:5px;font-size:12px;color:var(--muted)}
 
 /* ---------- spotlight cards ---------- */
@@ -291,7 +305,7 @@ section{padding:26px 0 6px}
 .spot-card .sc-head{display:flex;align-items:center;gap:8px}
 .spot-card .sc-icon{
   width:38px;height:38px;border-radius:10px;flex:0 0 auto;
-  background:linear-gradient(135deg,var(--red),var(--red-dark));color:var(--gold-light);
+  background:linear-gradient(135deg,var(--red),var(--red-dark));color:#ffffff;
   display:flex;align-items:center;justify-content:center;font-size:19px;
 }
 .spot-card h4{font-size:15.5px;color:var(--red-dark)}
@@ -315,9 +329,9 @@ section{padding:26px 0 6px}
   border-right:2px dashed rgba(255,255,255,.65);position:relative;
 }
 .ticket.plane .tk-stub{background:linear-gradient(160deg,var(--blue),#1d5a80)}
-.ticket.hotel{border-color:rgba(242,176,61,.6);background:linear-gradient(135deg,#ffffff 0%,#fffaf0 100%)}
-.ticket.hotel .tk-stub{background:linear-gradient(160deg,#e8a72c,#b0760f)}
-.ticket.hotel .tk-stub::before,.ticket.hotel .tk-stub::after{border-color:rgba(242,176,61,.6)}
+.ticket.hotel{border-color:rgba(226,119,92,.6);background:linear-gradient(135deg,#ffffff 0%,#fdf2ee 100%)}
+.ticket.hotel .tk-stub{background:linear-gradient(160deg,#e2775c,#b4553c)}
+.ticket.hotel .tk-stub::before,.ticket.hotel .tk-stub::after{border-color:rgba(226,119,92,.6)}
 .ticket.tkt{border-color:rgba(123,92,214,.5);background:linear-gradient(135deg,#ffffff 0%,#f7f4ff 100%)}
 .ticket.tkt .tk-stub{background:linear-gradient(160deg,#7b5cd6,#5b44ae)}
 .ticket.tkt .tk-stub::before,.ticket.tkt .tk-stub::after{border-color:rgba(123,92,214,.5)}
@@ -371,7 +385,7 @@ section{padding:26px 0 6px}
 .remind-item{
   display:flex;gap:10px;align-items:flex-start;background:var(--paper);
   border-left:4px solid var(--gold);border-radius:0 12px 12px 0;
-  padding:10px 12px;box-shadow:var(--shadow);font-size:13.5px;
+  padding:10px 12px;box-shadow:var(--shadow);font-size:14px;
 }
 .remind-item b{color:var(--red-dark)}
 .remind-item .r-day{
@@ -379,9 +393,9 @@ section{padding:26px 0 6px}
   border-radius:6px;padding:2px 7px;margin-top:2px;
 }
 .day-block.remind-top{
-  background:linear-gradient(135deg,rgba(255,251,238,.95),rgba(255,244,224,.9));
-  border:1.5px solid rgba(242,176,61,.55);border-radius:14px;
-  padding:10px 14px 12px;margin:8px 0 4px;box-shadow:0 3px 12px rgba(242,176,61,.18);
+  background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(240,250,247,.92));
+  border:1.5px solid rgba(226,119,92,.5);border-radius:14px;
+  padding:10px 14px 12px;margin:8px 0 4px;box-shadow:0 3px 12px rgba(226,119,92,.14);
 }
 .remind-top .db-title{color:var(--red-dark);margin-bottom:8px}
 .remind-top .remind-item{background:rgba(255,255,255,.75);box-shadow:none;margin-bottom:6px}
@@ -412,30 +426,40 @@ section{padding:26px 0 6px}
 .info-table td:first-child{font-weight:700;color:var(--red-dark);white-space:nowrap}
 
 /* ---------- budget ---------- */
-.budget-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.budget-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
 .budget-stat{
   background:var(--paper);border:1px solid rgba(24,150,138,.45);border-radius:14px;
   padding:12px 8px;text-align:center;box-shadow:var(--shadow);
 }
-.budget-stat .bs-num{font-size:21px;font-weight:800;color:var(--red-dark);font-family:"Songti SC",serif}
+.budget-stat .bs-num{font-size:19px;font-weight:800;color:var(--red-dark);font-family:"Songti SC",serif}
 .budget-stat .bs-label{font-size:11.5px;color:var(--muted);margin-top:2px}
 .budget-form{
-  display:flex;gap:8px;background:var(--paper);border:1px solid rgba(24,150,138,.45);
-  border-radius:14px;padding:10px;box-shadow:var(--shadow);margin-bottom:10px;flex-wrap:wrap;
+  display:flex;flex-direction:column;background:var(--paper);border:1px solid rgba(24,150,138,.45);
+  border-radius:14px;padding:12px;box-shadow:var(--shadow);margin-bottom:10px;
 }
+.bf-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bf-row + .bf-row{margin-top:10px;padding-top:10px;border-top:1px dashed rgba(24,150,138,.3)}
+.bf-lab{flex:0 0 auto;font-size:12.5px;font-weight:700;color:var(--muted);min-width:52px}
+.bf-top button{margin-left:auto}
 .budget-form input{
   flex:1;min-width:70px;border:1px solid rgba(24,150,138,.5);border-radius:9px;
-  padding:8px 10px;font-size:13.5px;background:#ffffff;color:var(--ink);
+  padding:9px 11px;font-size:14px;background:#ffffff;color:var(--ink);
 }
 .budget-form input:focus{outline:2px solid rgba(24,150,138,.45)}
 .budget-form input.b-name{flex:2;min-width:120px}
 .budget-form input.b-amt{flex:1;min-width:70px}
 .who-pick{display:flex;gap:4px}
 .who{
-  min-width:34px;height:34px;padding:0 8px;border-radius:8px;border:1px solid rgba(24,150,138,.35);
-  background:#eef4f3;color:#a8bcb8;font-size:13px;font-weight:700;cursor:pointer;
+  min-width:36px;height:34px;padding:0 9px;border-radius:9px;border:1.5px solid rgba(24,150,138,.42);
+  background:#eef4f3;color:#5f7d77;font-size:13.5px;font-weight:700;cursor:pointer;
+  transition:all .12s;
 }
-.who.on{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 2px 6px rgba(24,150,138,.35)}
+.who.on{
+  background:linear-gradient(135deg,var(--red-dark),var(--red-deep));
+  border-color:var(--red-deep);color:#fff;font-weight:800;
+  box-shadow:0 3px 10px rgba(11,95,86,.45), inset 0 1px 0 rgba(255,255,255,.28);
+  transform:translateY(-1px);
+}
 .share-line{
   display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;
 }
@@ -454,7 +478,7 @@ section{padding:26px 0 6px}
 .budget-list li{
   display:flex;align-items:center;gap:10px;background:var(--paper);
   border:1px solid rgba(24,150,138,.4);border-radius:12px;padding:9px 12px;
-  font-size:13.5px;box-shadow:var(--shadow);
+  font-size:14px;box-shadow:var(--shadow);
 }
 .budget-list .b-item{flex:1;min-width:0}
 .budget-list .b-item small{display:block;color:var(--muted);font-size:11.5px}
@@ -489,7 +513,12 @@ section{padding:26px 0 6px}
   display:flex;align-items:center;gap:6px;transition:all .15s;
 }
 .ck-tab .ck-done{font-size:11px;font-weight:700;opacity:.75}
-.ck-tab.on{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 3px 10px rgba(24,150,138,.35)}
+.ck-tab.on{
+  background:linear-gradient(135deg,var(--red-dark),var(--red-deep));
+  border-color:var(--red-deep);color:#fff;
+  box-shadow:0 4px 12px rgba(11,95,86,.4), inset 0 1px 0 rgba(255,255,255,.25);
+  transform:translateY(-1px);
+}
 .ck-tab.on .ck-done{opacity:.9}
 .ck-panel{
   background:rgba(255,255,255,.65);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
@@ -501,8 +530,12 @@ section{padding:26px 0 6px}
   border-bottom:1px dashed rgba(24,150,138,.4);
 }
 .ck-panel .check-group + .check-group{margin-top:12px}
-.ck-empty{color:#8fb3ad;font-size:13.5px;text-align:center;padding:14px 0}
-.ck-item{display:flex;align-items:flex-start;gap:8px}
+.ck-empty{color:#8fb3ad;font-size:14px;text-align:center;padding:14px 0}
+.ck-item{
+  display:flex;align-items:flex-start;gap:9px;padding:3px 0;min-height:32px;
+}
+.ck-item span{font-size:14.5px;line-height:1.55;color:#33514c}
+.ck-item input{margin-top:3px;width:17px;height:17px;flex:0 0 auto;accent-color:var(--red)}
 .ck-item .ck-del{
   margin-left:auto;border:none;background:none;color:#d0a0a0;font-size:14px;cursor:pointer;
   opacity:0;transition:opacity .12s;padding:0 2px;
@@ -542,11 +575,11 @@ section{padding:26px 0 6px}
 .day-tab b{display:block;font-size:13.5px;color:var(--red-dark)}
 .day-tab i{display:block;font-style:normal;font-size:11.5px;color:#77908b;margin-top:2px}
 .day-tab .dt-wx{font-size:11.5px;color:var(--blue);margin-top:3px;display:block;font-weight:700}
-.day-tab.on{background:linear-gradient(135deg,var(--red),var(--red-dark));border-color:var(--red);box-shadow:0 4px 12px rgba(24,150,138,.4)}
+.day-tab.on{background:linear-gradient(135deg,var(--red-dark),var(--red-deep));border-color:var(--red-deep);box-shadow:0 4px 14px rgba(11,95,86,.45)}
 .day-tab.on b{color:#fff}
 .day-tab.on i,.day-tab.on .dt-wx{color:rgba(255,255,255,.92)}
 .day-tab.past{opacity:.62}
-.day-tab.today{border-color:var(--gold);box-shadow:0 0 0 2px rgba(242,176,61,.45)}
+.day-tab.today{border-color:var(--gold);box-shadow:0 0 0 3px rgba(226,119,92,.5)}
 
 /* ---------- 天气徽章 ---------- */
 .wx-chip{
@@ -600,36 +633,31 @@ section{padding:26px 0 6px}
   background:rgba(15,122,110,.9);border-radius:999px;padding:3px 11px;
   box-shadow:0 2px 8px rgba(0,0,0,.25);pointer-events:none;
 }
-.day-map .dm-cta{
-  position:absolute;right:10px;bottom:9px;z-index:5;font-size:11.5px;font-weight:700;color:var(--red-dark);
-  background:rgba(255,255,255,.92);border:1px solid rgba(24,150,138,.5);border-radius:999px;
-  padding:3px 11px;text-decoration:none;box-shadow:0 2px 6px rgba(0,0,0,.12);
-}
 
 /* ---------- 住宿卡片 ---------- */
 .stay-block{padding:12px 16px 4px;border-top:1px dashed rgba(24,150,138,.45);margin-top:6px}
 .hotel-card{
   display:flex;gap:11px;align-items:center;position:relative;
-  background:linear-gradient(135deg,#fffaf0,#fff3dd);
-  border:1.5px solid #f2cf95;border-radius:14px;padding:11px 13px;margin-bottom:8px;
-  box-shadow:0 2px 8px rgba(180,130,40,.12);transition:transform .12s;
+  background:linear-gradient(135deg,#fff7f4,#fdeee9);
+  border:1.5px solid #f2c4b6;border-radius:14px;padding:11px 13px;margin-bottom:8px;
+  box-shadow:0 2px 8px rgba(200,95,71,.12);transition:transform .12s;
 }
 .hotel-card:hover{transform:translateY(-1px)}
 .hotel-card .h-ic{
   width:40px;height:40px;border-radius:11px;flex:0 0 auto;font-size:20px;
-  background:linear-gradient(135deg,#ffe9c2,#ffd88a);border:1px solid #eec482;
+  background:linear-gradient(135deg,#fde0d6,#f4b8a4);border:1px solid #eda58e;
   display:flex;align-items:center;justify-content:center;
 }
 .hotel-card .h-info{flex:1;min-width:0}
-.hotel-card .h-info b{display:block;font-size:14.5px;color:#6b4a10}
-.hotel-card .h-info span{display:block;font-size:12px;color:#9a7b46;margin-top:1px}
+.hotel-card .h-info b{display:block;font-size:14.5px;color:var(--ink)}
+.hotel-card .h-info span{display:block;font-size:12px;color:var(--muted);margin-top:1px}
 .hotel-card .h-info input,.hotel-card .h-info textarea{
-  width:100%;border:none;background:transparent;outline:none;font-size:13.5px;color:#6b4a10;
+  width:100%;border:none;background:transparent;outline:none;font-size:13.5px;color:var(--ink);
   border-bottom:1px dashed transparent;padding:1px 0;resize:none;font-family:inherit;
 }
 .hotel-card .h-info input.h-name{font-size:14.5px;font-weight:700}
-.hotel-card .h-info input:hover,.hotel-card .h-info textarea:hover{border-bottom-color:#d9b877}
-.hotel-card .h-info input:focus,.hotel-card .h-info textarea:focus{border-bottom-color:#b06a00;background:rgba(255,255,255,.6)}
+.hotel-card .h-info input:hover,.hotel-card .h-info textarea:hover{border-bottom-color:#f2c4b6}
+.hotel-card .h-info input:focus,.hotel-card .h-info textarea:focus{border-bottom-color:#b4553c;background:rgba(255,255,255,.6)}
 .hotel-card .h-del{
   border:none;background:rgba(255,255,255,.7);color:#c98a8a;width:26px;height:26px;
   border-radius:50%;font-size:13px;cursor:pointer;flex:0 0 auto;opacity:.5;transition:opacity .12s;
@@ -643,12 +671,20 @@ section{padding:26px 0 6px}
   font-size:13px;color:var(--muted);background:#f2f7f6;
   border:1px dashed rgba(24,150,138,.4);border-radius:10px;padding:9px 12px;margin-bottom:10px;
 }
-.db-title.stay-t{color:#8a5b00}
+.db-title.stay-t{color:#b4553c}
 
 /* ---------- 费用：垫付/结算 ---------- */
 .pay-pick{display:flex;gap:4px;flex-wrap:wrap}
-.pay-pick .who.on{background:var(--blue);border-color:var(--blue);box-shadow:0 2px 6px rgba(47,127,184,.35)}
-.share-pick .who.on{background:var(--red);border-color:var(--red)}
+.pay-pick .who.on{
+  background:linear-gradient(135deg,var(--blue),var(--sel-blue));
+  border-color:var(--sel-blue);color:#fff;
+  box-shadow:0 3px 10px rgba(29,90,128,.45), inset 0 1px 0 rgba(255,255,255,.28);
+}
+.share-pick .who.on{
+  background:linear-gradient(135deg,var(--red),var(--red-deep));
+  border-color:var(--red-deep);color:#fff;
+  box-shadow:0 3px 10px rgba(11,95,86,.45), inset 0 1px 0 rgba(255,255,255,.28);
+}
 .settle-chip{
   display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;
   background:#e8f2f8;color:var(--blue);border:1px solid rgba(47,127,184,.4);
@@ -658,7 +694,7 @@ section{padding:26px 0 6px}
 .pay-row{
   display:flex;align-items:center;gap:9px;background:var(--paper);
   border:1px solid rgba(24,150,138,.4);border-radius:12px;padding:9px 12px;
-  font-size:13.5px;box-shadow:var(--shadow);
+  font-size:14px;box-shadow:var(--shadow);
 }
 .pay-row .pr-ic{
   width:30px;height:30px;border-radius:50%;flex:0 0 auto;color:#fff;font-size:12px;font-weight:800;
@@ -694,9 +730,10 @@ section{padding:26px 0 6px}
 .ck-item input:checked+span{text-decoration:line-through;color:#9ab8b3}
 .ck-grp-head{display:flex;align-items:center;gap:6px;margin:10px 0 5px}
 .ck-grp-head h4{
-  font-size:14px;color:var(--red-dark);flex:1;
+  font-size:14.5px;font-weight:800;color:var(--red-dark);flex:1;letter-spacing:.5px;
   border-bottom:1px dashed rgba(24,150,138,.4);padding-bottom:4px;
 }
+.ck-grp-head h4 small{font-size:12px;font-weight:700;color:#8fb3ad}
 .ck-grp-head .g-edit,.ck-grp-head .g-del{
   border:none;background:none;font-size:12px;cursor:pointer;color:#c98a8a;opacity:.5;transition:opacity .12s;
 }
@@ -733,7 +770,32 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
 @media (max-width:640px){
   .hero h1{font-size:27px}
   .spotlight-grid,.map-grid,.check-grid,.book-grid{grid-template-columns:1fr}
-  .budget-bar{grid-template-columns:repeat(3,1fr)}
+  .budget-bar{grid-template-columns:repeat(2,1fr);gap:8px}
+  .budget-stat{padding:10px 6px}
+  .budget-stat .bs-num{font-size:18px}
+  .budget-form{padding:12px}
+  .bf-lab{flex:1 1 100%;min-width:0}
+  .who-pick{flex:1 1 100%;display:flex;gap:6px}
+  .who-pick .who{flex:1;min-width:0;height:42px;font-size:14px}
+  .budget-form input{font-size:16px;padding:11px 12px}
+  .bf-top button{flex:1 1 100%;margin-left:0;padding:12px;font-size:15px}
+  .ck-add,.ci-add,.tk-form{flex-direction:column;align-items:stretch;gap:9px}
+  .ck-add input,.ck-add select,.ci-add input,.ci-add select,.tk-form input,.tk-form select,
+  .tl-edit input,.tl-edit select{
+    width:100%;max-width:none!important;flex:1 1 auto!important;min-width:0;
+    font-size:16px;padding:11px 12px;
+  }
+  .ck-add button,.ci-add button,.tk-form button{padding:12px;font-size:15px}
+  .ck-tab{padding:9px 16px;font-size:14.5px}
+  .ck-grp-head h4{font-size:15px}
+  .ck-item{min-height:40px;align-items:center}
+  .ck-item span{font-size:14.5px}
+  .tl-edit button{padding:10px 14px;font-size:14px}
+  .tl-body h4{font-size:16px}
+  .tl-body>p{font-size:14px}
+  .timeline{padding:6px 12px 14px}
+  .day-block{padding:14px 12px 4px}
+  .ci-add{padding:12px}
   html{scroll-padding-top:100px}
   /* day-head 手机端：徽章+文字一行，天气/日期换行到文字下方 */
   .day-head{flex-wrap:wrap;gap:8px 10px;padding:12px 14px}
@@ -826,34 +888,36 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
   <!-- ===== 费用结算 ===== -->
   <section id="budget">
     <h2 class="sec-title">费用结算 <small>记一笔谁付的 · 分摊人自动算应付 · 付完点标记</small></h2>
-    <div class="budget-bar">
-      <div class="budget-stat"><div class="bs-num" id="bTotal">0</div><div class="bs-label">总支出(元)</div></div>
-      <div class="budget-stat"><div class="bs-num" id="bCount">0</div><div class="bs-label">笔数</div></div>
-      <div class="budget-stat"><div class="bs-num" id="bUnpaid">0</div><div class="bs-label">未结清笔数</div></div>
-    </div>
+    <div class="budget-bar" id="budgetBar"></div>
     <form class="budget-form" id="budgetForm">
-      <input class="b-name" id="bName" placeholder="项目，如：猪槽船包船" required>
-      <input class="b-amt" id="bAmt" type="number" min="0" step="0.01" placeholder="金额" required>
-      <div class="who-pick pay-pick" id="payerPick" title="这笔钱谁付的">
-        <span style="font-size:12px;color:var(--muted);align-self:center">谁付的</span>
-        <button type="button" class="who on" data-w="0">早树</button>
-        <button type="button" class="who" data-w="1">关宜</button>
-        <button type="button" class="who" data-w="2">兰舒</button>
-        <button type="button" class="who" data-w="3">时野</button>
+      <div class="bf-row bf-top">
+        <input class="b-name" id="bName" placeholder="项目，如：猪槽船包船" required>
+        <input class="b-amt" id="bAmt" type="number" min="0" step="0.01" placeholder="金额" required>
+        <button type="submit">记一笔</button>
       </div>
-      <div class="who-pick share-pick" id="sharePick" title="参与分摊的人（默认全队）">
-        <span style="font-size:12px;color:var(--muted);align-self:center">分摊人</span>
-        <button type="button" class="who on" data-w="0">早树</button>
-        <button type="button" class="who on" data-w="1">关宜</button>
-        <button type="button" class="who on" data-w="2">兰舒</button>
-        <button type="button" class="who on" data-w="3">时野</button>
+      <div class="bf-row">
+        <span class="bf-lab">谁付的</span>
+        <div class="who-pick pay-pick" id="payerPick" title="这笔钱谁付的">
+          <button type="button" class="who on" data-w="0">早树</button>
+          <button type="button" class="who" data-w="1">关宜</button>
+          <button type="button" class="who" data-w="2">兰舒</button>
+          <button type="button" class="who" data-w="3">时野</button>
+        </div>
       </div>
-      <button type="submit">记一笔</button>
+      <div class="bf-row">
+        <span class="bf-lab">分摊人</span>
+        <div class="who-pick share-pick" id="sharePick" title="参与分摊的人（默认全队）">
+          <button type="button" class="who on" data-w="0">早树</button>
+          <button type="button" class="who on" data-w="1">关宜</button>
+          <button type="button" class="who on" data-w="2">兰舒</button>
+          <button type="button" class="who on" data-w="3">时野</button>
+        </div>
+      </div>
     </form>
     <div class="ck-tabs" id="bgTabs"></div>
     <div class="ck-panel" id="bgPanel"></div>
-    <p class="budget-note">先点<b>谁付的</b>，再勾<b>分摊人</b>（默认全队4人均摊）。记下后在分摊人自己的标签页里会显示
-      「应付给 XX 多少钱」，转账后点<b>标记已付</b>即可销账。数据仅存本机。</p>
+    <p class="budget-note">上方四张卡片是<b>每人分摊后的实际花费</b>。记账先点<b>谁付的</b>（另起一行），再勾<b>分摊人</b>（默认全队4人均摊）；
+      记下后在分摊人标签页显示「应付给 XX」，转账后点<b>标记已付</b>销账。数据仅存本机。</p>
   </section>
 
   <!-- ===== 待办清单 ===== -->
@@ -887,9 +951,9 @@ const applemap = k => "https://maps.apple.com/?q=" + encodeURIComponent(k);
 
 const DAYS = [
 {n:1, date:"9.30", week:"周三", title:"长沙 → 丽江", sub:"古城初见", stay:"住 · 丽江古城", items:[
-  {time:"上午", title:"✈️ 长沙 → 丽江", desc:"飞机抵达丽江三义机场，机场距古城约28km，打车/机场大巴约40分钟。抵达后入住古城客栈，稍作休整。",
+  {time:"上午", title:"✈️ 长沙 → 丽江", desc:"飞机落地丽江三义机场，机场距古城约28km，打车或机场大巴约40分钟、100元上下。先去客栈放行李——古城全是石板路，选离路口近的客栈省力很多；安顿好再轻装出门。",
    tags:[{t:"行李寄存客栈", c:""}], map:"丽江三义国际机场"},
-  {time:"下午", title:"逛丽江古城", desc:"经典 Citywalk 路线，边走边拍，感受纳西古城慢生活。",
+  {time:"下午", title:"逛丽江古城", desc:"经典 Citywalk：大水车 → 四方街 → 大石桥 → 狮子山观景台，边走边拍约3小时。古城维护费已取消、免费进入；下午斜光最出片，登狮子山万古楼记得赶在日落前。",
    tags:[{t:"全程步行", c:""},{t:"免费进入", c:"money"}], map:"丽江古城",
    spots:[
     {name:"大水车", desc:"丽江古城标志性地标，玉河水分流处，拍照打卡第一站。", facts:"建议 15:00 前 · 免费"},
@@ -899,39 +963,43 @@ const DAYS = [
     {name:"狮子山观景台", desc:"俯拍古城全景的最佳机位，纳西族万古楼所在。", facts:"日落前1h到 · 万古楼约50元"},
     {name:"大石桥", desc:"明代石桥，古城最古老桥梁之一，桥下可拍水中倒影。", facts:"免费"}
    ]},
-  {time:"晚上", title:"古城夜游觅食", desc:"打卡鸡豆凉粉、腊排骨火锅、纳西烤鱼；酒吧街听民谣。",
+  {time:"晚上", title:"古城夜游觅食", desc:"小吃集中在五一街、七一街：鸡豆凉粉、腊排骨火锅、纳西烤鱼；想听民谣往酒吧街，嫌吵就钻巷子找小院。夜里石板路滑，回客栈别超过21:30。",
    tags:[{t:"21:00 前回客栈", c:"time"}]}
 ]},
 {n:2, date:"10.1", week:"周四", title:"丽江 → 泸沽湖", sub:"环湖日落", stay:"住 · 泸沽湖畔", items:[
-  {time:"上午", title:"🚗 丽江 → 泸沽湖", desc:"包车往返，车程约3.5–4小时，走丽宁公路山路，沿途观景台可停。",
+  {time:"上午", title:"🚗 丽江 → 泸沽湖", desc:"包车往返，走丽宁公路山路约3.5–4小时，沿途观景台可停拍照。备好晕车药、别一直低头看手机；泸沽湖海拔约2690m，下车别疯跑打闹。",
    tags:[{t:"包车 160元/人", c:"money"},{t:"建议 08:00 出发", c:"time"}], map:"泸沽湖"},
-  {time:"下午", title:"🛵 电动车环湖", desc:"租电动车环湖（约70km），顺时针：里格半岛 → 情人滩 → 走婚桥。",
+  {time:"下午", title:"🛵 电动车环湖", desc:"顺时针环湖：里格半岛 → 情人滩 → 走婚桥 → 女神湾。全程约70km，戴好头盔、满电出发；湖边风大备件外套，防晒霜墨镜必带。",
    tags:[{t:"租车约60–80元/天", c:"money"},{t:"戴好防晒", c:"warn"}], map:"泸沽湖",
    spots:[
     {name:"女神湾（乌俄岛）", desc:"泸沽湖看日落的最佳位置，正对格姆女神山，湖面镀金。", facts:"日落约 18:40 · 提前30分钟到"},
     {name:"里格半岛", desc:"湖心凸出的小半岛，观景台俯拍角度最经典。", facts:"免费"}
    ]},
-  {time:"晚上", title:"🔥 篝火晚会", desc:"摩梭村寨甲搓舞晚会，跟着当地人围着篝火跳舞，体验走婚文化。",
+  {time:"晚上", title:"🔥 篝火晚会", desc:"认准正规村寨的甲搓舞场次（客栈一般可帮订），围着篝火跟着节奏跳即可；夜里只有10°C左右，看完直接回客栈歇着。",
    tags:[{t:"约 20:00 开始", c:"time"},{t:"参与约30–50元", c:"money"}]}
 ]},
 {n:3, date:"10.2", week:"周五", title:"泸沽湖深度游", sub:"猪槽船 · 水性杨花", stay:"住 · 丽江古城", items:[
-  {time:"上午", title:"🚣 猪槽船游湖", desc:"乘摩梭传统猪槽船看水性杨花（海菜花），清晨花开最盛，湖水清澈见底。",
+  {time:"上午", title:"🚣 猪槽船游湖", desc:"乘摩梭传统猪槽船看水性杨花，清晨风小浪平、花开最盛，坐船头最出片；穿好救生衣，船上别站起身。",
    tags:[{t:"包船 150元", c:"money"},{t:"建议 08:00–10:00", c:"time"}], map:"猪槽船 泸沽湖"},
-  {time:"下午", title:"泸沽湖其他景点", desc:"补打卡草海、情人滩、女神山索道（自选），或湖边咖啡馆发呆。",
-   tags:[{t:"自由安排", c:""}], map:"泸沽湖草海"},
-  {time:"晚上", title:"返回丽江", desc:"包车原路返回丽江古城，车程约4小时，早点休息为明天蓄力。",
+  {time:"下午", title:"泸沽湖其他景点", desc:"补打卡草海、情人滩，或上女神山索道俯瞰全湖（恐高者跳过）；走婚桥栈道蚊虫尚多，喷点驱蚊液再走。",
+   tags:[{t:"自由安排", c:""}], map:"泸沽湖草海",
+   spots:[
+    {name:"草海走婚桥", desc:"万亩草海上的木栈桥，摩梭走婚文化地标，入秋芦苇金黄一片。", facts:"免费 · 桥上风大"},
+    {name:"情人滩", desc:"湖岸细沙滩，对岸即是四川，拍湖面倒影很出片。", facts:"免费 · 顺路停靠"}
+   ]},
+  {time:"晚上", title:"返回丽江", desc:"包车原路返回约4小时，提前和师傅约好出发时间；到丽江确认明早高铁/航班信息，热水泡脚早点休整。",
    tags:[{t:"建议 16:00 前出发", c:"time"},{t:"约 20:00 抵达", c:""}]}
 ]},
 {n:4, date:"10.3", week:"周六", title:"丽江 → 香格里拉", sub:"日照金山 · 古镇", stay:"住 · 独克宗古城", items:[
-  {time:"早上", title:"🌄 日照金山", desc:"丽江古城香巴拉客栈对面巷子，正对玉龙雪山，看晨光点燃雪顶。",
+  {time:"早上", title:"🌄 日照金山", desc:"机位在古城香巴拉客栈对面巷子，正对玉龙雪山。前一晚看天气预报，阴雨就别硬起；清晨只有几度，带热水和厚外套，等到07:20还没金顶就撤。",
    tags:[{t:"约 07:00–07:20", c:"time"},{t:"晴天概率高", c:"warn"}], map:"香巴拉客栈 丽江"},
-  {time:"上午", title:"白沙古镇 / 束河古镇", desc:"二选一或都逛：白沙看原生态纳西壁画，束河更文艺安静。",
+  {time:"上午", title:"白沙古镇 / 束河古镇", desc:"打车约20–30分钟，二选一或都逛：白沙看原生态纳西壁画（壁画在镇内需另购票约30元），束河更文艺安静、咖啡馆多，逛累了坐坐。",
    tags:[{t:"白沙壁画约30元", c:"money"}], map:"白沙古镇",
    spots:[
     {name:"白沙古镇", desc:"最古老的纳西古镇，正对玉龙雪山，壁画为明代遗迹。", facts:"车程20min · 壁画门票约30元"},
     {name:"束河古镇", desc:"茶马古道重镇，小桥流水，咖啡馆与手作店多，比大研安静。", facts:"免费 · 古维费已停收"}
    ]},
-  {time:"下午", title:"🚄 高铁去香格里拉", desc:"丽香铁路通车后丽江→香格里拉仅约1.5小时；抵达后逛独克宗古城。",
+  {time:"下午", title:"🚄 高铁去香格里拉", desc:"丽香铁路约1.5小时；国庆票紧，提前15天开售就抢票。香格里拉站离独克宗约5km、打车20分钟；到站先办入住，傍晚逛古城月光广场。",
    tags:[{t:"提前抢票", c:"time"}], map:"香格里拉站",
    spots:[
     {name:"独克宗古城", desc:"中国保存最好、最大的藏民居群，月光广场夜景很美。", facts:"免费 · 高原约3300m"},
@@ -939,52 +1007,55 @@ const DAYS = [
    ]}
 ]},
 {n:5, date:"10.4", week:"周日", title:"香格里拉一日", sub:"松赞林寺 · 纳帕海", stay:"住 · 独克宗古城", items:[
-  {time:"上午", title:"📿 藏服妆造 + 松赞林寺", desc:"先做藏服妆造（古城内约200–400元含妆造+拍摄），再游'小布达拉宫'松赞林寺。",
+  {time:"上午", title:"📿 藏服妆造 + 松赞林寺", desc:"热门妆造店旺季要提前预约（古城内约200–400元含妆造+拍摄），先做妆造再游「小布达拉宫」。门票约90含摆渡车；寺内顺时针转经，别怼着喇嘛正脸拍。",
    tags:[{t:"门票约90元", c:"money"},{t:"预留3小时", c:"time"}], map:"松赞林寺",
    spots:[
     {name:"噶丹·松赞林寺", desc:"云南最大藏传佛教寺院群，依山而建金顶辉煌，晨雾中尤似布达拉宫。", facts:"门票约90元(含摆渡车) · 10:00 前光线最好"}
    ]},
-  {time:"下午", title:"🛵 纳帕海电动车骑行", desc:"租电动车沿环湖路骑行，10月草甸金黄、水鸟聚集，路上常遇牛羊挡道。",
+  {time:"下午", title:"🛵 纳帕海电动车骑行", desc:"租电动车沿环湖路骑行，10月草甸金黄、水鸟聚集；路上常遇牛羊横穿注意避让。10月日落约18:40，提前收车别贪黑骑。",
    tags:[{t:"租车约60–80元", c:"money"},{t:"日落前收车", c:"time"}], map:"纳帕海"},
-  {time:"晚上", title:"独克宗古城夜游", desc:"月光广场跳锅庄、转经筒夜景、甜茶馆喝酥油茶。",
+  {time:"晚上", title:"独克宗古城夜游", desc:"月光广场跳锅庄、转经筒夜景、甜茶馆喝酥油茶；古城海拔约3300m，第一晚别洗头吹风、少熬夜，明天还有一整天长途。",
    tags:[{t:"早休息，明天长途", c:"warn"}]}
 ]},
 {n:6, date:"10.5", week:"周一", title:"香格里拉 → 稻城亚丁", sub:"无底湖 · 山路", stay:"住 · 香格里拉镇(日瓦)", items:[
-  {time:"全天", title:"🚗 香格里拉 → 无底湖 → 稻城亚丁", desc:"途经小众秘境无底湖短暂停留拍照，随后翻越山路前往稻城亚丁门口的香格里拉镇（日瓦）。",
-   tags:[{t:"车程约5–6小时", c:"time"},{t:"盘山路晕车药", c:"warn"},{t:"无底湖路况一般", c:""}], map:"无底湖"},
-  {time:"晚上", title:"香格里拉镇休整", desc:"镇上补给物资、早点休息；明早抢先进景区。",
+  {time:"全天", title:"🚗 香格里拉 → 无底湖 → 稻城亚丁", desc:"途经小众秘境无底湖短暂停留拍照（最后一段是土路，SUV/越野更稳妥），随后翻越山路前往稻城亚丁门口的香格里拉镇（日瓦）。全程5–6小时，备干粮饮水和晕车药。",
+   tags:[{t:"车程约5–6小时", c:"time"},{t:"盘山路晕车药", c:"warn"},{t:"无底湖路况一般", c:""}], map:"无底湖",
+   spots:[
+    {name:"无底湖", desc:"藏在原始森林中的高山湖泊，湖水墨绿如无底，小众静谧几乎无人。", facts:"免费 · 路况一般 · 停留约40min"}
+   ]},
+  {time:"晚上", title:"香格里拉镇休整", desc:"镇上超市补给明天进山的干粮和水，确认门票与观光车票已买；镇海拔约2900m比香格里拉舒服，21:00熄灯养精蓄锐。",
    tags:[{t:"海拔约2900m", c:""},{t:"21:00 熄灯", c:"time"}], map:"香格里拉镇 稻城"}
 ]},
 {n:7, date:"10.6", week:"周二", title:"稻城亚丁 → 香格里拉", sub:"三神山", stay:"住 · 香格里拉市", items:[
-  {time:"早上", title:"🏔 稻城亚丁景区", desc:"短线：冲古寺 → 珍珠海（仙乃日倒影）；体力好走长线：洛绒牛场 → 牛奶海 → 五色海。",
+  {time:"早上", title:"🏔 稻城亚丁景区", desc:"短线：冲古寺 → 珍珠海（仙乃日倒影）往返2–3h；体力好走长线：洛绒牛场 → 牛奶海 → 五色海往返5–7h。07:30前入园避开人流，门票+观光车提前网上买好；山上补给贵，自带巧克力葡萄糖，海拔4000m+步子放缓。",
    tags:[{t:"门票146+观光车120", c:"money"},{t:"07:30 前入园", c:"time"},{t:"海拔4000m+", c:"warn"}], map:"稻城亚丁景区",
    spots:[
     {name:"牛奶海", desc:"亚丁最热门的高山湖泊，碧蓝如玉嵌在雪山脚下，长线徒步终点。", facts:"往返约5–6h · 骑马单程约300元"},
     {name:"珍珠海（卓玛拉措）", desc:"短线即可抵达，近距离看仙乃日神山倒影。", facts:"往返约2–3h"}
    ]},
-  {time:"下午", title:"🚗 返回香格里拉", desc:"原路返回香格里拉市区，车程约5小时，沿途再次经过高原草甸。",
+  {time:"下午", title:"🚗 返回香格里拉", desc:"出园先在门口补给热食；原路返回香格里拉市区约5小时，山路弯多夜路暗，建议14:00前上车，约19:00抵达。",
    tags:[{t:"建议 14:00 前返程", c:"time"},{t:"约 19:00 抵达", c:""}]}
 ]},
 {n:8, date:"10.7", week:"周三", title:"香格里拉 → 长沙", sub:"返程", stay:"返程 · 回家", items:[
-  {time:"上午", title:"🚄 香格里拉 → 丽江", desc:"高铁约1.5小时，建议选 09:00 前车次，为下午航班留足余量。",
+  {time:"上午", title:"🚄 香格里拉 → 丽江", desc:"高铁约1.5小时，建议选 09:00 前车次为下午航班留足余量；国庆返程高峰，安检排队时间放宽、别掐点。",
    tags:[{t:"提前购票", c:"time"},{t:"约65–75元", c:"money"}], map:"香格里拉站"},
-  {time:"下午", title:"✈️ 丽江 → 长沙", desc:"丽江三义机场返程，建议预留2小时值机；丽江→长沙约2.5小时。",
+  {time:"下午", title:"✈️ 丽江 → 长沙", desc:"三义机场返程，提前2小时到机场；丽江→长沙约2.5小时。伴手礼带鲜花饼、普洱茶、牦牛肉干，现烤的鲜花饼更好吃。",
    tags:[{t:"提前2h到机场", c:"time"},{t:"伴手礼：鲜花饼/普洱", c:""}], map:"丽江三义国际机场"}
 ]}
 ];
 
 const REMINDS = [
- {d:"9.30", t:"07:00", x:"出发日：确认航班值机、带齐证件，提前2小时到机场"},
- {d:"10.1", t:"08:00", x:"丽江出发去泸沽湖，包车集合别迟到"},
- {d:"10.1", t:"18:10", x:"女神湾占位等日落（日落约18:40）"},
- {d:"10.2", t:"08:00", x:"猪槽船看水性杨花，上午花开最好"},
- {d:"10.2", t:"16:00", x:"泸沽湖返回丽江，车程约4小时"},
- {d:"10.3", t:"06:40", x:"香巴拉对面巷子看日照金山（约07:00）"},
- {d:"10.3", t:"—", x:"抢丽江→香格里拉高铁票（国庆票紧，提前15天开售）"},
- {d:"10.4", t:"09:00", x:"松赞林寺+藏服妆造，妆造店提前预约"},
- {d:"10.5", t:"07:30", x:"长途日：香格里拉→无底湖→稻城亚丁，车程5–6小时"},
- {d:"10.6", t:"07:30", x:"稻城亚丁开园即进，先走长线牛奶海"},
- {d:"10.7", t:"08:00", x:"高铁回丽江，别误车；下午航班提前2小时到机场"}
+ {d:"9.30", x:"出发日：确认航班值机、带齐证件，提前2小时到机场"},
+ {d:"10.1", x:"丽江出发去泸沽湖，包车集合别迟到"},
+ {d:"10.1", x:"女神湾占位等日落（日落约18:40）"},
+ {d:"10.2", x:"猪槽船看水性杨花，上午花开最好"},
+ {d:"10.2", x:"泸沽湖返回丽江，车程约4小时"},
+ {d:"10.3", x:"香巴拉对面巷子看日照金山（约07:00）"},
+ {d:"10.3", x:"抢丽江→香格里拉高铁票（国庆票紧，提前15天开售）"},
+ {d:"10.4", x:"松赞林寺+藏服妆造，妆造店提前预约"},
+ {d:"10.5", x:"长途日：香格里拉→无底湖→稻城亚丁，车程5–6小时"},
+ {d:"10.6", x:"稻城亚丁开园即进，先走长线牛奶海"},
+ {d:"10.7", x:"高铁回丽江，别误车；下午航班提前2小时到机场"}
 ];
 
 const SPOTS = [
@@ -1027,7 +1098,6 @@ const idx = dayIndex(now);
 
 /* ========== 行程事件 + 秒级倒计时 ========== */
 const BASE_EVENTS = [
-  {t:"2026-09-30 07:00", name:"出发日 · 长沙 → 丽江", sub:"提前2小时到机场 · 记得带身份证"},
   {t:"2026-10-01 08:00", name:"包车集合 · 丽江 → 泸沽湖", sub:"车程约4h · 160元/人"},
   {t:"2026-10-01 18:10", name:"女神湾看日落", sub:"日落约18:40 · 提前占机位"},
   {t:"2026-10-01 20:00", name:"篝火晚会", sub:"摩梭甲搓舞"},
@@ -1373,6 +1443,7 @@ function timeKey(t){
   if (h) return (+h[1]) * 60;
   return 900;
 }
+function bucketOf(k){ return k < 0 ? 0 : (k < 720 ? 1 : (k < 1080 ? 2 : 3)); }
 function effItem(d, i){
   const p = (dayEdits[d.n] || {})[i];
   if (p && p.del) return null;
@@ -1390,9 +1461,11 @@ function effItem(d, i){
 function tlEditForm(o){
   const opts = ["早上","上午","中午","下午","傍晚","晚上","全天"];
   if (opts.indexOf(o.time) < 0) opts.push(o.time);
+  const hm = /^\d{1,2}:\d{2}$/.test(String(o.time || "")) ? o.time : "";
   return `
     <form class="tl-edit" id="tlEdit">
       <select name="et">${opts.map(v => `<option${v === o.time ? " selected" : ""}>${esc(v)}</option>`).join("")}</select>
+      <input type="time" name="ehm" value="${esc(hm)}" title="具体时间（可选，填了按时段归类并按时间排序）">
       <input name="etitle" value="${esc(o.title)}" required placeholder="行程标题">
       <input name="edesc" value="${esc(o.desc || "")}" placeholder="备注（可选）">
       <input name="emap" value="${esc(o.map || "")}" placeholder="具体地点（地图用，城市留空）">
@@ -1492,16 +1565,16 @@ function renderSelectedDay(){
   const ents = [];
   eff.forEach((it, i) => {
     if (!it) return;
-    ents.push({k: timeKey(it.time), r: 1, o: i, html: tlItemHTML({
+    ents.push({k: timeKey(it.time), g: bucketOf(timeKey(it.time)), r: 1, o: i, html: tlItemHTML({
       time: it.time, title: it.title, desc: it.desc, tags: it.tags, map: it.map,
       traffic: itTraffic[i], spots: it.spots, src: "base", i: i, dayN: d.n
     })});
   });
-  bookings.forEach(b => ents.push({k: b.k, r: 0, o: b.i, html: bookingItemHTML(b)}));
-  customs.forEach((c, i) => ents.push({k: timeKey(c.time), r: 2, o: i, html: tlItemHTML({
+  bookings.forEach(b => ents.push({k: b.k, g: b.tk.time ? bucketOf(timeKey(b.tk.time)) : 0, r: 0, o: b.i, html: bookingItemHTML(b)}));
+  customs.forEach((c, i) => ents.push({k: timeKey(c.time), g: bucketOf(timeKey(c.time)), r: 2, o: i, html: tlItemHTML({
     time: c.time, title: c.title, desc: c.desc, map: c.map, src: "custom", i: i, custom: true
   })}));
-  extraTraffic.forEach((t, i) => ents.push({k: 9998, r: 3, o: i, html: `
+  extraTraffic.forEach((t, i) => ents.push({k: 9998, g: 4, r: 3, o: i, html: `
     <div class="tl-item">
       <span class="tl-time">交通</span>
       <div class="tl-body">
@@ -1509,23 +1582,33 @@ function renderSelectedDay(){
         <div class="tl-traffic">🚌 ${t.how}</div>
       </div>
     </div>`}));
-  ents.sort((a, b) => (a.k - b.k) || (a.r - b.r) || (a.o - b.o));
+  ents.sort((a, b) => (a.g - b.g) || (a.k - b.k) || (a.r - b.r) || (a.o - b.o));
+  const GN = ["全天", "上午", "下午", "晚上", "其他交通"];
+  const usedG = {};
+  ents.forEach(e => { usedG[e.g] = 1; });
+  const multiG = Object.keys(usedG).length > 1;
+  let cg = -1, tlHTML = "";
+  ents.forEach(e => {
+    if (e.g !== cg){
+      cg = e.g;
+      if (multiG) tlHTML += `<div class="tl-group"><b>${GN[cg]}</b><i></i></div>`;
+    }
+    tlHTML += e.html;
+  });
 
   /* 当日提醒：放在行程最上面 */
   const rs = REMINDS.filter(r => DATE2DAY[r.d] === d.n);
   const remindHTML = rs.length ? `
     <div class="day-block remind-top">
-      <h4 class="db-title">⏰ 当日提醒 <small>建议设闹钟</small></h4>
-      ${rs.map(r => `<div class="remind-item"><span class="r-day">${r.t}</span>
+      <h4 class="db-title">⏰ 当日提醒 <small>时间待定 · 确定后在行程里可改时间</small></h4>
+      ${rs.map(r => `<div class="remind-item">${r.t ? `<span class="r-day">${esc(r.t)}</span>` : ""}
         <div>${r.x}</div></div>`).join("")}
     </div>` : "";
 
-  /* 当日小地图（高清瓦片，含当日全部地点） */
-  const dp = DAY_PLACES[d.n] || [];
+  /* 当日小地图（高清瓦片，仅作地图展示；具体地点在条目内关联地图） */
   const mapHTML = `
     <div class="day-map" id="dayMap">
       <span class="dm-pin">📍 D${d.n} · ${esc(d.title)}</span>
-      <a class="dm-cta" href="${amap(dp.length ? dp[0][0] : d.title)}" target="_blank" rel="noopener">高德打开 →</a>
     </div>`;
 
   /* 住宿：来自「已预订-酒店」 */
@@ -1549,12 +1632,13 @@ function renderSelectedDay(){
       </div>
       ${mapHTML}
       ${remindHTML}
-      <div class="timeline">${ents.map(e => e.html).join("")}</div>
+      <div class="timeline">${tlHTML}</div>
       <form class="ci-add" id="ciAdd">
         <select id="ciTime">
           <option>早上</option><option>上午</option><option>中午</option>
           <option selected>下午</option><option>傍晚</option><option>晚上</option>
         </select>
+        <input type="time" id="ciHM" title="具体时间（可选，填了按时间排序）">
         <input id="ciTitle" placeholder="想加点什么？如：黑龙潭公园" required>
         <input id="ciDesc" placeholder="备注（可选）" style="max-width:170px">
         <input id="ciMap" placeholder="具体地点（可选，城市不用填）" style="max-width:190px">
@@ -1672,7 +1756,8 @@ document.addEventListener("submit", e => {
       const el = e.target.querySelector(sel);
       return el ? String(el.value == null ? "" : el.value).trim() : "";
     };
-    const time = v("[name=et]"), title = v("[name=etitle]"),
+    const hm = v("[name=ehm]");
+    const time = hm || v("[name=et]"), title = v("[name=etitle]"),
           desc = v("[name=edesc]"), map = v("[name=emap]");
     if (!title) return;
     if (tlEdit.src === "base"){
@@ -1688,7 +1773,8 @@ document.addEventListener("submit", e => {
   }
   if (e.target.id !== "ciAdd") return;
   e.preventDefault();
-  const time = document.getElementById("ciTime").value;
+  const hmEl = document.getElementById("ciHM");
+  const time = (hmEl && hmEl.value) || document.getElementById("ciTime").value;
   const title = document.getElementById("ciTitle").value.trim();
   const desc = document.getElementById("ciDesc").value.trim();
   const map = document.getElementById("ciMap").value.trim();
@@ -1897,12 +1983,14 @@ const shareAmt = b => b.amt / b.shares.length;
 
 let bgWho = 0;
 function renderBudget(){
-  const total = budget.reduce((s, b) => s + b.amt, 0);
-  const unpaidCount = budget.reduce((n, b) =>
-    n + b.shares.filter(p => p !== b.payer && !b.paid.includes(p)).length, 0);
-  document.getElementById("bTotal").textContent = total.toFixed(0);
-  document.getElementById("bCount").textContent = budget.length;
-  document.getElementById("bUnpaid").textContent = unpaidCount;
+  const bar = document.getElementById("budgetBar");
+  if (bar) bar.innerHTML = BNAMES.map((n, i) => {
+    const amt = budget.reduce((s, b) =>
+      s + (b.shares.indexOf(i) >= 0 ? b.amt / b.shares.length : 0), 0);
+    return `<div class="budget-stat">
+      <div class="bs-num">¥${amt.toFixed(0)}</div>
+      <div class="bs-label">${n} · 实际花费</div></div>`;
+  }).join("");
 
   document.getElementById("bgTabs").innerHTML = BNAMES.map((n, i) => {
     const pend = budget.reduce((s, b) =>
