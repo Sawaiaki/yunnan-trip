@@ -1640,6 +1640,7 @@ function renderSelectedDay(){
       </div>
       ${remindHTML}
       <div class="timeline">${tlHTML}</div>
+      ${stayHTML}
       <form class="ci-add" id="ciAdd">
         <select id="ciTime">
           <option>早上</option><option>上午</option><option>中午</option>
@@ -1652,7 +1653,6 @@ function renderSelectedDay(){
         <input id="ciMap" placeholder="具体地点，如 黑龙潭（城市不用填）">
         <button type="submit">＋ 添加到 D${d.n}</button>
       </form>
-      ${stayHTML}
     </article>`;
 }
 
