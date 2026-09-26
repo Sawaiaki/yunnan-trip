@@ -1320,10 +1320,10 @@ document.addEventListener("submit", e => {
   document.getElementById("tkNo").focus();
 });
 document.addEventListener("click", e => {
-  const ed = e.target.closest(".tk-edit");
+  const ed = e.target.closest(".tk-edit, .bk-edit");
   if (ed){ tkEditStart(Number(ed.dataset.tk)); return; }
   if (e.target.id === "tkCancel"){ tkEditCancel(); return; }
-  const del = e.target.closest(".tk-del");
+  const del = e.target.closest(".tk-del, .bk-del");
   if (!del) return;
   const di = Number(del.dataset.tk);
   tickets.splice(di, 1);
@@ -1574,11 +1574,15 @@ function bookingItemHTML(b){
     desc = [tk.from, dt + (tk.time ? " " + tk.time : ""), tk.seat].filter(Boolean).join(" · ") || "已预订";
     map = tk.from || tk.no;
   }
+  const btns = `<span class="tl-btns">
+      <button type="button" class="bk-edit" data-tk="${b.i}" title="修改">✎</button>
+      <button type="button" class="bk-del" data-tk="${b.i}" title="删除">✕</button>
+    </span>`;
   return `
     <div class="tl-item bk">
       <span class="tl-time">${esc(timeTxt)}</span>
       <div class="tl-body">
-        <h4>${title}</h4>
+        <h4>${title}${btns}</h4>
         <p>${esc(desc)}</p>
         ${mapBtns(map)}
       </div>
@@ -2075,7 +2079,7 @@ function renderBudget(){
     s + x.b.shares.filter(q => q !== p && !x.b.paid.includes(q)).length * shareAmt(x.b), 0);
 
   let html = `<div class="pay-sum">
-      <span class="settle-chip">我垫付 <b>¥${lend.reduce((s, x) => s + x.b.amt, 0).toFixed(0)}</b>（${lend.length}笔）</span>
+      <span class="settle-chip">我支付 <b>¥${lend.reduce((s, x) => s + x.b.amt, 0).toFixed(0)}</b>（${lend.length}笔）</span>
       <span class="settle-chip">别人待还我 <b>¥${lendNow.toFixed(1)}</b></span>
       <span class="settle-chip">我待付他人 <b>¥${owedNow.toFixed(1)}</b></span>
     </div>`;
@@ -2086,14 +2090,14 @@ function renderBudget(){
       return `<div class="pay-row">
         <span class="pr-ic" style="background:linear-gradient(135deg,var(--blue),#1d5a80)">${BNAMES[b.payer][0]}</span>
         <div class="pr-main"><b>${esc(b.name)}</b>
-          <small>垫付人 ${BNAMES[b.payer]} · ${b.shares.length}人分</small></div>
+          <small>支付人 ${BNAMES[b.payer]} · ${b.shares.length}人分</small></div>
         <span class="pr-amt">¥${shareAmt(b).toFixed(1)}<small>${paid ? "已付 ✓" : "应付"}</small></span>
         <button class="pay-btn ${paid ? "paid" : ""}" data-i="${i}" data-p="${p}">${paid ? "撤销" : "标记已付"}</button>
         <button class="pay-del" data-del="${i}" title="删除这笔">✕</button>
       </div>`;
     }).join("") : `<div class="ck-empty">没有需要你付的钱 ✓</div>`) + `</div>`;
 
-  html += `<h4 class="db-title">我垫付的 <small>分摊人应付我</small></h4><div class="pay-list">` +
+  html += `<h4 class="db-title">我支付的 <small>分摊人应付我</small></h4><div class="pay-list">` +
     (lend.length ? lend.map(({b, i}) => {
       const rest = b.shares.filter(q => q !== p && !b.paid.includes(q));
       const done = b.shares.filter(q => q !== p && b.paid.includes(q));
@@ -2107,7 +2111,7 @@ function renderBudget(){
         <span class="pr-amt">¥${b.amt.toFixed(0)}<small>${b.shares.length}人分</small></span>
         <button class="pay-del" data-del="${i}" title="删除这笔">✕</button>
       </div>`;
-    }).join("") : `<div class="ck-empty">暂无垫付记录</div>`) + `</div>`;
+    }).join("") : `<div class="ck-empty">暂无支付记录</div>`) + `</div>`;
 
   document.getElementById("bgPanel").innerHTML = html;
 }
