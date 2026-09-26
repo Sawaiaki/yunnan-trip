@@ -2081,7 +2081,7 @@ document.getElementById("budgetForm").addEventListener("submit", e => {
   const shares = [...document.querySelectorAll("#sharePick .who.on")]
     .map(b => Number(b.dataset.w)).sort((a, b) => a - b);
   if (!name || isNaN(amt) || !shares.length) return;
-  budget.push({ name, amt, payer, shares, paid: [] });
+  budget.unshift({ name, amt, payer, shares, paid: [] });
   saveBudget(); renderBudget();
   e.target.reset();
   document.getElementById("payerPick").querySelectorAll(".who").forEach((b, i) =>
@@ -2315,9 +2315,12 @@ document.getElementById("ckPanel").addEventListener("change", e => {
   const cb = e.target;
   if (cb.type !== "checkbox") return;
   const store = ckStore(cb);
-  const item = store[cb.dataset.mod] && store[cb.dataset.mod][Number(cb.dataset.i)];
+  const list = store[cb.dataset.mod];
+  const item = list && list[Number(cb.dataset.i)];
   if (!item) return;
   item.c = cb.checked;
+  const moved = list.splice(Number(cb.dataset.i), 1)[0];
+  if (cb.checked) list.push(moved); else list.unshift(moved);
   saveCk(); renderCk();
 });
 document.getElementById("ckMod").addEventListener("change", syncNewMod);
@@ -2337,7 +2340,7 @@ document.getElementById("ckAdd").addEventListener("submit", e => {
     mod = newText;
   }
   ckData[ckWho][mod] = ckData[ckWho][mod] || [];
-  ckData[ckWho][mod].push({t: val, c: false});
+  ckData[ckWho][mod].unshift({t: val, c: false});
   document.getElementById("ckInput").value = "";
   saveCk(); renderCk();
 });
