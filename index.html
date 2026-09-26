@@ -148,25 +148,6 @@ section{padding:26px 0 6px}
   padding:5px 11px;border-radius:999px;white-space:nowrap;
 }
 .route-bar .arrow{flex:0 0 auto;color:var(--gold);font-weight:800;font-size:13px}
-.day-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.day-card{
-  background:var(--paper);border:1px solid rgba(24,150,138,.45);border-radius:14px;
-  padding:12px 8px;text-align:center;text-decoration:none;box-shadow:var(--shadow);
-  transition:transform .15s;position:relative;overflow:hidden;
-}
-.day-card:hover{transform:translateY(-3px)}
-.day-card .dnum{font-size:15px;font-weight:800;color:var(--red);font-family:"Songti SC",serif}
-.day-card .ddate{font-size:11px;color:var(--muted)}
-.day-card .droute{font-size:11.5px;margin-top:5px;color:var(--ink);line-height:1.4}
-.day-card .dstatus{
-  display:block;font-size:10px;margin-top:6px;padding:1px 0;border-radius:999px;
-  background:#e9f2f0;color:var(--muted);
-}
-.day-card.today{border:2px solid var(--red);background:linear-gradient(180deg,#e9f7f4,#ffffff)}
-.day-card.today .dstatus{background:var(--red);color:#fff;font-weight:700}
-.day-card.past{opacity:.55}
-.day-card.past .dstatus{background:#e4ecea;color:#9ab8b3}
-
 /* ---------- day detail ---------- */
 .day-card-full{
   background:var(--paper);border:1px solid rgba(24,150,138,.45);border-radius:16px;
@@ -211,6 +192,24 @@ section{padding:26px 0 6px}
   padding:1px 9px;border-radius:999px;letter-spacing:1px;margin-bottom:4px;
 }
 .tl-body h4{font-size:15.5px;color:var(--ink);line-height:1.5}
+.tl-body h4 .tl-btns{display:inline-flex;gap:4px;margin-left:7px;vertical-align:-3px}
+.tl-body h4 .tl-btns button{
+  border:none;background:#e9f2f0;color:#7ba39b;font-size:12px;line-height:1;
+  width:23px;height:23px;border-radius:7px;cursor:pointer;opacity:.55;transition:all .12s;
+}
+.tl-body h4 .tl-btns button:hover{opacity:1;background:#d9ece8;color:var(--red-dark)}
+.tl-edit{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+.tl-edit input,.tl-edit select{
+  border:1.5px solid rgba(24,150,138,.45);border-radius:9px;padding:7px 10px;
+  font-size:13.5px;background:#fff;outline:none;font-family:inherit;
+}
+.tl-edit input{flex:1;min-width:120px}
+.tl-edit select{flex:0 0 auto}
+.tl-edit button{
+  border:none;border-radius:9px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;
+}
+.tl-edit .save{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff}
+.tl-edit .cancel{background:#e9f2f0;color:var(--muted)}
 .tl-body>p{font-size:13.5px;color:#45605b;margin-top:4px}
 .tags{margin-top:6px;display:flex;flex-wrap:wrap;gap:6px}
 .tag{
@@ -316,6 +315,12 @@ section{padding:26px 0 6px}
   border-right:2px dashed rgba(255,255,255,.65);position:relative;
 }
 .ticket.plane .tk-stub{background:linear-gradient(160deg,var(--blue),#1d5a80)}
+.ticket.hotel{border-color:rgba(242,176,61,.6);background:linear-gradient(135deg,#ffffff 0%,#fffaf0 100%)}
+.ticket.hotel .tk-stub{background:linear-gradient(160deg,#e8a72c,#b0760f)}
+.ticket.hotel .tk-stub::before,.ticket.hotel .tk-stub::after{border-color:rgba(242,176,61,.6)}
+.ticket.tkt{border-color:rgba(123,92,214,.5);background:linear-gradient(135deg,#ffffff 0%,#f7f4ff 100%)}
+.ticket.tkt .tk-stub{background:linear-gradient(160deg,#7b5cd6,#5b44ae)}
+.ticket.tkt .tk-stub::before,.ticket.tkt .tk-stub::after{border-color:rgba(123,92,214,.5)}
 .tk-stub::before,.tk-stub::after{
   content:"";position:absolute;right:-9px;width:16px;height:16px;border-radius:50%;
   background:var(--cream);border:1.5px solid rgba(24,150,138,.5);
@@ -569,19 +574,34 @@ section{padding:26px 0 6px}
 }
 .packing-note b{color:var(--blue)}
 
-/* ---------- 每日小地图 ---------- */
-.day-map{
-  position:relative;height:160px;overflow:hidden;
-  border-bottom:1px dashed rgba(24,150,138,.45);background:#e9f0ee;
+/* ---------- 高清线条地图（CARTO 瓦片 + SVG 覆盖层） ---------- */
+.tile-map{position:relative;overflow:hidden;background:#eaf1ef}
+.tile-map .tm-tile{
+  position:absolute;width:256px;height:256px;
+  user-select:none;pointer-events:none;-webkit-user-drag:none;
 }
-.day-map img{width:100%;height:100%;object-fit:cover;display:block}
+.tile-map svg{position:absolute;left:0;top:0;pointer-events:none}
+.tile-map svg a{pointer-events:auto;cursor:pointer}
+.tile-map .tm-label{
+  font-family:"Songti SC",Kaiti SC,STKaiti,cursive;
+  font-weight:800;paint-order:stroke;stroke:#fff;stroke-width:3.5px;stroke-linejoin:round;
+}
+.tile-map .tm-credit{
+  position:absolute;left:6px;bottom:5px;z-index:6;font-size:9.5px;color:#5b736e;
+  background:rgba(255,255,255,.8);border-radius:6px;padding:1px 7px;text-decoration:none;
+}
+.tile-map.ov{height:330px;border-radius:12px}
+.day-map{
+  position:relative;height:170px;overflow:hidden;
+  border-bottom:1px dashed rgba(24,150,138,.45);background:#eaf1ef;
+}
 .day-map .dm-pin{
-  position:absolute;left:10px;top:10px;font-size:11.5px;font-weight:800;color:#fff;
+  position:absolute;left:10px;top:10px;z-index:5;font-size:11.5px;font-weight:800;color:#fff;
   background:rgba(15,122,110,.9);border-radius:999px;padding:3px 11px;
   box-shadow:0 2px 8px rgba(0,0,0,.25);pointer-events:none;
 }
 .day-map .dm-cta{
-  position:absolute;right:10px;bottom:9px;font-size:11.5px;font-weight:700;color:var(--red-dark);
+  position:absolute;right:10px;bottom:9px;z-index:5;font-size:11.5px;font-weight:700;color:var(--red-dark);
   background:rgba(255,255,255,.92);border:1px solid rgba(24,150,138,.5);border-radius:999px;
   padding:3px 11px;text-decoration:none;box-shadow:0 2px 6px rgba(0,0,0,.12);
 }
@@ -615,17 +635,13 @@ section{padding:26px 0 6px}
   border-radius:50%;font-size:13px;cursor:pointer;flex:0 0 auto;opacity:.5;transition:opacity .12s;
 }
 .hotel-card:hover .h-del{opacity:1}
-.stay-add{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.stay-add input{
-  border:1.5px solid rgba(242,176,61,.55);border-radius:10px;padding:8px 11px;
-  font-size:13.5px;background:#fffdf7;outline:none;
-}
-.stay-add input.h-in-name{flex:1;min-width:150px}
-.stay-add input.h-in-note{flex:1;min-width:130px}
-.stay-add input:focus{border-color:var(--gold)}
-.stay-add button{
-  border:none;background:linear-gradient(135deg,var(--gold),#e09a20);color:#fff;
-  border-radius:10px;padding:0 15px;font-size:13.5px;font-weight:700;cursor:pointer;
+.hotel-card .tk-del{opacity:.6;background:rgba(255,255,255,.85)}
+.hotel-card:hover .tk-del{opacity:1}
+.hotel-card .actions{margin-top:6px}
+.hotel-card .btn-map{font-size:11.5px;padding:3px 9px}
+.stay-empty{
+  font-size:13px;color:var(--muted);background:#f2f7f6;
+  border:1px dashed rgba(24,150,138,.4);border-radius:10px;padding:9px 12px;margin-bottom:10px;
 }
 .db-title.stay-t{color:#8a5b00}
 
@@ -697,7 +713,7 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
 
 /* ---------- glassmorphism 毛玻璃 ---------- */
 .glass,
-.day-card, .day-card-full, .spot-card, .map-link, .remind-item,
+.day-card-full, .spot-card, .map-link, .remind-item,
 .budget-stat, .budget-form, .budget-list li, .check-group, .book-card,
 .info-table, .route-bar{
   background:rgba(255,255,255,.62);
@@ -710,16 +726,23 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
 .spot{background:rgba(255,255,255,.5);backdrop-filter:blur(8px)}
 .map-wrap{background:rgba(255,255,255,.55);backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5)}
 @supports not (backdrop-filter:blur(1px)){
-  .glass,.day-card,.day-card-full,.spot-card,.map-link,.remind-item,
+  .glass,.day-card-full,.spot-card,.map-link,.remind-item,
   .budget-stat,.budget-form,.budget-list li,.check-group,.book-card,.map-wrap{background:rgba(255,255,255,.92)}
 }
 
 @media (max-width:640px){
   .hero h1{font-size:27px}
-  .day-grid{grid-template-columns:repeat(2,1fr)}
   .spotlight-grid,.map-grid,.check-grid,.book-grid{grid-template-columns:1fr}
   .budget-bar{grid-template-columns:repeat(3,1fr)}
   html{scroll-padding-top:100px}
+  /* day-head 手机端：徽章+文字一行，天气/日期换行到文字下方 */
+  .day-head{flex-wrap:wrap;gap:8px 10px;padding:12px 14px}
+  .day-badge{width:50px;height:50px}
+  .day-head-info{order:1;flex:1 1 calc(100% - 60px);min-width:0}
+  .day-head .wx-chip{order:2;margin-left:60px}
+  .day-tag{order:3;margin-left:8px;align-self:center}
+  .tile-map.ov{height:250px}
+  .day-map{height:150px}
 }
 </style>
 </head>
@@ -761,152 +784,11 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
 
   <!-- ===== 总览 ===== -->
   <section id="overview">
-    <h2 class="sec-title">行程总览 <small>手绘路线 · 点色块跳转对应天</small></h2>
+    <h2 class="sec-title">行程总览 <small>高清线路地图 · 点击色块跳转对应天</small></h2>
     <div class="map-wrap glass">
-      <svg viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="云南行程手绘地图">
-        <defs>
-          <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.014" numOctaves="2" seed="7" result="n"/>
-            <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G"/>
-          </filter>
-          <marker id="arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M0,1 L9,5 L0,9 z" fill="#5b736e"/>
-          </marker>
-        </defs>
-
-        <!-- 涂鸦装饰 -->
-        <g class="doodle" filter="url(#rough)">
-          <!-- 纸张底纹与内框 -->
-          <rect x="14" y="14" width="772" height="492" rx="22" fill="#fffdf6" opacity=".7"/>
-          <rect x="26" y="26" width="748" height="468" rx="16" fill="none" stroke="#c9a86a" stroke-width="2" stroke-dasharray="14 9" opacity=".75"/>
-          <g stroke="#c9a86a" stroke-width="2.4" fill="none" opacity=".85">
-            <path d="M26 66 v-24 h40"/><path d="M774 66 v-24 h-40"/>
-            <path d="M26 454 v24 h40"/><path d="M774 454 v24 h-40"/>
-          </g>
-          <!-- 地形色块 -->
-          <path d="M40 120 q120 -60 250 -30 q90 22 150 -8 q110 -54 240 -10 q60 20 80 70 q-40 90 -190 110 q-160 22 -300 -6 q-140 -28 -200 -70 q-40 -30 -30 -56 z" fill="#e8f3e6" opacity=".8"/>
-          <path d="M60 330 q140 -40 300 -14 q170 28 360 -14 q20 60 -30 120 q-120 60 -330 44 q-180 -14 -270 -70 q-40 -36 -30 -66 z" fill="#f3eddd" opacity=".75"/>
-          <path d="M470 60 q80 -20 170 6 q40 40 10 96 q-90 30 -160 -6 q-40 -50 -20 -96 z" fill="#fdeedd" opacity=".8"/>
-          <!-- 雪山群 -->
-          <g filter="url(#rough)">
-            <path d="M360 118 l44 -66 l38 66 z" fill="#ffffff" stroke="#8fb6c9" stroke-width="3" stroke-linejoin="round"/>
-            <path d="M394 66 l10 20 l10 -16 l10 20" fill="none" stroke="#8fb6c9" stroke-width="2.5"/>
-            <path d="M404 118 l30 -48 l28 48 z" fill="#ffffff" stroke="#a8c6d6" stroke-width="3" stroke-linejoin="round"/>
-            <path d="M436 70 l8 14 l8 -12 l8 14" fill="none" stroke="#a8c6d6" stroke-width="2.5"/>
-          </g>
-          <!-- 松林 -->
-          <g stroke="#5d8f6f" stroke-width="2.6" fill="#cfe6d2" stroke-linejoin="round">
-            <path d="M96 300 l10 -22 l10 22 z"/><path d="M120 312 l11 -24 l11 24 z"/><path d="M84 316 l9 -20 l9 20 z"/>
-            <path d="M660 300 l10 -22 l10 22 z"/><path d="M684 312 l11 -24 l11 24 z"/>
-          </g>
-          <!-- 牦牛 -->
-          <g transform="translate(150 262)" stroke="#6b5a44" stroke-width="2.4" fill="#8d7a5f" stroke-linecap="round">
-            <ellipse cx="0" cy="0" rx="13" ry="8"/>
-            <path d="M-10 6 v8 M-4 7 v7 M6 7 v7 M11 6 v8"/>
-            <path d="M11 -4 q8 -4 12 2" fill="none"/>
-            <path d="M20 -2 l4 -3 M20 -2 l4 2"/>
-          </g>
-          <!-- 太阳 -->
-          <circle cx="70" cy="62" r="24" fill="#ffe9b8" stroke="#f2b03d" stroke-width="3"/>
-          <g stroke="#f2b03d" stroke-width="3" stroke-linecap="round">
-            <path d="M70 24 v-10 M70 100 v10 M32 62 h-10 M108 62 h10 M43 35 l-7 -7 M97 35 l7 -7 M43 89 l-7 7 M97 89 l7 7"/>
-          </g>
-          <!-- 云 -->
-          <path d="M130 78 q18 -22 42 -10 q16 -20 40 -6 q22 -4 24 16 q4 16 -16 18 h-76 q-18 -2 -14 -18" fill="#ffffff" stroke="#9ec9d8" stroke-width="2.5" opacity=".95"/>
-          <path d="M595 55 q16 -20 38 -9 q14 -17 36 -5 q19 -3 21 14 q4 14 -14 16 h-68 q-16 -2 -13 -16" fill="#ffffff" stroke="#9ec9d8" stroke-width="2.5" opacity=".95"/>
-          <path d="M300 60 q14 -16 32 -7 q12 -14 30 -4 q16 -2 17 12 q3 12 -12 13 h-56 q-13 -2 -11 -13" fill="#ffffff" stroke="#9ec9d8" stroke-width="2.2" opacity=".8"/>
-          <!-- 左下山脉 -->
-          <g fill="none" stroke="#7ba88f" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
-            <path d="M40 470 l46 -62 l30 40 l34 -52 l44 74"/>
-            <path d="M96 470 l30 -34"/>
-          </g>
-          <!-- 泸沽湖水面 -->
-          <ellipse cx="533" cy="237" rx="44" ry="26" fill="#d8eef6" stroke="#6fb3cd" stroke-width="3" transform="rotate(-12 533 237)"/>
-          <path d="M505 236 q14 7 28 0 q14 -7 28 0" fill="none" stroke="#6fb3cd" stroke-width="2" stroke-linecap="round"/>
-          <path d="M507 246 q13 6 26 0 q13 -6 26 0" fill="none" stroke="#6fb3cd" stroke-width="1.6" stroke-linecap="round" opacity=".7"/>
-          <!-- 纳帕海 -->
-          <ellipse cx="178" cy="232" rx="30" ry="17" fill="#d8eef6" stroke="#6fb3cd" stroke-width="2.5" transform="rotate(8 178 232)"/>
-          <path d="M158 232 q10 5 20 0 q10 -5 20 0" fill="none" stroke="#6fb3cd" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>
-          <!-- 长江第一湾水纹 -->
-          <path d="M620 400 q30 -22 70 -16 q40 6 76 -20" fill="none" stroke="#8ec3d8" stroke-width="3" stroke-linecap="round" opacity=".8"/>
-          <path d="M636 414 q28 -18 62 -13 q36 5 68 -16" fill="none" stroke="#8ec3d8" stroke-width="2" stroke-linecap="round" opacity=".55"/>
-          <!-- 寺庙小塔 -->
-          <g transform="translate(258 176)" stroke="#a06a3a" stroke-width="2.2" fill="#f7e3c2" stroke-linejoin="round">
-            <path d="M0 -26 l9 10 h-18 z"/><rect x="-7" y="-16" width="14" height="14"/>
-            <path d="M-11 0 l11 -8 l11 8 v12 h-22 z"/>
-          </g>
-          <!-- 罗盘 -->
-          <g transform="translate(744 460)">
-            <circle r="26" fill="#fffdf6" stroke="#77908b" stroke-width="2.5"/>
-            <circle r="20" fill="none" stroke="#c9a86a" stroke-width="1.4" stroke-dasharray="3 4"/>
-            <path d="M0 -19 L6 4 L0 -1 L-6 4 Z" fill="#e2574c"/>
-            <path d="M0 19 L6 -4 L0 1 L-6 -4 Z" fill="#77908b" opacity=".6"/>
-            <text y="-30" text-anchor="middle" font-size="14" fill="#77908b" font-weight="700">N</text>
-          </g>
-        </g>
-
-        <!-- 路线（每天一色） -->
-        <g class="routes" fill="none" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough)" marker-end="url(#arw)">
-          <a href="#day1"><path class="rt r1" d="M745 140 Q612 168 400 340" stroke-dasharray="10 8"/></a>
-          <a href="#day2"><path class="rt r2" d="M400 340 Q472 302 524 222"/></a>
-          <a href="#day3"><path class="rt r3" d="M520 232 Q512 318 408 352"/></a>
-          <a href="#day4"><path class="rt r4" d="M400 340 Q384 318 364 300 Q296 272 230 250"/></a>
-          <a href="#day5"><path class="rt r5" d="M228 248 Q222 216 254 194 Q214 204 180 228 Q204 254 230 251"/></a>
-          <a href="#day6"><path class="rt r6" d="M232 248 Q272 214 322 160 Q378 134 420 92"/></a>
-          <a href="#day7"><path class="rt r7" d="M430 96 Q456 168 388 208 Q316 248 238 258"/></a>
-          <a href="#day8"><path class="rt r8" d="M236 256 Q330 348 406 346"/></a>
-          <a href="#day8"><path class="rt r8" d="M404 340 Q592 248 745 144" stroke-dasharray="10 8"/></a>
-        </g>
-
-        <!-- 城市节点 -->
-        <g class="nodes">
-          <g transform="translate(400 340)"><circle r="9" fill="#fff" stroke="#0f7a6f" stroke-width="3.5"/><circle r="3.5" fill="#0f7a6f"/></g>
-          <g transform="translate(524 222)"><circle r="9" fill="#fff" stroke="#2f7fb8" stroke-width="3.5"/><circle r="3.5" fill="#2f7fb8"/></g>
-          <g transform="translate(230 250)"><circle r="9" fill="#fff" stroke="#7b5cd6" stroke-width="3.5"/><circle r="3.5" fill="#7b5cd6"/></g>
-          <g transform="translate(420 92)"><circle r="9" fill="#fff" stroke="#d64b92" stroke-width="3.5"/><circle r="3.5" fill="#d64b92"/></g>
-          <g transform="translate(745 142)"><circle r="9" fill="#fff" stroke="#e2574c" stroke-width="3.5"/><circle r="3.5" fill="#e2574c"/></g>
-        </g>
-
-        <!-- 地名 -->
-        <g class="labels" font-family="Kaiti SC,STKaiti,KaiTi,cursive" style="paint-order:stroke;stroke:#fffdf6;stroke-width:4px;stroke-linejoin:round">
-          <text x="400" y="376" text-anchor="middle" font-size="21" font-weight="700" fill="#243c37" transform="rotate(-2 400 376)">丽江</text>
-          <text x="540" y="200" font-size="19" font-weight="700" fill="#243c37" transform="rotate(3 540 200)">泸沽湖</text>
-          <text x="204" y="284" text-anchor="middle" font-size="19" font-weight="700" fill="#243c37" transform="rotate(-3 204 284)">香格里拉</text>
-          <text x="432" y="70" font-size="19" font-weight="700" fill="#243c37" transform="rotate(2 432 70)">稻城亚丁</text>
-          <text x="740" y="176" text-anchor="end" font-size="19" font-weight="700" fill="#243c37">长沙 ✈</text>
-          <text x="364" y="296" text-anchor="end" font-size="14" fill="#77908b">束河·白沙</text>
-          <text x="258" y="190" font-size="14" fill="#77908b">松赞林寺</text>
-          <text x="146" y="236" text-anchor="end" font-size="14" fill="#77908b">纳帕海</text>
-          <text x="330" y="152" font-size="14" fill="#77908b">无底湖</text>
-          <text x="533" y="272" text-anchor="middle" font-size="13" fill="#4b8ba6">女神湾看日落</text>
-          <!-- 车站小标 -->
-          <text x="330" y="330" font-size="13" fill="#3aa655">🚄 丽香铁路</text>
-        </g>
-        <!-- 标题与印 -->
-        <g class="labels" font-family="Kaiti SC,STKaiti,KaiTi,cursive" style="paint-order:stroke;stroke:#f7f2e4;stroke-width:5px;stroke-linejoin:round">
-          <text x="46" y="368" font-size="30" font-weight="800" fill="#243c37" opacity=".92">云岭八日</text>
-          <text x="48" y="390" font-size="13" fill="#77908b" letter-spacing="3">YUNNAN · 8 DAYS</text>
-          <g transform="translate(176 374) rotate(-8)">
-            <rect x="-24" y="-24" width="48" height="48" rx="7" fill="none" stroke="#e2574c" stroke-width="3.5"/>
-            <text y="8" text-anchor="middle" font-size="18" font-weight="800" fill="#e2574c">出发</text>
-          </g>
-        </g>
-
-        <!-- 天数徽章 -->
-        <g class="badges-d" font-size="12" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#fffdf6;stroke-width:4px;stroke-linejoin:round">
-          <g transform="translate(596 226)"><circle r="14" fill="#e2574c" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D1</text></g>
-          <g transform="translate(478 290)"><circle r="14" fill="#ef8a2e" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D2</text></g>
-          <g transform="translate(472 330)"><circle r="14" fill="#d9a514" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D3</text></g>
-          <g transform="translate(306 286)"><circle r="14" fill="#3aa655" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D4</text></g>
-          <g transform="translate(196 194)"><circle r="14" fill="#17a398" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D5</text></g>
-          <g transform="translate(344 130)"><circle r="14" fill="#7b5cd6" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D6</text></g>
-          <g transform="translate(420 176)"><circle r="14" fill="#d64b92" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D7</text></g>
-          <g transform="translate(560 268)"><circle r="14" fill="#2f7fb8" stroke="#fffdf6" stroke-width="3"/><text y="4" fill="#fff" stroke="none">D8</text></g>
-        </g>
-      </svg>
+      <div class="tile-map ov" id="ovMap" role="img" aria-label="云南行程线路地图"></div>
       <div class="map-legend" id="mapLegend"></div>
     </div>
-    <div class="day-grid" id="dayGrid"></div>
   </section>
 
   <!-- ===== 每日行程 ===== -->
@@ -916,18 +798,20 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
     <div id="dayList"></div>
   </section>
 
-  <!-- ===== 已预订（车票/机票） ===== -->
+  <!-- ===== 已预订（交通/酒店/门票） ===== -->
   <section id="tickets">
-    <h2 class="sec-title">已预订 <small>车票 · 机票 · 出发时间自动进顶部倒计时</small></h2>
+    <h2 class="sec-title">已预订 <small>交通 · 酒店 · 门票 —— 交通进倒计时，门票进当日时间线，酒店进当日底部</small></h2>
     <form class="tk-form" id="tkForm">
       <select id="tkType" title="类型">
         <option value="train">🚄 高铁/火车</option>
         <option value="plane">✈️ 飞机</option>
         <option value="bus">🚌 大巴</option>
         <option value="car">🚗 包车/打车</option>
+        <option value="hotel">🏨 酒店/住宿</option>
+        <option value="ticket">🎫 景点门票</option>
       </select>
       <input id="tkNo" placeholder="车次/航班号，如 G1234" style="max-width:150px">
-      <input id="tkFrom" placeholder="出发地" style="max-width:110px">
+      <input id="tkFrom" placeholder="出发地" style="max-width:120px">
       <input id="tkTo" placeholder="目的地" style="max-width:110px">
       <input id="tkDate" type="date" class="tk-date">
       <input id="tkTime" type="time" class="tk-time2">
@@ -935,8 +819,8 @@ footer .f-heart{color:var(--gold-light);letter-spacing:3px;display:block;margin-
       <button type="submit">＋ 添加</button>
     </form>
     <div class="book-grid" id="tkGrid"></div>
-    <p class="book-note" id="tkNote">还没有预订记录。填好日期时间添加后，车票会以票券样式展示，
-      且<b>出发时间会自动同步到页面顶部</b>的「下一站」倒计时。</p>
+    <p class="book-note" id="tkNote">还没有预订记录。<b>交通</b>填好日期时间后会同步顶部「下一站」倒计时，
+      并按时间点插入对应天的时间线；<b>景点门票</b>按时间早晚进入当日时间线；<b>酒店</b>显示在对应天的行程底部并关联地图。</p>
   </section>
 
   <!-- ===== 费用结算 ===== -->
@@ -1165,26 +1049,68 @@ function parseEvent(s){
   return new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5]);
 }
 
-/* ========== 已预订（车票/机票） ========== */
+/* ========== 已预订（交通 / 酒店 / 门票） ========== */
 const TKKEY = "yn_trip_tickets_v1";
-const TK_IC = {train:"🚄", plane:"✈️", bus:"🚌", car:"🚗"};
-const TK_TYPE = {train:"高铁/火车", plane:"飞机", bus:"大巴", car:"包车"};
+const TK_META = {
+  train:{ic:"🚄", label:"高铁/火车", no:"车次/航班号，如 G1234", from:"出发地", to:"目的地"},
+  plane:{ic:"✈️", label:"飞机", no:"航班号，如 MU5301", from:"出发地", to:"目的地"},
+  bus:{ic:"🚌", label:"大巴", no:"班次/备注（可选）", from:"出发地", to:"目的地"},
+  car:{ic:"🚗", label:"包车/打车", no:"备注，如 包车师傅", from:"出发地", to:"目的地"},
+  hotel:{ic:"🏨", label:"酒店住宿", no:"酒店/民宿名称", from:"地址/位置（地图用）", to:""},
+  ticket:{ic:"🎫", label:"景点门票", no:"门票/项目名称", from:"景区/地址（地图用）", to:""}
+};
+function tkKind(t){ return t === "hotel" ? "hotel" : t === "ticket" ? "ticket" : "transport"; }
+function tkMeta(t){ return TK_META[t] || TK_META.train; }
 let tickets = [];
 try { tickets = JSON.parse(localStorage.getItem(TKKEY)) || []; } catch(e){ tickets = []; }
 if (!Array.isArray(tickets)) tickets = [];
 function saveTickets(){ localStorage.setItem(TKKEY, JSON.stringify(tickets)); }
 
+function syncTkForm(){
+  const m = tkMeta(document.getElementById("tkType").value);
+  document.getElementById("tkNo").placeholder = m.no;
+  document.getElementById("tkFrom").placeholder = m.from;
+  const to = document.getElementById("tkTo");
+  to.placeholder = m.to || "目的地";
+  to.style.display = m.to ? "" : "none";
+}
+document.getElementById("tkType").addEventListener("change", syncTkForm);
+syncTkForm();
+
+function date2dayNum(ds){
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(ds || "");
+  if (!m) return 0;
+  return DATE2DAY[(+m[2]) + "." + (+m[3])] || 0;
+}
+function dayBookings(n){
+  const out = [];
+  tickets.forEach((tk, i) => {
+    if (tkKind(tk.type) === "hotel") return;
+    if (date2dayNum(tk.date) !== n) return;
+    out.push({tk: tk, i: i, kind: tkKind(tk.type), k: tk.time ? timeKey(tk.time) : 9997});
+  });
+  return out;
+}
+function dayHotels(n){
+  const out = [];
+  tickets.forEach((tk, i) => {
+    if (tkKind(tk.type) === "hotel" && date2dayNum(tk.date) === n) out.push({tk: tk, i: i});
+  });
+  return out;
+}
+
 let EVENTS = [];
 function rebuildEvents(){
   EVENTS = BASE_EVENTS.map(e => ({t: e.t, name: e.name, sub: e.sub}));
   tickets.forEach(tk => {
+    if (tkKind(tk.type) !== "transport") return;
     if (!tk.date || !tk.time) return;
     const t = `${tk.date} ${tk.time}`;
     if (!/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(t)) return;
     const route = [tk.from, tk.to].filter(Boolean).join(" → ");
     EVENTS.push({
       t,
-      name: `${TK_IC[tk.type] || "🎫"} 出发 · ${tk.no || route || "行程"}`,
+      name: `${tkMeta(tk.type).ic} 出发 · ${tk.no || route || "行程"}`,
       sub: [route, tk.seat].filter(Boolean).join(" · ") || "已预订"
     });
   });
@@ -1195,18 +1121,50 @@ function renderTickets(){
   const grid = document.getElementById("tkGrid");
   if (!grid) return;
   grid.innerHTML = tickets.map((tk, i) => {
-    const ic = TK_IC[tk.type] || "🎫";
+    const kind = tkKind(tk.type);
+    const m = tkMeta(tk.type);
     const dt = tk.date ? tk.date.slice(5).replace("-", ".") : "";
+    const when = [dt, tk.time].filter(Boolean).join(" ");
+    if (kind === "hotel"){
+      return `<div class="ticket hotel">
+        <div class="tk-stub">
+          <span class="tk-icon">🏨</span>
+          <span class="tk-code">${esc(tk.no || "酒店")}</span>
+          <span class="tk-type">住宿</span>
+        </div>
+        <div class="tk-main">
+          <div class="tk-route">${esc(tk.no || "酒店")}</div>
+          <div class="tk-time">${when ? "入住 " + when : "日期待定"}</div>
+          <div class="tk-meta">${[tk.from, tk.seat].filter(Boolean).map(esc).join(" · ") || "已同步到对应天行程底部"}</div>
+        </div>
+        <button class="tk-del" data-tk="${i}" title="删除">✕</button>
+      </div>`;
+    }
+    if (kind === "ticket"){
+      return `<div class="ticket tkt">
+        <div class="tk-stub">
+          <span class="tk-icon">🎫</span>
+          <span class="tk-code">${esc(tk.no || m.label)}</span>
+          <span class="tk-type">门票</span>
+        </div>
+        <div class="tk-main">
+          <div class="tk-route">${esc(tk.no || m.label)}</div>
+          <div class="tk-time">${when || "时间待定"}</div>
+          <div class="tk-meta">${tk.from ? "<b>" + esc(tk.from) + "</b> · " : ""}已预订${tk.time ? " · 按时间插入当日行程" : " · 填时间可按早晚插入当日行程"}</div>
+        </div>
+        <button class="tk-del" data-tk="${i}" title="删除">✕</button>
+      </div>`;
+    }
     return `<div class="ticket ${tk.type === "plane" ? "plane" : ""}">
       <div class="tk-stub">
-        <span class="tk-icon">${ic}</span>
-        <span class="tk-code">${esc(tk.no || TK_TYPE[tk.type] || "")}</span>
-        <span class="tk-type">${TK_TYPE[tk.type] || "票券"}</span>
+        <span class="tk-icon">${m.ic}</span>
+        <span class="tk-code">${esc(tk.no || m.label)}</span>
+        <span class="tk-type">${m.label}</span>
       </div>
       <div class="tk-main">
         <div class="tk-route">${esc(tk.from || "?")} <span class="tk-arrow">➜</span> ${esc(tk.to || "?")}</div>
-        <div class="tk-time">${dt ? dt + " " : ""}${tk.time || ""} ${tk.seat ? "" : ""}</div>
-        <div class="tk-meta">${tk.seat ? "<b>" + esc(tk.seat) + "</b> · " : ""}已预订${tk.time ? " · 出发时间已同步顶部倒计时" : " · 填时间可同步倒计时"}</div>
+        <div class="tk-time">${dt ? dt + " " : ""}${tk.time || ""}</div>
+        <div class="tk-meta">${tk.seat ? "<b>" + esc(tk.seat) + "</b> · " : ""}已预订${tk.time ? " · 已同步顶部倒计时与当日行程" : " · 填时间可同步倒计时"}</div>
       </div>
       <button class="tk-del" data-tk="${i}" title="删除">✕</button>
     </div>`;
@@ -1226,9 +1184,10 @@ document.addEventListener("submit", e => {
     time: document.getElementById("tkTime").value,
     seat: document.getElementById("tkSeat").value.trim()
   };
-  if (!tk.no && !(tk.from && tk.to)) return;
+  const kind = tkKind(tk.type);
+  if (!tk.no && !(tk.from && (kind === "transport" ? tk.to : true))) return;
   tickets.push(tk);
-  saveTickets(); renderTickets(); rebuildEvents(); tick();
+  saveTickets(); renderTickets(); rebuildEvents(); tick(); renderSelectedDay();
   e.target.reset();
   document.getElementById("tkNo").focus();
 });
@@ -1237,6 +1196,7 @@ document.addEventListener("click", e => {
   if (!del) return;
   tickets.splice(Number(del.dataset.tk), 1);
   saveTickets(); renderTickets(); rebuildEvents(); tick();
+  renderSelectedDay();
 });
 
 let lastSec = -1;
@@ -1280,27 +1240,24 @@ function renderLegend(){
   document.getElementById("mapLegend").innerHTML = LEGEND.map((t, i) =>
     `<a class="lg${i+1}" href="#day${i+1}">D${i+1} ${t}</a>`).join("");
 }
-function renderGrid(){
-  const g = document.getElementById("dayGrid");
-  g.innerHTML = DAYS.map(d => {
-    const status = idx < 0 ? "未开始" : (idx === d.n - 1 ? "▶ 今天" : (idx > d.n - 1 ? "已完成" : "未开始"));
-    const cls = idx === d.n - 1 ? "today" : (idx > d.n - 1 ? "past" : "");
-    return `<a class="day-card ${cls}" href="#day${d.n}">
-      <div class="dnum">DAY ${d.n}</div>
-      <div class="ddate">${d.date} · ${d.week}</div>
-      <div class="droute">${d.title}</div>
-      <span class="dstatus">${status}</span>
-    </a>`;
-  }).join("");
+/* 只有具体地点才给地图按钮：城市名/路线不给 */
+const CITY_ONLY = new Set(["丽江","长沙","香格里拉","稻城","云南","迪庆","昆明","大理",
+  "丽江市","香格里拉市","稻城县"]);
+function isSpecificPlace(k){
+  if (!k) return false;
+  const s = String(k).trim();
+  if (!s) return false;
+  if (s.includes("→") || s.includes("->")) return false;
+  const s2 = s.replace(/^(返回|回|去|去往|飞往|前往)/, "");
+  if (CITY_ONLY.has(s) || CITY_ONLY.has(s2)) return false;
+  return true;
 }
-
-/* ========== 每日行程 ========== */
 function tagHTML(tags){
   if(!tags || !tags.length) return "";
   return `<div class="tags">` + tags.map(t => `<span class="tag ${t.c}">${t.t}</span>`).join("") + `</div>`;
 }
 function mapBtns(k){
-  if(!k) return "";
+  if(!isSpecificPlace(k)) return "";
   return `<div class="actions">
     <a class="btn-map" href="${amap(k)}" target="_blank" rel="noopener">📍 高德导航</a>
     <a class="btn-map apple" href="${applemap(k)}" target="_blank" rel="noopener">🗺 苹果地图</a>
@@ -1399,6 +1356,112 @@ function renderDayTabs(){
       <span class="dt-wx">${wxText(d.n)}</span></button>`;
   }).join("");
 }
+/* ========== 行程条目：编辑/删除 + 时间线按时间统一排序 ========== */
+const EDKEY = "yn_trip_day_edits_v1";
+let dayEdits = {};
+try { dayEdits = JSON.parse(localStorage.getItem(EDKEY)) || {}; } catch(e){ dayEdits = {}; }
+function saveEdits(){ localStorage.setItem(EDKEY, JSON.stringify(dayEdits)); }
+let tlEdit = null; /* {src:"base"|"custom", i:序号} */
+
+const SLOT_K = {"全天":-60,"早上":360,"清晨":360,"上午":600,"中午":720,"下午":840,"傍晚":1050,"晚上":1170,"夜间":1320};
+function timeKey(t){
+  const s = String(t || "").trim();
+  const m = s.match(/^(\d{1,2}):(\d{2})$/);
+  if (m) return (+m[1]) * 60 + (+m[2]);
+  if (SLOT_K[s] != null) return SLOT_K[s];
+  const h = s.match(/^(\d{1,2})[点时]/);
+  if (h) return (+h[1]) * 60;
+  return 900;
+}
+function effItem(d, i){
+  const p = (dayEdits[d.n] || {})[i];
+  if (p && p.del) return null;
+  const it = d.items[i];
+  if (!p) return it;
+  return {
+    time: p.time || it.time,
+    title: p.title || it.title,
+    desc: p.desc !== undefined ? p.desc : it.desc,
+    map: p.map !== undefined ? p.map : it.map,
+    tags: it.tags,
+    spots: it.spots
+  };
+}
+function tlEditForm(o){
+  const opts = ["早上","上午","中午","下午","傍晚","晚上","全天"];
+  if (opts.indexOf(o.time) < 0) opts.push(o.time);
+  return `
+    <form class="tl-edit" id="tlEdit">
+      <select name="et">${opts.map(v => `<option${v === o.time ? " selected" : ""}>${esc(v)}</option>`).join("")}</select>
+      <input name="etitle" value="${esc(o.title)}" required placeholder="行程标题">
+      <input name="edesc" value="${esc(o.desc || "")}" placeholder="备注（可选）">
+      <input name="emap" value="${esc(o.map || "")}" placeholder="具体地点（地图用，城市留空）">
+      <button type="submit" class="save">保存</button>
+      <button type="button" class="cancel">取消</button>
+    </form>`;
+}
+function tlItemHTML(o){
+  const editing = tlEdit && tlEdit.src === o.src && tlEdit.i === o.i;
+  const btns = `<span class="tl-btns">
+      <button type="button" class="tl-edit-btn" data-src="${o.src}" data-i="${o.i}" title="编辑">✎</button>
+      <button type="button" class="tl-del" data-src="${o.src}" data-i="${o.i}" title="删除">✕</button>
+    </span>`;
+  const body = editing ? tlEditForm(o) : `
+        <h4>${o.custom ? esc(o.title) : o.title}${btns}</h4>
+        ${o.desc ? `<p>${o.custom ? esc(o.desc) : o.desc}</p>` : ""}
+        ${o.tags ? tagHTML(o.tags) : ""}
+        ${(o.traffic || []).map(t => `<div class="tl-traffic">🚌 ${t.trip} · ${t.how}</div>`).join("")}
+        ${mapBtns(o.map)}
+        ${o.dayN ? spotBlock(o.dayN, o.i, o.spots) : ""}`;
+  return `
+    <div class="tl-item${o.custom ? " custom" : ""}">
+      <span class="tl-time">${o.custom ? esc(o.time) : o.time}</span>
+      <div class="tl-body">${body}
+      </div>
+    </div>`;
+}
+function bookingItemHTML(b){
+  const tk = b.tk;
+  const m = tkMeta(tk.type);
+  const dt = tk.date ? tk.date.slice(5).replace("-", ".") : "";
+  const timeTxt = tk.time || "待定";
+  let title, desc, map = "";
+  if (b.kind === "transport"){
+    const route = [tk.from, tk.to].filter(Boolean).join(" → ");
+    title = `${m.ic} ${esc(tk.no || route || "已订票")}${tk.no && route ? " · " + esc(route) : ""}`;
+    desc = [dt + (tk.time ? " " + tk.time : ""), tk.seat].filter(Boolean).join(" · ") || "已预订";
+    if (tk.time) desc += " · 已同步顶部倒计时";
+  } else {
+    title = `${m.ic} ${esc(tk.no || "门票")}`;
+    desc = [tk.from, dt + (tk.time ? " " + tk.time : ""), tk.seat].filter(Boolean).join(" · ") || "已预订";
+    map = tk.from || tk.no;
+  }
+  return `
+    <div class="tl-item bk">
+      <span class="tl-time">${esc(timeTxt)}</span>
+      <div class="tl-body">
+        <h4>${title}</h4>
+        <p>${esc(desc)}</p>
+        ${mapBtns(map)}
+      </div>
+    </div>`;
+}
+function hotelCardHTML(h){
+  const tk = h.tk;
+  const dt = tk.date ? tk.date.slice(5).replace("-", ".") : "";
+  const when = [dt, tk.time ? "入住 " + tk.time : ""].filter(Boolean).join(" ");
+  const sub = [when, tk.from, tk.seat].filter(Boolean).map(esc).join(" · ") || "已预订";
+  return `
+    <div class="hotel-card">
+      <div class="h-ic">🛏</div>
+      <div class="h-info">
+        <b>${esc(tk.no || "酒店")}</b>
+        <span>${sub}</span>
+        ${mapBtns(tk.from || tk.no)}
+      </div>
+      <button class="tk-del" data-tk="${h.i}" title="删除">✕</button>
+    </div>`;
+}
 function renderSelectedDay(){
   const d = DAYS.find(x => x.n === selDay) || DAYS[0];
   const cls = idx === d.n - 1 ? "today" : "";
@@ -1408,7 +1471,8 @@ function renderSelectedDay(){
   const ts = TRAFFIC.filter(t => t.d === d.n);
   const extraTraffic = [];
   const itTraffic = d.items.map(() => []);
-  const ownTitles = d.items.map(it => it.title);
+  const eff = d.items.map((it, i) => effItem(d, i));
+  const ownTitles = eff.map(it => it ? it.title : "");
   ts.forEach(t => {
     const kw = t.trip.split(/[→+·]/).map(s => s.trim());
     const last = kw[kw.length - 1] || "";
@@ -1417,45 +1481,35 @@ function renderSelectedDay(){
     if (hit < 0) ownTitles.forEach((ti, i) => { if (hit < 0 && kw.some(k => k && ti.includes(k))) hit = i; });
     if (hit < 0) ownTitles.forEach((ti, i) => { if (hit < 0 && kw.some(k => k && k.length > 3 && ti.includes(k.slice(0, 3)))) hit = i; });
     if (hit < 0) ownTitles.forEach((ti, i) => { if (hit < 0 && kw.some(k => k && ti.includes(k.slice(0, 3)))) hit = i; });
-    if (hit >= 0) itTraffic[hit].push(t);
+    if (hit >= 0 && eff[hit]) itTraffic[hit].push(t);
     else extraTraffic.push(t);
   });
 
-  /* 自行添加的条目（格式与原有一致，自动关联地图） */
   const customs = customDays[d.n] || [];
+  const bookings = dayBookings(d.n);
 
-  const items = d.items.map((it, i) => `
-    <div class="tl-item">
-      <span class="tl-time">${it.time}</span>
-      <div class="tl-body">
-        <h4>${it.title}</h4>
-        <p>${it.desc}</p>
-        ${tagHTML(it.tags)}
-        ${itTraffic[i].map(t => `<div class="tl-traffic">🚌 ${t.trip} · ${t.how}</div>`).join("")}
-        ${mapBtns(it.map)}
-        ${spotBlock(d.n, i, it.spots)}
-      </div>
-    </div>`).join("");
-
-  const customHTML = customs.map((c, i) => `
-    <div class="tl-item custom">
-      <span class="tl-time">${esc(c.time)}</span>
-      <div class="tl-body">
-        <h4>${esc(c.title)}
-          <button class="tl-del" data-ci="${i}" title="删除">✕</button></h4>
-        ${c.desc ? `<p>${esc(c.desc)}</p>` : ""}
-        ${mapBtns(c.map || c.title)}
-      </div>
-    </div>`).join("");
-
-  const extraTrafficHTML = extraTraffic.map(t => `
+  /* 统一按时间排序：票据(0) < 原有行程(1) < 自添加(2) < 未匹配交通(3) */
+  const ents = [];
+  eff.forEach((it, i) => {
+    if (!it) return;
+    ents.push({k: timeKey(it.time), r: 1, o: i, html: tlItemHTML({
+      time: it.time, title: it.title, desc: it.desc, tags: it.tags, map: it.map,
+      traffic: itTraffic[i], spots: it.spots, src: "base", i: i, dayN: d.n
+    })});
+  });
+  bookings.forEach(b => ents.push({k: b.k, r: 0, o: b.i, html: bookingItemHTML(b)}));
+  customs.forEach((c, i) => ents.push({k: timeKey(c.time), r: 2, o: i, html: tlItemHTML({
+    time: c.time, title: c.title, desc: c.desc, map: c.map, src: "custom", i: i, custom: true
+  })}));
+  extraTraffic.forEach((t, i) => ents.push({k: 9998, r: 3, o: i, html: `
     <div class="tl-item">
       <span class="tl-time">交通</span>
       <div class="tl-body">
         <h4>${t.trip}</h4>
         <div class="tl-traffic">🚌 ${t.how}</div>
       </div>
-    </div>`).join("");
+    </div>`}));
+  ents.sort((a, b) => (a.k - b.k) || (a.r - b.r) || (a.o - b.o));
 
   /* 当日提醒：放在行程最上面 */
   const rs = REMINDS.filter(r => DATE2DAY[r.d] === d.n);
@@ -1466,41 +1520,20 @@ function renderSelectedDay(){
         <div>${r.x}</div></div>`).join("")}
     </div>` : "";
 
-  /* 当日小地图 */
-  const dm = DAY_MAP[d.n];
-  const mapHTML = dm ? (() => {
-    const pts = dm.pts.map((p, i) => `${p[0]},${p[1]},${dm.c[i] || "pm2rdm"}`).join("~");
-    const lons = dm.pts.map(p => p[0]), lats = dm.pts.map(p => p[1]);
-    const ll = `${((Math.min(...lons) + Math.max(...lons)) / 2).toFixed(4)},${((Math.min(...lats) + Math.max(...lats)) / 2).toFixed(4)}`;
-    const url = `https://static-maps.yandex.ru/1.x/?ll=${ll}&z=${dm.z || 8}&l=map&size=650,170&lang=zh_CN&pt=${pts}`;
-    return `
-    <div class="day-map">
-      <img src="${url}" alt="D${d.n} 地图" loading="lazy"
-        onerror="this.closest('.day-map').style.display='none'">
-      <span class="dm-pin">📍 ${dm.label}</span>
-      <a class="dm-cta" href="${amap(dm.pts.length > 1 ? dm.label : dm.label)}" target="_blank" rel="noopener">高德打开 →</a>
+  /* 当日小地图（高清瓦片，含当日全部地点） */
+  const dp = DAY_PLACES[d.n] || [];
+  const mapHTML = `
+    <div class="day-map" id="dayMap">
+      <span class="dm-pin">📍 D${d.n} · ${esc(d.title)}</span>
+      <a class="dm-cta" href="${amap(dp.length ? dp[0][0] : d.title)}" target="_blank" rel="noopener">高德打开 →</a>
     </div>`;
-  })() : "";
 
-  /* 住宿 */
-  const stays = getStays(d.n);
+  /* 住宿：来自「已预订-酒店」 */
+  const hotels = dayHotels(d.n);
   const stayHTML = `
     <div class="stay-block">
-      <h4 class="db-title stay-t">🏨 住宿酒店 <small>可自行添加 / 删除</small></h4>
-      <div id="stayList">${stays.map((s, i) => `
-        <div class="hotel-card">
-          <div class="h-ic">🛏</div>
-          <div class="h-info">
-            <input class="h-name" data-stay="${i}" data-f="name" value="${esc(s.name)}" placeholder="酒店名称">
-            <textarea class="h-note" data-stay="${i}" data-f="note" rows="1" placeholder="地址 / 备注（如：入住14:00）">${esc(s.note || "")}</textarea>
-          </div>
-          <button class="h-del" data-stay="${i}" title="删除">✕</button>
-        </div>`).join("") || ""}</div>
-      <form class="stay-add" id="stayAdd">
-        <input class="h-in-name" id="stName" placeholder="添加酒店，如：丽江悦榕庄" required>
-        <input class="h-in-note" id="stNote" placeholder="备注（可选）" style="max-width:180px">
-        <button type="submit">＋ 添加住宿</button>
-      </form>
+      <h4 class="db-title stay-t">🏨 住宿 <small>在「已预订」里选 🏨 酒店添加</small></h4>
+      ${hotels.map(hotelCardHTML).join("") || `<div class="stay-empty">${esc(d.stay)}</div>`}
     </div>`;
 
   document.getElementById("dayList").innerHTML = `
@@ -1516,7 +1549,7 @@ function renderSelectedDay(){
       </div>
       ${mapHTML}
       ${remindHTML}
-      <div class="timeline">${items}${customHTML}${extraTrafficHTML}</div>
+      <div class="timeline">${ents.map(e => e.html).join("")}</div>
       <form class="ci-add" id="ciAdd">
         <select id="ciTime">
           <option>早上</option><option>上午</option><option>中午</option>
@@ -1524,11 +1557,12 @@ function renderSelectedDay(){
         </select>
         <input id="ciTitle" placeholder="想加点什么？如：黑龙潭公园" required>
         <input id="ciDesc" placeholder="备注（可选）" style="max-width:170px">
-        <input id="ciMap" placeholder="地点（地图搜索用，默认用标题）" style="max-width:190px">
+        <input id="ciMap" placeholder="具体地点（可选，城市不用填）" style="max-width:190px">
         <button type="submit">＋ 添加到 D${d.n}</button>
       </form>
       ${stayHTML}
     </article>`;
+  paintDayMap(d.n);
 }
 
 function esc(s){ return String(s).replace(/[&<>"]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m])); }
@@ -1592,7 +1626,7 @@ window.addEventListener("hashchange", () => {
 
 /* ========== 时间提醒/景点/交通 → 已并入每日行程 ========== */
 
-/* 景点介绍展开/收起 + 自添加条目增删 */
+/* 景点介绍展开/收起 + 条目编辑/删除（原有行程与自添加均支持） */
 document.addEventListener("click", e => {
   const tog = e.target.closest(".spot-toggle");
   if (tog){
@@ -1603,76 +1637,232 @@ document.addEventListener("click", e => {
     }
     return;
   }
+  const ed = e.target.closest(".tl-edit-btn");
+  if (ed){
+    tlEdit = {src: ed.dataset.src, i: Number(ed.dataset.i)};
+    renderSelectedDay();
+    return;
+  }
+  const cancel = e.target.closest(".tl-edit .cancel");
+  if (cancel){ tlEdit = null; renderSelectedDay(); return; }
   const del = e.target.closest(".tl-del");
   if (del){
-    const i = Number(del.dataset.ci);
-    (customDays[selDay] || []).splice(i, 1);
-    if (!customDays[selDay].length) delete customDays[selDay];
-    saveCustom(); renderSelectedDay();
+    const src = del.dataset.src, i = Number(del.dataset.i);
+    if (src === "base"){
+      const d = DAYS.find(x => x.n === selDay);
+      const it = effItem(d, i);
+      if (!confirm(`删除「${it ? it.title : ""}」这条行程？`)) return;
+      (dayEdits[selDay] = dayEdits[selDay] || {})[i] = {del: true};
+      saveEdits();
+    } else {
+      const arr = customDays[selDay] || [];
+      arr.splice(i, 1);
+      if (!arr.length) delete customDays[selDay];
+      saveCustom();
+    }
+    tlEdit = null;
+    renderSelectedDay();
   }
 });
 document.addEventListener("submit", e => {
+  if (e.target.id === "tlEdit"){
+    e.preventDefault();
+    if (!tlEdit) return;
+    const v = sel => {
+      const el = e.target.querySelector(sel);
+      return el ? String(el.value == null ? "" : el.value).trim() : "";
+    };
+    const time = v("[name=et]"), title = v("[name=etitle]"),
+          desc = v("[name=edesc]"), map = v("[name=emap]");
+    if (!title) return;
+    if (tlEdit.src === "base"){
+      (dayEdits[selDay] = dayEdits[selDay] || {})[tlEdit.i] = {time, title, desc, map};
+      saveEdits();
+    } else {
+      const c = (customDays[selDay] || [])[tlEdit.i];
+      if (c){ c.time = time; c.title = title; c.desc = desc; c.map = map; saveCustom(); }
+    }
+    tlEdit = null;
+    renderSelectedDay();
+    return;
+  }
   if (e.target.id !== "ciAdd") return;
   e.preventDefault();
   const time = document.getElementById("ciTime").value;
   const title = document.getElementById("ciTitle").value.trim();
   const desc = document.getElementById("ciDesc").value.trim();
-  const map = document.getElementById("ciMap").value.trim() || title;
+  const map = document.getElementById("ciMap").value.trim();
   if (!title) return;
   (customDays[selDay] = customDays[selDay] || []).push({time, title, desc, map});
-  saveCustom(); renderSelectedDay();
+  saveCustom(); tlEdit = null; renderSelectedDay();
   const t = document.getElementById("ciTitle");
   if (t) t.focus();
 });
 
-/* ========== 住宿（自添加/删除/编辑） ========== */
+/* ========== 住宿：旧的自添加住宿迁移为「已预订-酒店」 ========== */
 const STKEY = "yn_trip_stays_v1";
-let stays = {};
-try { stays = JSON.parse(localStorage.getItem(STKEY)) || {}; } catch(e){ stays = {}; }
-if (!Object.keys(stays).length){
-  DAYS.forEach(d => { if (d.stay.startsWith("住")) stays[d.n] = [{name: d.stay.replace("住 · ", "") + " 住宿", note: ""}]; });
+if (!localStorage.getItem("yn_trip_stays_migrated_v1")){
+  try {
+    const old = JSON.parse(localStorage.getItem(STKEY)) || {};
+    Object.keys(old).forEach(n => {
+      (old[n] || []).forEach(s => {
+        if (!s || !s.name) return;
+        const day = DAYS.find(x => x.n === Number(n));
+        if (!day) return;
+        const mm = day.date.split(".");
+        tickets.push({
+          type:"hotel", no:s.name, from:"", to:"",
+          date:`2026-${String(+mm[0]).padStart(2,"0")}-${String(+mm[1]).padStart(2,"0")}`,
+          time:"", seat:s.note || ""
+        });
+      });
+    });
+    if (Object.keys(old).length) saveTickets();
+  } catch(e){}
+  localStorage.setItem("yn_trip_stays_migrated_v1", "1");
 }
-function saveStays(){ localStorage.setItem(STKEY, JSON.stringify(stays)); }
-function getStays(n){ return Array.isArray(stays[n]) ? stays[n] : []; }
 
-/* ========== 每日小地图坐标（Yandex 静态图：pt=经度,纬度,颜色） ========== */
-const DAY_MAP = {
-  1: {label:"丽江古城", z:9,  pts:[[100.2336,26.8721],[100.2514,26.7510]], c:["pm2rdm","pm2gnm"]},
-  2: {label:"丽江 → 泸沽湖", z:8, pts:[[100.2336,26.8721],[100.7685,27.6877]], c:["pm2gnm","pm2rdm"]},
-  3: {label:"泸沽湖", z:10, pts:[[100.7685,27.6877],[100.2336,26.8721]], c:["pm2rdm","pm2gnm"]},
-  4: {label:"丽江 → 香格里拉", z:8, pts:[[100.2336,26.8721],[99.7047,27.8269]], c:["pm2gnm","pm2rdm"]},
-  5: {label:"香格里拉", z:10, pts:[[99.7047,27.8269],[99.6757,27.9066]], c:["pm2rdm","pm2blm"]},
-  6: {label:"香格里拉 → 亚丁", z:8, pts:[[99.7047,27.8269],[100.3105,28.4410]], c:["pm2gnm","pm2rdm"]},
-  7: {label:"亚丁 → 香格里拉", z:8, pts:[[100.3105,28.4410],[99.7047,27.8269]], c:["pm2rdm","pm2blm"]},
-  8: {label:"香格里拉 → 长沙", z:8, pts:[[99.7047,27.8269],[112.9838,28.1940]], c:["pm2gnm","pm2blm"]}
+/* ========== 高清线条地图：CARTO 瓦片 + WebMercator 覆盖层 ========== */
+const TILE = (z, x, y) => `https://basemaps.cartocdn.com/light_all/${z}/${x}/${y}@2x.png`;
+function mpx(lon, z){ return (lon + 180) / 360 * 256 * Math.pow(2, z); }
+function mpy(lat, z){
+  const s = Math.sin(Math.PI * lat / 180);
+  return (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * 256 * Math.pow(2, z);
+}
+function renderTileMap(el, o){
+  if (!el) return;
+  const W = Math.round(el.clientWidth || el.offsetWidth || 740);
+  const H = Math.round(el.clientHeight || el.offsetHeight || 300);
+  const pts = (o.pts || []).filter(p => p && p.lon != null);
+  const segs = o.segs || [];
+  const badges = o.badges || [];
+  const subs = o.subs || [];
+  const all = pts.concat(
+    segs.reduce((a, s) => a.concat(s.pts.map(p => ({lon: p[0], lat: p[1]}))), []),
+    badges, subs);
+  if (!all.length) return;
+  let minLon = Math.min.apply(null, all.map(p => p.lon));
+  let maxLon = Math.max.apply(null, all.map(p => p.lon));
+  let minLat = Math.min.apply(null, all.map(p => p.lat));
+  let maxLat = Math.max.apply(null, all.map(p => p.lat));
+  if (maxLon - minLon < 0.03){ minLon -= 0.05; maxLon += 0.05; }
+  if (maxLat - minLat < 0.03){ minLat -= 0.04; maxLat += 0.04; }
+  /* 选 z：原始范围需为四周标签/圆点留白 */
+  let z = 3;
+  for (let t = 13; t >= 3; t--){
+    if (mpx(maxLon, t) - mpx(minLon, t) <= W - 110 && mpy(minLat, t) - mpy(maxLat, t) <= H - 56){ z = t; break; }
+  }
+  /* 按像素留边，保证边缘的标记与文字不被裁掉 */
+  const worldZ = 256 * Math.pow(2, z);
+  const padLon = 55 * 360 / worldZ;
+  const pxPerLat = worldZ / (2 * Math.PI * Math.cos((minLat + maxLat) / 2 * Math.PI / 180));
+  const padLat = 26 / pxPerLat;
+  minLon -= padLon; maxLon += padLon; minLat -= padLat; maxLat += padLat;
+  const ox = W / 2 - (mpx(minLon, z) + mpx(maxLon, z)) / 2;
+  const oy = H / 2 - (mpy(minLat, z) + mpy(maxLat, z)) / 2;
+  const px = (lon, lat) => [mpx(lon, z) + ox, mpy(lat, z) + oy];
+  let tiles = "";
+  const maxT = Math.pow(2, z);
+  const tx0 = Math.floor(-ox / 256), tx1 = Math.floor((W - ox) / 256);
+  const ty0 = Math.floor(-oy / 256), ty1 = Math.floor((H - oy) / 256);
+  for (let tx = tx0; tx <= tx1; tx++){
+    for (let ty = ty0; ty <= ty1; ty++){
+      if (tx < 0 || ty < 0 || tx >= maxT || ty >= maxT) continue;
+      tiles += `<img class="tm-tile" alt="" loading="lazy" src="${TILE(z, tx, ty)}" style="left:${(tx * 256 + ox).toFixed(1)}px;top:${(ty * 256 + oy).toFixed(1)}px" onerror="this.remove()">`;
+    }
+  }
+  let svg = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  segs.forEach(sg => {
+    const dd = sg.pts.map((pt, i) => {
+      const q = px(pt[0], pt[1]);
+      return (i ? "L" : "M") + q[0].toFixed(1) + " " + q[1].toFixed(1);
+    }).join(" ");
+    svg += `<path d="${dd}" fill="none" stroke="${sg.color}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" opacity=".9"${sg.dash ? ' stroke-dasharray="9 7"' : ""}/>`;
+  });
+  const midLon = (minLon + maxLon) / 2;
+  pts.forEach(pt => {
+    const q = px(pt.lon, pt.lat);
+    svg += `<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="${pt.r || 6}" fill="${pt.color || "#0f7a6f"}" stroke="#fff" stroke-width="2.5"/>`;
+    if (pt.label){
+      let right = pt.lon >= midLon;
+      if (q[0] < 70) right = true;
+      else if (q[0] > W - 70) right = false;
+      svg += `<text class="tm-label" x="${(q[0] + (right ? 10 : -10)).toFixed(1)}" y="${(q[1] + 4).toFixed(1)}" text-anchor="${right ? "start" : "end"}" font-size="${pt.fs || 13}" fill="${pt.tc || "#243c37"}">${esc(pt.label)}</text>`;
+    }
+  });
+  subs.forEach(pt => {
+    const q = px(pt.lon, pt.lat);
+    svg += `<text class="tm-label" x="${q[0].toFixed(1)}" y="${(q[1] - 9).toFixed(1)}" text-anchor="middle" font-size="11.5" fill="#77908b">${esc(pt.text)}</text>`;
+  });
+  badges.forEach(b => {
+    const q = px(b.lon, b.lat);
+    svg += `<a href="#day${b.day}"><circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="13" fill="${b.color}" stroke="#fff" stroke-width="3"/><text x="${q[0].toFixed(1)}" y="${(q[1] + 4).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">D${b.day}</text></a>`;
+  });
+  svg += "</svg>";
+  el.innerHTML = tiles + svg +
+    `<a class="tm-credit" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap · CARTO</a>`;
+}
+
+const DAY_C = ["#e2574c","#ef8a2e","#d9a514","#3aa655","#17a398","#7b5cd6","#d64b92","#2f7fb8"];
+const DAY_PLACES = {
+  1: [["长沙", 112.9838, 28.1940], ["丽江三义机场", 100.2514, 26.7510], ["丽江古城", 100.2336, 26.8721]],
+  2: [["丽江古城", 100.2336, 26.8721], ["泸沽湖·里格", 100.7950, 27.7750], ["女神湾", 100.7450, 27.6350]],
+  3: [["泸沽湖", 100.7685, 27.6877], ["草海·走婚桥", 100.7900, 27.7800], ["丽江古城", 100.2336, 26.8721]],
+  4: [["丽江古城", 100.2336, 26.8721], ["白沙古镇", 100.1670, 26.9480], ["香格里拉站", 99.7070, 27.8680], ["独克宗古城", 99.7047, 27.8269]],
+  5: [["独克宗古城", 99.7047, 27.8269], ["松赞林寺", 99.7130, 27.8670], ["纳帕海", 99.6757, 27.9066]],
+  6: [["独克宗古城", 99.7047, 27.8269], ["无底湖", 100.0500, 28.0400], ["香格里拉镇·日瓦", 100.2560, 28.4160]],
+  7: [["香格里拉镇·日瓦", 100.2560, 28.4160], ["稻城亚丁景区", 100.3105, 28.4410], ["独克宗古城", 99.7047, 27.8269]],
+  8: [["独克宗古城", 99.7047, 27.8269], ["香格里拉站", 99.7070, 27.8680], ["丽江三义机场", 100.2514, 26.7510], ["长沙", 112.9838, 28.1940]]
 };
-
-document.addEventListener("submit", e => {
-  if (e.target.id !== "stayAdd") return;
-  e.preventDefault();
-  const name = document.getElementById("stName").value.trim();
-  const note = document.getElementById("stNote").value.trim();
-  if (!name) return;
-  (stays[selDay] = stays[selDay] || []).push({name, note});
-  saveStays(); renderSelectedDay();
-  const n = document.getElementById("stName");
-  if (n) n.focus();
-});
-document.addEventListener("click", e => {
-  const del = e.target.closest(".h-del");
-  if (!del) return;
-  getStays(selDay).splice(Number(del.dataset.stay), 1);
-  if (!stays[selDay].length) delete stays[selDay];
-  saveStays(); renderSelectedDay();
-});
-document.addEventListener("change", e => {
-  const f = e.target.closest(".h-name, .h-note");
-  if (!f) return;
-  const s = getStays(selDay)[Number(f.dataset.stay)];
-  if (!s) return;
-  s[f.dataset.f] = f.value.trim();
-  saveStays();
-});
+function paintDayMap(n){
+  const el = document.getElementById("dayMap");
+  const list = DAY_PLACES[n];
+  if (!el || !list || !list.length) return;
+  const c = DAY_C[(n - 1) % 8];
+  renderTileMap(el, {
+    pts: list.map(p => ({lon: p[1], lat: p[2], label: p[0], color: c})),
+    segs: list.length > 1 ? [{pts: list.map(p => [p[1], p[2]]), color: c, dash: (n === 1 || n === 8)}] : []
+  });
+}
+const OV_PTS = [
+  {lon: 112.9838, lat: 28.1940, label: "长沙", color: "#e2574c", r: 7, fs: 14},
+  {lon: 100.2336, lat: 26.8721, label: "丽江", color: "#0f7a6f", r: 7, fs: 14},
+  {lon: 100.7685, lat: 27.6877, label: "泸沽湖", color: "#2f7fb8", r: 7, fs: 14},
+  {lon: 99.7047, lat: 27.8269, label: "香格里拉", color: "#0f7a6f", r: 7, fs: 14},
+  {lon: 100.3105, lat: 28.4410, label: "稻城亚丁", color: "#0f7a6f", r: 7, fs: 14}
+];
+const OV_SUBS = [
+  {lon: 100.1670, lat: 26.9480, text: "束河·白沙"},
+  {lon: 99.7130, lat: 27.8670, text: "松赞林寺"},
+  {lon: 99.6757, lat: 27.9066, text: "纳帕海"},
+  {lon: 100.0500, lat: 28.0400, text: "无底湖"},
+  {lon: 100.7450, lat: 27.6350, text: "女神湾"}
+];
+const OV_SEGS = [
+  {color: DAY_C[0], dash: true, pts: [[112.9838,28.1940],[107.0,27.4],[103.4,26.5],[100.2514,26.751]]},
+  {color: DAY_C[1], pts: [[100.2336,26.8721],[100.42,27.32],[100.7950,27.7750]]},
+  {color: DAY_C[2], pts: [[100.7685,27.6877],[100.50,27.25],[100.2336,26.8721]]},
+  {color: DAY_C[3], pts: [[100.2336,26.8721],[99.92,27.40],[99.7047,27.8269]]},
+  {color: DAY_C[4], pts: [[99.7047,27.8269],[99.7130,27.8670],[99.6757,27.9066],[99.7047,27.8269]]},
+  {color: DAY_C[5], pts: [[99.7047,27.8269],[100.0500,28.0400],[100.3105,28.4410]]},
+  {color: DAY_C[6], pts: [[100.3105,28.4410],[99.98,28.10],[99.7047,27.8269]]},
+  {color: DAY_C[7], dash: true, pts: [[99.7047,27.8269],[100.2514,26.751],[106.5,27.6],[112.9838,28.1940]]}
+];
+const OV_BADGES = [
+  {lon: 106.6, lat: 27.35, day: 1, color: DAY_C[0]},
+  {lon: 100.42, lat: 27.30, day: 2, color: DAY_C[1]},
+  {lon: 100.58, lat: 27.45, day: 3, color: DAY_C[2]},
+  {lon: 99.95, lat: 27.35, day: 4, color: DAY_C[3]},
+  {lon: 99.66, lat: 27.95, day: 5, color: DAY_C[4]},
+  {lon: 100.15, lat: 28.22, day: 6, color: DAY_C[5]},
+  {lon: 99.95, lat: 28.12, day: 7, color: DAY_C[6]},
+  {lon: 106.6, lat: 27.85, day: 8, color: DAY_C[7]}
+];
+function paintOverviewMap(){
+  renderTileMap(document.getElementById("ovMap"), {
+    pts: OV_PTS, subs: OV_SUBS, segs: OV_SEGS, badges: OV_BADGES
+  });
+}
 
 /* ========== 费用结算（垫付 → 分摊 → 标记已付） ========== */
 const BKEY = "yn_trip_budget_v4";
@@ -2056,13 +2246,18 @@ rebuildEvents();
 renderTickets();
 tick();
 renderLegend();
-renderGrid();
+paintOverviewMap();
 renderDays();
 renderBudget();
 renderCk();
 loadWeather();
 navSpy();
 setInterval(tick, 1000);
+let _rsT = 0;
+window.addEventListener("resize", function(){
+  clearTimeout(_rsT);
+  _rsT = setTimeout(function(){ paintOverviewMap(); paintDayMap(selDay); }, 200);
+});
 </script>
 </body>
 </html>
