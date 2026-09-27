@@ -125,13 +125,21 @@ section{padding:26px 0 6px}
 .map-wrap svg{width:100%;height:auto;display:block}
 .routes a{cursor:pointer}
 .rt{transition:stroke-width .15s}
-.rt:hover{stroke-width:7.5}
-.rtw{pointer-events:none}
+.rt:hover{stroke-width:4}
 .r1{stroke:#c96f5a}.r2{stroke:#d99a4e}.r3{stroke:#c4a94f}
 .r4{stroke:#7f9a62}.r5{stroke:#58968e}.r6{stroke:#8a7ab5}
 .r7{stroke:#b57a96}.r8{stroke:#6a87a8}
 #ovMap{margin:2px 0 12px}
 #ovMap svg{display:block;width:100%;height:auto;border-radius:10px;box-shadow:0 12px 28px rgba(40,50,50,.14)}
+.map-legend{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:8px 6px 2px}
+.map-legend a{
+  font-size:12px;font-weight:700;text-decoration:none;color:#fff;
+  padding:3px 10px;border-radius:999px;transition:transform .12s;
+}
+.map-legend a:hover{transform:translateY(-2px)}
+.lg1{background:#c96f5a}.lg2{background:#d99a4e}.lg3{background:#c4a94f;color:#4a3d10}
+.lg4{background:#7f9a62}.lg5{background:#58968e}.lg6{background:#8a7ab5}
+.lg7{background:#b57a96}.lg8{background:#6a87a8}
 .route-bar{
   display:flex;align-items:center;gap:6px;overflow-x:auto;padding:12px;
   background:var(--paper);border:1px solid rgba(24,150,138,.45);border-radius:14px;
@@ -612,6 +620,7 @@ section{padding:26px 0 6px}
 /* ---------- 手绘线路地图（总览 · 内联 SVG） ---------- */
 .map-wrap svg{border-radius:14px}
 .map-wrap svg a{cursor:pointer}
+.map-wrap svg .badges-d circle{filter:drop-shadow(0 2px 3px rgba(36,60,55,.32))}
 .map-wrap svg .nodes circle{filter:drop-shadow(0 1px 2px rgba(36,60,55,.3))}
 
 /* ---------- 住宿卡片 ---------- */
@@ -858,9 +867,10 @@ footer .sync-stat{display:block;margin-top:7px;font-size:11px;letter-spacing:.5p
 
   <!-- ===== 总览 ===== -->
   <section id="overview">
-    <h2 class="sec-title">行程总览 <small>手绘旅行地图 · 点击路线跳转对应天</small></h2>
+    <h2 class="sec-title">行程总览 <small>线条艺术图 · 点击路线或色块跳转对应天</small></h2>
     <div class="map-wrap glass">
-      <div id="ovMap" role="img" aria-label="云南行程手绘旅行地图"></div>
+      <div id="ovMap" role="img" aria-label="云南行程线条艺术地图"></div>
+      <div class="map-legend" id="mapLegend"></div>
     </div>
   </section>
 
@@ -1361,6 +1371,11 @@ function tick(){
 }
 
 /* ========== 总览卡片 ========== */
+const LEGEND = ["长沙→丽江","丽江→泸沽湖","泸沽湖环湖","丽江→香格里拉","香格里拉一日","香格里拉→稻城","稻城亚丁","返程"];
+function renderLegend(){
+  document.getElementById("mapLegend").innerHTML = LEGEND.map((t, i) =>
+    `<a class="lg${i+1}" href="#day${i+1}">D${i+1} ${t}</a>`).join("");
+}
 /* 只有具体地点才给地图按钮：城市名/路线不给 */
 const CITY_ONLY = new Set(["丽江","长沙","香格里拉","稻城","云南","迪庆","昆明","大理",
   "丽江市","香格里拉市","稻城县"]);
@@ -1859,217 +1874,208 @@ if (!localStorage.getItem("yn_trip_stays_migrated_v1")){
 }
 
 /* ========== 手绘线路地图（总览 · 内联 SVG） ========== */
-const HANDMAP_SVG = `<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="云南行程手绘旅行地图">
+const HANDMAP_SVG = `<svg viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="云南行程线条艺术地图">
         <defs>
           <filter id="grain" x="0" y="0" width="100%" height="100%">
             <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="11"/>
-            <feColorMatrix type="matrix" values="0 0 0 0 0.42  0 0 0 0 0.38  0 0 0 0 0.28  0 0 0 0.05 0"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 0.3  0 0 0 0 0.32  0 0 0 0 0.3  0 0 0 0.03 0"/>
           </filter>
-          <filter id="wcEdge" x="-20%" y="-20%" width="140%" height="140%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="7" result="n"/>
-            <feDisplacementMap in="SourceGraphic" in2="n" scale="6" xChannelSelector="R" yChannelSelector="G"/>
-          </filter>
-          <radialGradient id="veg">
-            <stop offset="0" stop-color="#c7d4a0" stop-opacity=".5"/>
-            <stop offset="1" stop-color="#c7d4a0" stop-opacity="0"/>
-          </radialGradient>
-          <radialGradient id="vig" cx="50%" cy="50%" r="75%">
-            <stop offset=".55" stop-color="#8a7a50" stop-opacity="0"/>
-            <stop offset="1" stop-color="#8a7a50" stop-opacity=".16"/>
-          </radialGradient>
+          <marker id="arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="#33403e"/>
+          </marker>
         </defs>
 
-        <!-- 做旧纸面 -->
-        <rect x="0" y="0" width="800" height="600" fill="#f5efdf"/>
-        <ellipse cx="400" cy="300" rx="470" ry="360" fill="url(#vig)"/>
-        <rect x="0" y="0" width="800" height="600" filter="url(#grain)"/>
+        <!-- 纸面 -->
+        <rect x="-4" y="-4" width="808" height="528" fill="#faf9f5"/>
+        <rect x="-4" y="-4" width="808" height="528" filter="url(#grain)"/>
 
-        <!-- 等高线场 -->
-        <g fill="none" stroke="#7d7a58" stroke-width=".8" opacity=".14" stroke-linecap="round">
-          <path d="M-10 26 q 82 -8 164 0 q 82 8 164 0 q 82 -8 164 0 q 82 8 164 0 q 82 -8 164 0"/>
-          <path d="M-10 60 q 82 11 164 0 q 82 -11 164 0 q 82 11 164 0 q 82 -11 164 0 q 82 11 164 0"/>
-          <path d="M-10 94 q 82 -7 164 0 q 82 7 164 0 q 82 -7 164 0 q 82 7 164 0 q 82 -7 164 0"/>
-          <path d="M-10 128 q 82 12 164 0 q 82 -12 164 0 q 82 12 164 0 q 82 -12 164 0 q 82 12 164 0"/>
-          <path d="M-10 162 q 82 -9 164 0 q 82 9 164 0 q 82 -9 164 0 q 82 9 164 0 q 82 -9 164 0"/>
-          <path d="M-10 196 q 82 10 164 0 q 82 -10 164 0 q 82 10 164 0 q 82 -10 164 0 q 82 10 164 0"/>
-          <path d="M-10 230 q 82 -6 164 0 q 82 6 164 0 q 82 -6 164 0 q 82 6 164 0 q 82 -6 164 0"/>
-          <path d="M-10 264 q 82 11 164 0 q 82 -11 164 0 q 82 11 164 0 q 82 -11 164 0 q 82 11 164 0"/>
-          <path d="M-10 298 q 82 -8 164 0 q 82 8 164 0 q 82 -8 164 0 q 82 8 164 0 q 82 -8 164 0"/>
-          <path d="M-10 332 q 82 12 164 0 q 82 -12 164 0 q 82 12 164 0 q 82 -12 164 0 q 82 12 164 0"/>
-          <path d="M-10 366 q 82 -7 164 0 q 82 7 164 0 q 82 -7 164 0 q 82 7 164 0 q 82 -7 164 0"/>
-          <path d="M-10 400 q 82 9 164 0 q 82 -9 164 0 q 82 9 164 0 q 82 -9 164 0 q 82 9 164 0"/>
-          <path d="M-10 434 q 82 -11 164 0 q 82 11 164 0 q 82 -11 164 0 q 82 11 164 0 q 82 -11 164 0"/>
-          <path d="M-10 468 q 82 8 164 0 q 82 -8 164 0 q 82 8 164 0 q 82 -8 164 0 q 82 8 164 0"/>
-          <path d="M-10 502 q 82 -10 164 0 q 82 10 164 0 q 82 -10 164 0 q 82 10 164 0 q 82 -10 164 0"/>
-          <path d="M-10 536 q 82 7 164 0 q 82 -7 164 0 q 82 7 164 0 q 82 -7 164 0 q 82 7 164 0"/>
-          <path d="M-10 570 q 82 -9 164 0 q 82 9 164 0 q 82 -9 164 0 q 82 9 164 0 q 82 -9 164 0"/>
-          <!-- 局部环形等高 -->
-          <g stroke-width=".9">
-          <ellipse cx="280" cy="152" rx="132" ry="76" opacity=".10" transform="rotate(-12 280 152)"/>
-          <ellipse cx="280" cy="152" rx="96" ry="55" opacity=".14" transform="rotate(-12 280 152)"/>
-          <ellipse cx="280" cy="152" rx="62" ry="35" opacity=".18" transform="rotate(-12 280 152)"/>
-          <ellipse cx="648" cy="516" rx="84" ry="48" opacity=".10" transform="rotate(-12 648 516)"/>
-          <ellipse cx="648" cy="516" rx="52" ry="30" opacity=".14" transform="rotate(-12 648 516)"/>
+        <!-- 海面线描波纹 -->
+        <g stroke="#86a7a3" fill="none" stroke-width="1.2" stroke-linecap="round" opacity=".8">
+          <path d="M520 470 q8 -5 16 0 q8 5 16 0"/><path d="M576 484 q8 -5 16 0 q8 5 16 0"/>
+          <path d="M470 486 q7 -4 14 0 q7 4 14 0"/>
+          <path d="M620 270 q8 -5 16 0 q8 5 16 0"/><path d="M656 286 q7 -4 14 0 q7 4 14 0"/>
+          <path d="M26 340 q7 -4 14 0 q7 4 14 0"/><path d="M30 364 q6 -4 12 0 q6 4 12 0"/>
+        </g>
+
+        <!-- 线描层：陆地 / 装饰 -->
+        <g class="doodle">
+          <!-- 陆地 -->
+          <path d="M40 120 q120 -60 250 -30 q90 22 150 -8 q110 -54 240 -10 q60 20 80 70 q-40 90 -190 110 q-160 22 -300 -6 q-140 -28 -200 -70 q-40 -30 -30 -56 z" fill="#fdfcfa" stroke="#33403e" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M60 330 q140 -40 300 -14 q170 28 360 -14 q20 60 -30 120 q-120 60 -330 44 q-180 -14 -270 -70 q-40 -36 -30 -66 z" fill="#fdfcfa" stroke="#33403e" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M470 60 q80 -20 170 6 q40 40 10 96 q-90 30 -160 -6 q-40 -50 -20 -96 z" fill="#fdfcfa" stroke="#33403e" stroke-width="1.6" stroke-linejoin="round"/>
+          <!-- 地形等高线 -->
+          <g stroke="#33403e" fill="none" stroke-width="1" opacity=".16">
+            <path d="M110 160 Q250 118 430 132"/>
+            <path d="M480 150 Q600 120 700 138"/>
+            <path d="M120 380 Q280 340 460 356"/>
+            <path d="M520 384 Q640 360 730 376"/>
+            <path d="M490 96 Q570 74 650 92"/>
           </g>
-        </g>
-
-        <!-- 植被晕染 -->
-        <g>
-          <ellipse cx="150" cy="480" rx="120" ry="70" fill="url(#veg)"/>
-          <ellipse cx="660" cy="510" rx="110" ry="64" fill="url(#veg)"/>
-          <ellipse cx="250" cy="545" rx="90" ry="40" fill="url(#veg)"/>
-          <ellipse cx="680" cy="270" rx="80" ry="50" fill="url(#veg)"/>
-          <ellipse cx="80" cy="200" rx="70" ry="46" fill="url(#veg)"/>
-        </g>
-
-        <!-- 水彩湖泊与河流 -->
-        <g filter="url(#wcEdge)">
-          <path d="M-10 330 q90 -46 170 -8 q86 42 170 -14 q92 -56 180 -6 q88 46 176 -14 q56 -32 104 -10 l0 7 q-52 -24 -108 8 q-84 34 -172 14 q-90 -50 -182 6 q-88 56 -172 14 q-84 -40 -166 8 z" fill="#a9c6d6" opacity=".8"/>
-          <path d="M60 600 q28 -80 84 -120 q46 -34 58 -96" fill="none" stroke="#a9c6d6" stroke-width="6" stroke-linecap="round" opacity=".8"/>
-          <path d="M512 236 q10 -22 34 -24 q26 -2 34 16 q8 20 -10 32 q-22 14 -44 6 q-22 -8 -14 -30 z" fill="#a9c6d6" opacity=".85"/>
-          <path d="M158 236 q8 -18 28 -18 q22 0 26 14 q4 16 -12 22 q-18 8 -34 -2 q-14 -8 -8 -16 z" fill="#a9c6d6" opacity=".85"/>
-        </g>
-        <!-- 水面波纹细线 -->
-        <g fill="none" stroke="#7ba7bd" stroke-width=".9" stroke-linecap="round" opacity=".75">
-          <path d="M524 244 q12 7 24 0 q12 -7 24 0"/>
-          <path d="M526 254 q11 6 22 0 q11 -6 22 0"/>
-          <path d="M166 242 q10 6 20 0 q10 -6 20 0"/>
-          <path d="M0 336 q84 -44 164 -8 q84 40 166 -14"/>
-          <path d="M336 316 q90 -52 178 -6 q84 44 172 -12"/>
-        </g>
-
-        <!-- 区域轮廓边界（深橄榄墨线） -->
-        <g fill="none" stroke="#55603a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M268 0 q34 78 -8 152 q-42 76 8 150 q48 70 -6 140 q-44 76 6 158"/>
-          <path d="M0 372 q86 -34 168 -2 q80 32 164 -6 q88 -40 176 0 q84 38 164 -4 q68 -34 128 -6"/>
-          <path d="M556 0 q26 64 -4 114 q-24 46 14 74 q34 26 96 16 q66 -12 138 6"/>
-          <path d="M0 480 q60 20 90 70 q26 44 20 50"/>
-        </g>
-
-        <!-- 铅笔山脉与排线 -->
-        <g fill="none" stroke="#5f5a48" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" opacity=".85">
-        <path d="M110 206 L146 142 L182 206"/>
-        <path d="M157 161 l -11 19" opacity=".6"/>
-        <path d="M163 171 l -11 19" opacity=".6"/>
-        <path d="M168 182 l -11 19" opacity=".6"/>
-        <path d="M174 192 l -11 19" opacity=".6"/>
-        <path d="M180 202 l -11 19" opacity=".6"/>
-        <path d="M172 218 L215 140 L258 218"/>
-        <path d="M228 163 l -13 23" opacity=".6"/>
-        <path d="M235 176 l -13 23" opacity=".6"/>
-        <path d="M242 188 l -13 23" opacity=".6"/>
-        <path d="M249 201 l -13 23" opacity=".6"/>
-        <path d="M255 213 l -13 23" opacity=".6"/>
-        <path d="M246 196 L293 124 L340 196"/>
-        <path d="M307 146 l -14 22" opacity=".6"/>
-        <path d="M315 157 l -14 22" opacity=".6"/>
-        <path d="M322 169 l -14 22" opacity=".6"/>
-        <path d="M330 180 l -14 22" opacity=".6"/>
-        <path d="M337 192 l -14 22" opacity=".6"/>
-        <path d="M322 224 L362 136 L402 224"/>
-        <path d="M374 162 l -12 26" opacity=".6"/>
-        <path d="M380 176 l -12 26" opacity=".6"/>
-        <path d="M387 191 l -12 26" opacity=".6"/>
-        <path d="M393 205 l -12 26" opacity=".6"/>
-        <path d="M400 219 l -12 26" opacity=".6"/>
-        <path d="M396 200 L434 132 L472 200"/>
-        <path d="M445 152 l -11 20" opacity=".6"/>
-        <path d="M451 163 l -11 20" opacity=".6"/>
-        <path d="M458 174 l -11 20" opacity=".6"/>
-        <path d="M464 185 l -11 20" opacity=".6"/>
-        <path d="M470 196 l -11 20" opacity=".6"/>
-        <path d="M600 178 L635 120 L670 178"/>
-        <path d="M646 137 l -10 17" opacity=".6"/>
-        <path d="M651 147 l -10 17" opacity=".6"/>
-        <path d="M657 156 l -10 17" opacity=".6"/>
-        <path d="M662 165 l -10 17" opacity=".6"/>
-        <path d="M668 175 l -10 17" opacity=".6"/>
-        <path d="M662 204 L701 138 L740 204"/>
-        <path d="M713 158 l -12 20" opacity=".6"/>
-        <path d="M719 168 l -12 20" opacity=".6"/>
-        <path d="M725 179 l -12 20" opacity=".6"/>
-        <path d="M731 189 l -12 20" opacity=".6"/>
-        <path d="M738 200 l -12 20" opacity=".6"/>
-        <path d="M706 158 L728 122 L750 158"/>
-        <path d="M735 133 l -7 11" opacity=".6"/>
-        <path d="M738 139 l -7 11" opacity=".6"/>
-        <path d="M742 144 l -7 11" opacity=".6"/>
-        <path d="M745 150 l -7 11" opacity=".6"/>
-        <path d="M749 156 l -7 11" opacity=".6"/>
-        </g>
-
-        <!-- 松树符号 -->
-        <g class="pines" fill="none" stroke="#55603a" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round">
-        <g transform="translate(130 470) scale(1.00)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(170 506) scale(0.90)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(104 436) scale(0.85)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(216 524) scale(1.05)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(296 558) scale(0.90)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(470 540) scale(1.00)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(536 516) scale(0.85)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(614 556) scale(1.00)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(672 500) scale(0.90)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(716 540) scale(0.80)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(60 110) scale(0.80)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(104 146) scale(0.70)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(656 262) scale(0.75)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(690 300) scale(0.70)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(46 296) scale(0.80)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        <g transform="translate(744 368) scale(0.75)"><path d="M0 -15 l7 11 h-14 z"/><path d="M0 -6 l9 11 h-18 z"/><path d="M0 5 v6"/></g>
-        </g>
-
-        <!-- 手绘边框 -->
-        <g fill="none" stroke="#4a5230">
-          <rect x="8" y="8" width="784" height="584" stroke-width="1.5"/>
-          <rect x="14" y="14" width="772" height="572" stroke-width=".6"/>
-        </g>
-
-        <!-- 旅行路线（靛蓝粗线 + 细白线双描边） -->
-        <g fill="none" stroke="#3b4a96" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
-          <a href="#day1"><path class="rt" d="M740 182 Q610 250 404 394"/></a>
-          <a href="#day2"><path class="rt" d="M404 396 Q478 352 530 274"/></a>
-          <a href="#day3"><path class="rt" d="M528 284 Q500 352 406 400"/></a>
-          <a href="#day4"><path class="rt" d="M398 394 Q336 374 240 306"/></a>
-          <a href="#day5"><path class="rt" d="M236 300 Q196 254 236 232 Q168 244 184 288 Q208 312 240 308"/></a>
-          <a href="#day6"><path class="rt" d="M240 300 Q286 244 344 176 Q392 144 428 122"/></a>
-          <a href="#day7"><path class="rt" d="M434 126 Q462 206 390 254 Q322 300 244 310"/></a>
-          <a href="#day8"><path class="rt" d="M240 308 Q330 390 402 402"/></a>
-          <a href="#day8"><path class="rt" d="M406 400 Q594 306 740 186"/></a>
-        </g>
-        <g class="rtw" fill="none" stroke="#fbf7ec" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M740 182 Q610 250 404 394"/>
-          <path d="M404 396 Q478 352 530 274"/>
-          <path d="M528 284 Q500 352 406 400"/>
-          <path d="M398 394 Q336 374 240 306"/>
-          <path d="M236 300 Q196 254 236 232 Q168 244 184 288 Q208 312 240 308"/>
-          <path d="M240 300 Q286 244 344 176 Q392 144 428 122"/>
-          <path d="M434 126 Q462 206 390 254 Q322 300 244 310"/>
-          <path d="M240 308 Q330 390 402 402"/>
-          <path d="M406 400 Q594 306 740 186"/>
-        </g>
-
-        <!-- 城市圆点与地名 -->
-        <g class="labels" font-family="Kaiti SC,STKaiti,KaiTi,cursive" style="paint-order:stroke;stroke:#f5efdf;stroke-width:4px;stroke-linejoin:round">
+          <!-- 雪山群 -->
+          <g stroke="#33403e" fill="none" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+            <path d="M356 118 l48 -66 l42 66"/>
+            <path d="M374 94 l10 -14 M398 62 l9 14 M412 88 l9 -12"/>
+            <path d="M366 108 l7 -8 M378 118 l7 -8 M436 118 l7 -8 M452 106 l7 -7"/>
+            <path d="M408 118 l32 -48 l30 48"/>
+            <path d="M424 96 l7 -10 M444 66 l7 11 M456 96 l7 -7"/>
+          </g>
+          <!-- 松林 -->
+          <g stroke="#33403e" fill="none" stroke-width="1.3" stroke-linejoin="round">
+            <path d="M96 300 l10 -22 l10 22 z"/><path d="M106 300 v7"/>
+            <path d="M120 312 l11 -24 l11 24 z"/><path d="M131 312 v7"/>
+            <path d="M84 316 l9 -20 l9 20 z"/><path d="M93 316 v7"/>
+            <path d="M660 300 l10 -22 l10 22 z"/><path d="M670 300 v7"/>
+            <path d="M684 312 l11 -24 l11 24 z"/><path d="M695 312 v7"/>
+          </g>
+          <!-- 牦牛 -->
+          <g transform="translate(150 262)" stroke="#33403e" stroke-width="1.4" fill="none" stroke-linecap="round">
+            <ellipse cx="0" cy="0" rx="13" ry="8"/>
+            <path d="M-10 6 v8 M-4 7 v7 M6 7 v7 M11 6 v8"/>
+            <path d="M11 -4 q8 -4 12 2" fill="none"/>
+            <path d="M20 -2 l4 -3 M20 -2 l4 2"/>
+          </g>
+          <!-- 日轮 -->
+          <circle cx="70" cy="62" r="24" fill="none" stroke="#33403e" stroke-width="1.5"/>
+          <g stroke="#33403e" stroke-width="1.3" stroke-linecap="round">
+            <path d="M70 24 v-10 M70 100 v10 M32 62 h-10 M108 62 h10 M43 35 l-7 -7 M97 35 l7 -7 M43 89 l-7 7 M97 89 l7 7"/>
+          </g>
+          <!-- 云 -->
+          <g stroke="#33403e" fill="none" stroke-width="1.3">
+            <path d="M130 78 q18 -22 42 -10 q16 -20 40 -6 q22 -4 24 16 q4 16 -16 18 h-76 q-18 -2 -14 -18"/>
+            <path d="M300 60 q14 -16 32 -7 q12 -14 30 -4 q16 -2 17 12 q3 12 -12 13 h-56 q-13 -2 -11 -13"/>
+          </g>
+          <!-- 题字标签盒（右上） -->
+          <g transform="translate(648 40)">
+            <rect x="0" y="0" width="112" height="52" fill="#faf9f5" stroke="#33403e" stroke-width="1"/>
+            <rect x="4.5" y="4.5" width="103" height="43" fill="none" stroke="#33403e" stroke-width=".5"/>
+            <text x="56" y="25" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="12.5" letter-spacing="3.5" fill="#33403e">YUNNAN</text>
+            <line x1="26" y1="32" x2="86" y2="32" stroke="#33403e" stroke-width=".6"/>
+            <text x="56" y="43" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="8.5" letter-spacing="2" fill="#6b7573">TRIP · MMXXVI</text>
+          </g>
+          <!-- 云（右上，题字盒之后绘制的另一朵省略以避免拥挤） -->
+          <!-- 左下山脉 -->
+          <g fill="none" stroke="#33403e" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+            <path d="M40 470 l46 -62 l30 40 l34 -52 l44 74"/>
+            <path d="M96 470 l30 -34"/>
+            <path d="M56 450 l7 -9 M100 428 l7 -9 M138 442 l7 -9"/>
+          </g>
+          <!-- 泸沽湖 -->
+          <ellipse cx="533" cy="237" rx="44" ry="26" fill="#fdfcfa" stroke="#5f8f8a" stroke-width="1.5" transform="rotate(-12 533 237)"/>
+          <ellipse cx="533" cy="237" rx="34" ry="17" fill="none" stroke="#5f8f8a" stroke-width=".8" opacity=".7" transform="rotate(-12 533 237)"/>
+          <path d="M505 236 q14 7 28 0 q14 -7 28 0" fill="none" stroke="#5f8f8a" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M507 246 q13 6 26 0 q13 -6 26 0" fill="none" stroke="#5f8f8a" stroke-width="1.1" stroke-linecap="round" opacity=".7"/>
+          <!-- 纳帕海 -->
+          <ellipse cx="178" cy="232" rx="30" ry="17" fill="#fdfcfa" stroke="#5f8f8a" stroke-width="1.4" transform="rotate(8 178 232)"/>
+          <ellipse cx="178" cy="232" rx="21" ry="10" fill="none" stroke="#5f8f8a" stroke-width=".7" opacity=".7"/>
+          <path d="M158 232 q10 5 20 0 q10 -5 20 0" fill="none" stroke="#5f8f8a" stroke-width="1.2" stroke-linecap="round"/>
+          <!-- 长江第一湾 -->
+          <path d="M620 400 q30 -22 70 -16 q40 6 76 -20" fill="none" stroke="#5f8f8a" stroke-width="1.5" stroke-linecap="round" opacity=".85"/>
+          <path d="M636 414 q28 -18 62 -13 q36 5 68 -16" fill="none" stroke="#5f8f8a" stroke-width="1" stroke-linecap="round" opacity=".55"/>
+          <!-- 寺庙小塔 -->
+          <g transform="translate(258 176)" stroke="#33403e" stroke-width="1.4" fill="none" stroke-linejoin="round">
+            <path d="M0 -26 l9 10 h-18 z"/><rect x="-7" y="-16" width="14" height="14"/>
+            <path d="M-11 0 l11 -8 l11 8 v12 h-22 z"/>
+          </g>
+          <!-- 玫瑰罗盘 -->
+          <g transform="translate(744 458)">
+            <circle r="27" fill="#faf9f5" stroke="#33403e" stroke-width="1"/>
+            <circle r="23" fill="none" stroke="#33403e" stroke-width=".5"/>
+            <g fill="none" stroke="#33403e" stroke-width=".9" stroke-linejoin="round">
+              <path d="M0 -22 L4.5 0 L-4.5 0 Z"/><path d="M0 22 L4.5 0 L-4.5 0 Z"/>
+              <path d="M22 0 L0 4.5 L0 -4.5 Z"/><path d="M-22 0 L0 4.5 L0 -4.5 Z"/>
+              <path d="M0 -13 L3 0 L-3 0 Z" transform="rotate(45)"/>
+              <path d="M0 -13 L3 0 L-3 0 Z" transform="rotate(135)"/>
+              <path d="M0 -13 L3 0 L-3 0 Z" transform="rotate(225)"/>
+              <path d="M0 -13 L3 0 L-3 0 Z" transform="rotate(315)"/>
+            </g>
+            <circle r="2" fill="#33403e"/>
+            <text y="-31" text-anchor="middle" font-size="12" fill="#33403e" font-weight="700" font-family="Georgia,serif">N</text>
+          </g>
+          <!-- 标题饰框 -->
           <g>
-            <circle cx="742" cy="178" r="6.5" fill="#6a87a8" stroke="#fbf7ec" stroke-width="2.5"/>
-            <text x="726" y="184" text-anchor="end" font-size="17" font-weight="700" fill="#3a3830">长沙</text>
+            <rect x="32" y="336" width="256" height="68" rx="3" fill="#faf9f5" fill-opacity=".94" stroke="#33403e" stroke-width="1.4"/>
+            <rect x="37" y="341" width="246" height="58" rx="2" fill="none" stroke="#33403e" stroke-width=".55"/>
+            <g fill="#33403e">
+              <circle cx="160" cy="336" r="2.2"/><circle cx="160" cy="404" r="2.2"/>
+              <circle cx="32" cy="370" r="2.2"/><circle cx="288" cy="370" r="2.2"/>
+            </g>
           </g>
-          <g>
-            <circle cx="546" cy="244" r="6.5" fill="#d99a4e" stroke="#fbf7ec" stroke-width="2.5"/>
-            <text x="520" y="250" text-anchor="end" font-size="17" font-weight="700" fill="#3a3830">泸沽湖</text>
+        </g>
+
+        <!-- 细线边框 -->
+        <g fill="none" stroke="#33403e">
+          <rect x="9" y="9" width="782" height="502" stroke-width="1.3"/>
+          <rect x="16.5" y="16.5" width="767" height="487" stroke-width=".6"/>
+          <path d="M26 46 V26 H46 M774 46 V26 H754 M26 474 V494 H46 M774 474 V494 H754" stroke-width=".9"/>
+        </g>
+
+        <!-- 路线（每天一色 · 莫兰迪） -->
+        <g class="routes" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arw)">
+          <a href="#day1"><path class="rt r1" d="M745 140 Q612 168 400 340" stroke-dasharray="10 8"/></a>
+          <a href="#day2"><path class="rt r2" d="M400 340 Q472 302 524 222"/></a>
+          <a href="#day3"><path class="rt r3" d="M520 232 Q512 318 408 352"/></a>
+          <a href="#day4"><path class="rt r4" d="M400 340 Q384 318 364 300 Q296 272 230 250"/></a>
+          <a href="#day5"><path class="rt r5" d="M228 248 Q222 216 254 194 Q214 204 180 228 Q204 254 230 251"/></a>
+          <a href="#day6"><path class="rt r6" d="M232 248 Q272 214 322 160 Q378 134 420 92"/></a>
+          <a href="#day7"><path class="rt r7" d="M430 96 Q456 168 388 208 Q316 248 238 258"/></a>
+          <a href="#day8"><path class="rt r8" d="M236 256 Q330 348 406 346"/></a>
+          <a href="#day8"><path class="rt r8" d="M404 340 Q592 248 745 144" stroke-dasharray="10 8"/></a>
+        </g>
+
+        <!-- 城市节点 -->
+        <g class="nodes">
+          <g transform="translate(400 340)"><circle r="9" fill="#faf9f5" stroke="#33403e" stroke-width="2"/><circle r="3" fill="#33403e"/></g>
+          <g transform="translate(524 222)"><circle r="9" fill="#faf9f5" stroke="#33403e" stroke-width="2"/><circle r="3" fill="#33403e"/></g>
+          <g transform="translate(230 250)"><circle r="9" fill="#faf9f5" stroke="#33403e" stroke-width="2"/><circle r="3" fill="#33403e"/></g>
+          <g transform="translate(420 92)"><circle r="9" fill="#faf9f5" stroke="#33403e" stroke-width="2"/><circle r="3" fill="#33403e"/></g>
+          <g transform="translate(745 142)"><circle r="9" fill="#faf9f5" stroke="#33403e" stroke-width="2"/><circle r="3" fill="#33403e"/></g>
+        </g>
+
+        <!-- 地名 -->
+        <g class="labels" font-family="Kaiti SC,STKaiti,KaiTi,cursive" style="paint-order:stroke;stroke:#faf9f5;stroke-width:4px;stroke-linejoin:round">
+          <text x="400" y="376" text-anchor="middle" font-size="21" font-weight="700" fill="#33403e" transform="rotate(-2 400 376)">丽江</text>
+          <text x="540" y="200" font-size="19" font-weight="700" fill="#33403e" transform="rotate(3 540 200)">泸沽湖</text>
+          <text x="204" y="284" text-anchor="middle" font-size="19" font-weight="700" fill="#33403e" transform="rotate(-3 204 284)">香格里拉</text>
+          <text x="432" y="70" font-size="19" font-weight="700" fill="#33403e" transform="rotate(2 432 70)">稻城亚丁</text>
+          <text x="740" y="176" text-anchor="end" font-size="19" font-weight="700" fill="#33403e">长沙 ✈</text>
+          <text x="396" y="296" text-anchor="end" font-size="14" fill="#6b7573">束河·白沙</text>
+          <text x="258" y="190" font-size="14" fill="#6b7573">松赞林寺</text>
+          <text x="146" y="236" text-anchor="end" font-size="14" fill="#6b7573">纳帕海</text>
+          <text x="330" y="152" font-size="14" fill="#6b7573">无底湖</text>
+          <text x="494" y="272" text-anchor="middle" font-size="13" fill="#6b7573">女神湾看日落</text>
+          <text x="330" y="330" font-size="13" fill="#6b7573">🚄 丽香铁路</text>
+          <!-- 拉丁文古地名 -->
+          <g font-family="Georgia,'Times New Roman',serif" fill="#8a918f" font-size="9.5" letter-spacing="2.2">
+            <text x="400" y="391" text-anchor="middle">LIKIANG</text>
+            <text x="534" y="214">LUGU LAKE</text>
+            <text x="204" y="299" text-anchor="middle">SHANGRI-LA</text>
+            <text x="432" y="85">YADING</text>
+            <text x="740" y="191" text-anchor="end">CHANGSHA</text>
           </g>
-          <g>
-            <circle cx="400" cy="398" r="6.5" fill="#c96f5a" stroke="#fbf7ec" stroke-width="2.5"/>
-            <text x="400" y="436" text-anchor="middle" font-size="17" font-weight="700" fill="#3a3830">丽江</text>
+        </g>
+        <!-- 海域名 -->
+        <text x="500" y="490" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="13" letter-spacing="6" fill="#9db4b0" opacity=".95">MARE DIANUM</text>
+
+        <!-- 标题与印 -->
+        <g class="labels" font-family="Kaiti SC,STKaiti,KaiTi,cursive" style="paint-order:stroke;stroke:#faf9f5;stroke-width:5px;stroke-linejoin:round">
+          <text x="46" y="368" font-size="30" font-weight="800" fill="#33403e" letter-spacing="5">云岭八日</text>
+          <text x="48" y="390" font-size="12.5" fill="#8a918f" letter-spacing="3" stroke="none" font-family="Georgia,'Times New Roman',serif">YUNNAN · 8 DAYS</text>
+          <g transform="translate(240 374) rotate(-8)">
+            <rect x="-24" y="-24" width="48" height="48" rx="3" fill="#faf9f5" fill-opacity=".95" stroke="#b5573f" stroke-width="2.2"/>
+            <text y="8" text-anchor="middle" font-size="18" font-weight="800" fill="#b5573f">出发</text>
           </g>
-          <g>
-            <circle cx="238" cy="302" r="6.5" fill="#7f9a62" stroke="#fbf7ec" stroke-width="2.5"/>
-            <text x="238" y="340" text-anchor="middle" font-size="17" font-weight="700" fill="#3a3830">香格里拉</text>
-          </g>
-          <g>
-            <circle cx="432" cy="118" r="6.5" fill="#8a7ab5" stroke="#fbf7ec" stroke-width="2.5"/>
-            <text x="446" y="124" text-anchor="start" font-size="17" font-weight="700" fill="#3a3830">稻城亚丁</text>
-          </g>
+        </g>
+
+        <!-- 天数徽章 -->
+        <g class="badges-d" font-size="11" font-weight="700" text-anchor="middle">
+          <g transform="translate(596 226)"><circle r="14.5" fill="none" stroke="#faf9f5" stroke-width="3"/><circle r="13" fill="#faf9f5" stroke="#c96f5a" stroke-width="1.6"/><text y="4" fill="#c96f5a">D1</text></g>
+          <g transform="translate(478 290)"><circle r="14.5" fill="none" stroke="#faf9f5" stroke-width="3"/><circle r="13" fill="#faf9f5" stroke="#d99a4e" stroke-width="1.6"/><text y="4" fill="#d99a4e">D2</text></g>
+          <g transform="translate(472 330)"><circle r="14.5" fill="none" stroke="#faf9f5" stroke-width="3"/><circle r="13" fill="#faf9f5" stroke="#c4a94f" stroke-width="1.6"/><text y="4" fill="#c4a94f">D3</text></g>
+          <g transform="translate(306 286)"><circle r="14.5" fill="none" stroke="#faf9f5" stroke-width="3"/><circle r="13" fill="#faf9f5" stroke="#7f9a62" stroke-width="1.6"/><text y="4" fill="#7f9a62">D4</text></g>
+          <g transform="translate(196 194)"><circle r="14.5" fill="none" stroke="#faf9f5" stroke-width="3"/><circle r="13" fill="#faf9f5" stroke="#58968e" stroke-width="1.6"/><text y="4" fill="#58968e">D5</text></g>
+          <g transform="translate(344 130)"><circle r="14.5" fill="none" stroke="#faf9f5" stroke-width="3"/><circle r="13" fill="#faf9f5" stroke="#8a7ab5" stroke-width="1.6"/><text y="4" fill="#8a7ab5">D6</text></g>
+          <g transform="translate(420 176)"><circle r="14.5" fill="none" stroke="#faf9f5" stroke-width="3"/><circle r="13" fill="#faf9f5" stroke="#b57a96" stroke-width="1.6"/><text y="4" fill="#b57a96">D7</text></g>
+          <g transform="translate(560 268)"><circle r="14.5" fill="none" stroke="#faf9f5" stroke-width="3"/><circle r="13" fill="#faf9f5" stroke="#6a87a8" stroke-width="1.6"/><text y="4" fill="#6a87a8">D8</text></g>
         </g>
       </svg>`;
 function paintOverviewMap(){
@@ -2667,6 +2673,7 @@ function syncBoot(){
 rebuildEvents();
 renderTickets();
 tick();
+renderLegend();
 paintOverviewMap();
 renderDays();
 renderBudget();
