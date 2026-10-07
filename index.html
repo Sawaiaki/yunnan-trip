@@ -739,6 +739,14 @@ section{padding:26px 0 6px}
 }
 .ss-row .ss-amt small{font-weight:600;color:var(--muted);font-size:10.5px;margin-left:4px}
 .ss-empty{font-size:12.5px;color:var(--muted)}
+.ss-btn{
+  flex:0 0 auto;margin-left:8px;border:none;cursor:pointer;
+  background:var(--red);color:#fff;border-radius:999px;
+  padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.5px;
+  box-shadow:0 3px 10px rgba(15,122,110,.22)
+}
+.ss-btn:active{transform:scale(.95)}
+@media (max-width:560px){.ss-btn{padding:6px 11px;font-size:11.5px}}
 
 /* ---------- 待办：按人 ---------- */
 .ck-item .ck-edit{
@@ -2259,7 +2267,8 @@ function renderBudget(){
       ? `<div class="ss-list">` + ssRows.map(([f, t, v]) =>
           `<div class="ss-row"><span class="ss-from">${BNAMES[f]}</span>
             <span class="ss-arrow">→</span><span class="ss-to">${BNAMES[t]}</span>
-            <span class="ss-amt">¥${v.toFixed(1)}<small>待转</small></span></div>`).join("") + `</div>`
+            <span class="ss-amt">¥${v.toFixed(1)}<small>待转</small></span>
+            <button class="ss-btn" data-ff="${f}" data-tt="${t}" title="把这两人之间所有未结清的账一起标记已付">标记已付</button></div>`).join("") + `</div>`
       : `<div class="ss-empty">暂无待转账 ✓（所有往来已结清）</div>`);
 }
 document.getElementById("payerPick").addEventListener("click", e => {
@@ -2307,6 +2316,17 @@ document.getElementById("bgPanel").addEventListener("click", e => {
     budget.splice(Number(del.dataset.del), 1);
     saveBudget(); renderBudget();
   }
+});
+document.getElementById("settleSum").addEventListener("click", e => {
+  const btn = e.target.closest(".ss-btn");
+  if (!btn) return;
+  const f = Number(btn.dataset.ff), t = Number(btn.dataset.tt);
+  let hit = 0;
+  budget.forEach(b => {
+    if (b.payer === t && b.shares.includes(f) && !b.paid.includes(f)){ b.paid.push(f); hit++; }
+    if (b.payer === f && b.shares.includes(t) && !b.paid.includes(t)){ b.paid.push(t); hit++; }
+  });
+  if (hit){ saveBudget(); renderBudget(); }
 });
 document.getElementById("bgTabs").addEventListener("click", e => {
   const btn = e.target.closest(".ck-tab");
