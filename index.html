@@ -715,6 +715,30 @@ section{padding:26px 0 6px}
   width:26px;height:26px;font-size:14px;cursor:pointer;flex:0 0 auto;
 }
 .budget-note b{color:var(--red-dark)}
+.settle-sum{
+  background:#ffffff;border:1px solid var(--line);border-radius:16px;
+  padding:12px 14px 13px;margin-bottom:12px;box-shadow:0 6px 20px rgba(15,122,110,.06)
+}
+.settle-sum .ss-title{
+  font-size:12px;font-weight:800;letter-spacing:2px;color:var(--red-dark);
+  display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:9px
+}
+.settle-sum .ss-title::before{content:"\25C6";color:var(--gold);font-size:10px}
+.settle-sum .ss-title small{font-weight:600;letter-spacing:0;color:var(--muted);font-size:11.5px}
+.ss-list{display:flex;flex-direction:column;gap:6px}
+.ss-row{
+  display:flex;align-items:center;gap:8px;font-size:13.5px;
+  padding:7px 12px;background:var(--cream);border:1px solid var(--line);border-radius:999px
+}
+.ss-row .ss-from{font-weight:700;color:var(--ink)}
+.ss-row .ss-arrow{color:var(--red);font-weight:800}
+.ss-row .ss-to{font-weight:700;color:var(--ink)}
+.ss-row .ss-amt{
+  margin-left:auto;font-weight:800;color:var(--red-dark);white-space:nowrap;
+  font-family:var(--mono);font-variant-numeric:tabular-nums
+}
+.ss-row .ss-amt small{font-weight:600;color:var(--muted);font-size:10.5px;margin-left:4px}
+.ss-empty{font-size:12.5px;color:var(--muted)}
 
 /* ---------- 待办：按人 ---------- */
 .ck-item .ck-edit{
@@ -974,6 +998,7 @@ footer .sync-stat{display:block;margin-top:7px;font-size:11px;letter-spacing:.5p
         </div>
       </div>
     </form>
+    <div class="settle-sum" id="settleSum"></div>
     <div class="ck-tabs" id="bgTabs"></div>
     <div class="ck-panel" id="bgPanel"></div>
     <p class="budget-note">上方四张卡片是<b>每人分摊后的实际花费</b>。记账先点<b>谁付的</b>（另起一行），再勾<b>分摊人</b>（默认全队4人均摊）；
@@ -2215,6 +2240,27 @@ function renderBudget(){
     }).join("") : `<div class="ck-empty">暂无支付记录</div>`) + `</div>`;
 
   document.getElementById("bgPanel").innerHTML = html;
+
+  const oweM = BNAMES.map(() => BNAMES.map(() => 0));
+  budget.forEach(b => b.shares.forEach(i => {
+    if (i !== b.payer && !b.paid.includes(i)) oweM[i][b.payer] += shareAmt(b);
+  }));
+  const ssRows = [];
+  for (let i = 0; i < BNAMES.length; i++)
+    for (let j = i + 1; j < BNAMES.length; j++){
+      const net = oweM[i][j] - oweM[j][i];
+      if (net > 0.05) ssRows.push([i, j, net]);
+      else if (net < -0.05) ssRows.push([j, i, -net]);
+    }
+  const ss = document.getElementById("settleSum");
+  if (ss) ss.innerHTML = `<div class="ss-title">转账核算汇总
+      <small>双方未结清的账互相抵轧后的净额 · 付清并标记后自动销账</small></div>` +
+    (ssRows.length
+      ? `<div class="ss-list">` + ssRows.map(([f, t, v]) =>
+          `<div class="ss-row"><span class="ss-from">${BNAMES[f]}</span>
+            <span class="ss-arrow">→</span><span class="ss-to">${BNAMES[t]}</span>
+            <span class="ss-amt">¥${v.toFixed(1)}<small>待转</small></span></div>`).join("") + `</div>`
+      : `<div class="ss-empty">暂无待转账 ✓（所有往来已结清）</div>`);
 }
 document.getElementById("payerPick").addEventListener("click", e => {
   const btn = e.target.closest(".who");
